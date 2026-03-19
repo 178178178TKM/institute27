@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第弐拾七研究所 ｜ 統合記録管理システム [外部端末]</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Serif+JP:wght@300;400;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060b06; --bg2: #0a110a; --bg3: #0e180e;
+  --green: #7aab6e; --green-dim: #3d6636; --green-bright: #a8d49a;
+  --amber: #c8a030; --amber-dim: #7a5e12;
+  --red: #9b2020; --red-bright: #cc3333;
+  --text: #8aab80; --text-dim: #4a6644; --text-bright: #c2ddb8;
+  --border: #1e2e1a; --border2: #2a3e24;
+  --stamp-red: #8b1515; --scan-line: rgba(0,20,0,0.35);
+  --ic: #e07848; --ic-dim: #7a3820; --en: #d45888; --en-dim: #6a2844;
+  --ph: #9878cc; --ph-dim: #4a3868; --fl: #607888; --fl-dim: #2e3e48;
+  --an: #608878; --an-dim: #2e4838;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Noto Serif JP',serif;font-size:15px;line-height:1.8;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,var(--scan-line) 0px,var(--scan-line) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:9999;opacity:.4}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9998;opacity:.3}
+a{color:var(--green);text-decoration:none}a:hover{color:var(--green-bright)}
+.mono{font-family:'Share Tech Mono',monospace}
+.redacted{background:var(--text-dim);color:transparent;border-radius:2px;user-select:none;padding:0 2px}
+.xref{color:var(--green);border-bottom:1px dashed var(--green-dim);cursor:pointer}
+.xref:hover{color:var(--green-bright)}
+.cls-tag{display:inline-block;border:1px solid;padding:2px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.12em;vertical-align:middle}
+.cls-ic{color:var(--ic);border-color:var(--ic-dim)}.cls-en{color:var(--en);border-color:var(--en-dim)}.cls-ph{color:var(--ph);border-color:var(--ph-dim)}.cls-fl{color:var(--fl);border-color:var(--fl-dim)}.cls-an{color:var(--an);border-color:var(--an-dim)}
+.status-tag{display:inline-block;border:1px solid currentColor;padding:2px 8px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.1em}
+.status-active{color:var(--amber);border-color:var(--amber-dim)}.status-archived{color:var(--text-dim);border-color:var(--border2)}.status-redacted{color:var(--red-bright);border-color:var(--red)}
+.inline-note{background:var(--bg3);border-left:2px solid var(--amber-dim);padding:10px 16px;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--amber);margin:14px 0;line-height:1.8}
+.inline-affiliate{display:inline-flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border2);padding:6px 12px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--amber);margin:0 4px;vertical-align:middle}
+.inline-affiliate:hover{border-color:var(--amber-dim)}
+
+/* BOOT */
+#boot-screen{position:fixed;inset:0;background:#000;z-index:20000;display:flex;flex-direction:column;justify-content:center;padding:60px 80px;font-family:'VT323',monospace;font-size:18px;color:var(--green);line-height:1.8;overflow:hidden}
+#boot-screen::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,20,0,.4) 0px,rgba(0,20,0,.4) 1px,transparent 1px,transparent 3px);pointer-events:none}
+.boot-line{white-space:pre;text-shadow:0 0 8px rgba(51,255,102,.4);position:relative;z-index:1}
+.boot-line.amber{color:var(--amber)}.boot-line.red{color:var(--red-bright)}.boot-line.bright{color:var(--green-bright);text-shadow:0 0 12px rgba(51,255,102,.6)}
+.boot-cursor{animation:cb .5s step-end infinite}
+@keyframes cb{50%{opacity:0}}
+
+/* CRT TRANSITION */
+#crt-trans{position:fixed;inset:0;z-index:19999;background:#000;display:none;overflow:hidden}
+#crt-noise{position:absolute;inset:0;z-index:1;transition:opacity .08s}
+#crt-line{position:absolute;left:0;right:0;top:0;height:100%;background:var(--green-bright);box-shadow:0 0 30px var(--green),0 0 80px var(--green);z-index:2}
+
+/* AUTH */
+#auth-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:10000;justify-content:center;align-items:center}
+#auth-overlay.active{display:flex}
+#auth-modal{background:var(--bg2);border:1px solid var(--border2);padding:48px;max-width:440px;width:90%;text-align:center;position:relative}
+#auth-modal::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,var(--scan-line) 0px,var(--scan-line) 1px,transparent 1px,transparent 3px);pointer-events:none;opacity:.3}
+.auth-close{position:absolute;top:12px;right:16px;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--text-dim);background:none;border:none;cursor:pointer}.auth-close:hover{color:var(--green)}
+.gate-icon{font-family:'VT323',monospace;font-size:48px;color:var(--red);margin-bottom:16px;position:relative}
+.gate-title{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--red-bright);letter-spacing:.15em;margin-bottom:8px;position:relative}
+#auth-level-info{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--amber);margin-bottom:16px;position:relative}
+.gate-desc{font-size:13px;color:var(--text-dim);margin-bottom:24px;line-height:1.8;position:relative}
+.level-input-group{display:flex;gap:8px;margin-bottom:12px;position:relative}
+.level-input{flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--green);font-family:'Share Tech Mono',monospace;font-size:13px;padding:10px 14px;outline:none}.level-input:focus{border-color:var(--green-dim)}
+.level-submit{background:transparent;border:1px solid var(--green-dim);color:var(--green);font-family:'Share Tech Mono',monospace;font-size:12px;padding:10px 20px;cursor:pointer;letter-spacing:.1em;width:100%;position:relative}.level-submit:hover{background:var(--green-dim);color:var(--bg)}
+#auth-result{margin-top:12px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);position:relative}
+
+/* HEADER */
+#site-header{border-bottom:1px solid var(--border2);background:var(--bg2);position:sticky;top:0;z-index:100}
+.header-top{display:flex;justify-content:space-between;align-items:center;padding:6px 32px;border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim)}
+.header-main{display:flex;align-items:center;justify-content:space-between;padding:16px 32px}
+.logo{display:flex;flex-direction:column}
+.logo-ja{font-family:'Noto Serif JP',serif;font-weight:700;font-size:22px;color:var(--green-bright);letter-spacing:.15em}
+.logo-en{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.2em}
+nav{display:flex;gap:32px;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.08em}
+nav a{color:var(--text-dim)}nav a:hover{color:var(--green-bright)}
+.clearance-badge{font-family:'Share Tech Mono',monospace;font-size:10px;border:1px solid var(--green-dim);padding:4px 10px;color:var(--green-dim);letter-spacing:.1em}
+
+/* TICKER — chain loop */
+.ticker-wrap{background:var(--bg3);border-bottom:1px solid var(--border);padding:6px 0;overflow:hidden;position:relative;white-space:nowrap}
+.ticker-label{display:inline-block;background:var(--red);color:#e8c8c8;font-family:'Share Tech Mono',monospace;font-size:11px;padding:1px 10px;margin-right:16px;letter-spacing:.1em;position:relative;z-index:2}
+.ticker-track{display:inline-block;animation:tickerScroll 35s linear infinite;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--amber);white-space:nowrap}
+@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* WELCOME */
+.welcome-banner{padding:32px 40px;border-bottom:1px solid var(--border);background:var(--bg2)}
+.welcome-banner p{font-size:13px;color:var(--text-dim);line-height:2}
+.welcome-title{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:.2em;margin-bottom:10px}
+
+/* FEATURED */
+.featured-article{border-bottom:1px solid var(--border2)}
+.feat-hero{display:grid;grid-template-columns:1fr 300px;gap:0}
+.feat-hero-main{padding:40px;border-right:1px solid var(--border2)}
+.feat-hero-sidebar{padding:28px 20px;background:var(--bg2);font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text-dim);line-height:2}
+.feat-case-num{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:.2em;margin-bottom:8px}
+.feat-title{font-family:'Noto Serif JP',serif;font-weight:700;font-size:28px;color:var(--green-bright);line-height:1.4;margin-bottom:14px;letter-spacing:.05em}
+.feat-meta{display:flex;gap:16px;flex-wrap:wrap;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);margin-bottom:20px;align-items:center}
+.feat-body{font-size:14px;color:var(--text);line-height:2;margin-bottom:24px}
+.feat-body p+p{margin-top:10px}
+.feat-report{padding:40px;background:var(--bg2);border-top:1px solid var(--border)}
+.feat-report-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.2em;margin-bottom:16px}
+.feat-report-header{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);line-height:2;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.feat-report-body{font-size:14px;line-height:2.2;color:var(--text)}
+.feat-report-body h3{font-family:'Noto Serif JP',serif;font-size:16px;color:var(--green-bright);margin:20px 0 8px;letter-spacing:.08em}
+.feat-report-body p{margin-bottom:12px}
+.field-report{position:relative}
+.field-report.has-stamp::before{content:'機密解除';position:absolute;top:24px;right:24px;font-family:'Noto Serif JP',serif;font-size:28px;font-weight:700;color:var(--stamp-red);border:3px solid var(--stamp-red);padding:4px 12px;transform:rotate(12deg);opacity:.4;pointer-events:none;letter-spacing:.1em}
+
+/* SECTION */
+.section{padding:56px 40px;border-bottom:1px solid var(--border)}
+.section-header{display:flex;align-items:baseline;gap:16px;margin-bottom:32px}
+.section-title{font-family:'Noto Serif JP',serif;font-weight:700;font-size:18px;color:var(--green-bright);letter-spacing:.1em}
+.section-title-en{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:.15em}
+.section-id{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);margin-left:auto}
+
+/* GRID */
+.case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+.case-card{background:var(--bg2);padding:24px;transition:background .2s;cursor:pointer;position:relative;overflow:hidden}
+.case-card:hover{background:var(--bg3)}
+.case-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;transition:height .3s}
+.case-card:hover::before{height:100%}
+.case-card.card-ic::before{background:var(--ic)}.case-card.card-en::before{background:var(--en)}.case-card.card-ph::before{background:var(--ph)}.case-card.card-fl::before{background:var(--fl)}.case-card.card-an::before{background:var(--an)}
+.card-num{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.15em;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.card-title{font-size:16px;margin-bottom:10px;line-height:1.5}
+.card-title.poetic{font-family:'Noto Serif JP',serif;color:var(--green-bright)}
+.card-title.clinical{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--text);letter-spacing:.02em}
+.card-desc{font-size:13px;color:var(--text-dim);line-height:1.9}
+.card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)}
+.card-locked{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--red);line-height:1.8}
+.case-card.locked{background:rgba(155,32,32,.06)}
+.case-card.locked .card-title{color:var(--red-bright)!important;opacity:.5}
+.case-card.locked .card-desc{color:var(--red)!important;opacity:.6}
+
+/* GLOSSARY */
+.glossary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border)}
+.gloss-card{background:var(--bg2);padding:20px 24px;cursor:pointer}.gloss-card:hover{background:var(--bg3)}
+.gloss-term{font-family:'Noto Serif JP',serif;font-weight:700;font-size:15px;color:var(--green-bright);margin-bottom:4px}
+.gloss-reading{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);margin-bottom:8px}
+.gloss-def{font-size:13px;color:var(--text-dim);line-height:1.8}
+.gloss-links{margin-top:10px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim)}.gloss-links a{margin-right:12px}
+
+/* BOOKS */
+.book-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.book-card{background:var(--bg2);border:1px solid var(--border2);padding:20px}.book-card:hover{border-color:var(--green-dim)}
+.book-cover{height:6px;background:var(--border2);margin-bottom:14px}
+.book-title{font-family:'Noto Serif JP',serif;font-size:14px;color:var(--green-bright);margin-bottom:4px;line-height:1.5}
+.book-author{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);margin-bottom:10px}
+.book-relevance{font-size:12px;color:var(--text-dim);line-height:1.8;margin-bottom:14px}
+.affiliate-btn{display:block;text-align:center;background:transparent;border:1px solid var(--amber-dim);color:var(--amber);font-family:'Share Tech Mono',monospace;font-size:11px;padding:8px;letter-spacing:.1em}.affiliate-btn:hover{background:var(--amber-dim);color:var(--bg)}
+.affiliate-note{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);margin-top:6px;text-align:center}
+
+/* ORG */
+.org-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+.org-card{background:var(--bg2);padding:20px}
+.org-dept{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:.15em;margin-bottom:8px}
+.org-chief{font-family:'Noto Serif JP',serif;font-size:15px;color:var(--green-bright);margin-bottom:4px}
+.org-info{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);line-height:1.7}
+
+/* FOOTER */
+footer{background:var(--bg2);border-top:1px solid var(--border2);padding:40px 40px 24px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:32px}
+.footer-col-title{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--text-dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:14px}
+.footer-col ul{list-style:none}.footer-col ul li{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text-dim);padding:4px 0}
+.footer-col ul li a{color:var(--text-dim)}.footer-col ul li a:hover{color:var(--green)}
+.footer-disclaimer{border-top:1px solid var(--border);padding-top:20px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);line-height:1.9;text-align:center}
+
+@media(max-width:900px){
+  .feat-hero{grid-template-columns:1fr}.feat-hero-sidebar{display:none}
+  .case-grid{grid-template-columns:1fr}.glossary-grid{grid-template-columns:1fr}
+  .book-grid{grid-template-columns:1fr 1fr}.org-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  .header-main{flex-direction:column;gap:12px}nav{flex-wrap:wrap;gap:16px}
+  .section{padding:40px 20px}.feat-hero-main{padding:28px 20px}.feat-report{padding:28px 20px}
+  #boot-screen{padding:30px 24px;font-size:14px}
+}
+</style>
+</head>
+<body>
+
+<div id="boot-screen"></div>
+<div id="crt-trans"><canvas id="crt-noise"></canvas><div id="crt-line"></div></div>
+
+<div id="auth-overlay">
+  <div id="auth-modal">
+    <button class="auth-close" onclick="closeAuth()">✕</button>
+    <div class="gate-icon">⟐</div>
+    <div class="gate-title">ACCESS RESTRICTED</div>
+    <div id="auth-level-info"></div>
+    <div class="gate-desc">IDカード番号を入力してください。<br>Level 2以上の記録にはパスワードも必要です。</div>
+    <div class="level-input-group"><input type="text" class="level-input" placeholder="IDカード番号" id="id-input"></div>
+    <div class="level-input-group"><input type="password" class="level-input" placeholder="パスワード（Level 2以上）" id="pw-input"></div>
+    <button class="level-submit" onclick="attemptAuth()">▶ 認証 / AUTHENTICATE</button>
+    <p id="auth-result"></p>
+  </div>
+</div>
+
+<div id="main-site" style="display:none">
+
+<header id="site-header">
+  <div class="header-top mono">
+    <span>INS27-ARCHIVE / EXTERNAL-TERMINAL-V2.4</span>
+    <span id="clock">--:--:--</span>
+    <span>最終同期: <span id="last-sync"></span></span>
+  </div>
+  <div class="header-main">
+    <div class="logo"><span class="logo-ja">第弐拾七研究所</span><span class="logo-en">THE 27th INSTITUTE — INTEGRATED ARCHIVE SYSTEM</span></div>
+    <nav><a href="#featured">最新記録</a><a href="#archive">記録一覧</a><a href="#glossary">用語集</a><a href="#references">参考文献</a><a href="#organization">組織</a></nav>
+    <div class="clearance-badge" id="badge">CLEARANCE : LEVEL-0</div>
+  </div>
+</header>
+
+<div class="ticker-wrap">
+  <span class="ticker-label">更新通知</span>
+  <span class="ticker-track" id="ticker-track"></span>
+</div>
+
+<div class="welcome-banner">
+  <div class="welcome-title">// 新入所員向けガイダンス</div>
+  <p>本端末は、第弐拾七研究所の統合記録管理システムへの外部アクセス用インターフェースです。新入所の研究員は本端末を通じて既存の調査記録・分析データ・用語集を確認し、自主学習に役立ててください。現場での調査中にも、過去の類似案件や観測データを参照できます。</p>
+</div>
+
+<!-- FEATURED 1: IC-0047 -->
+<div class="featured-article" id="featured">
+  <div class="feat-hero">
+    <div class="feat-hero-main">
+      <div class="feat-case-num mono">LATEST ／ IC-0047 ／ Case#0047 ／ 調査課</div>
+      <div class="feat-title">深夜2時の自販機前に並ぶ「列」について</div>
+      <div class="feat-meta"><span class="cls-tag cls-ic">IC</span><span class="status-tag status-active">調査継続中</span><span>担当: 三枝 由佳</span><span>初報: 2025.09.14</span></div>
+      <div class="feat-body">
+        <p>複数の匿名通報者より、深夜2時頃に特定の自動販売機前に人が「列を作って立っている」という報告が相次いでいる。列に並ぶ人物は全員が前方を向き、声をかけても反応がない。</p>
+        <p>通報者の一人は「<span class="redacted">　　　　　　</span>と気づいた瞬間、全員が同時に振り向いた」と述べている。計<strong style="color:var(--green-bright)">7件</strong>の独立した目撃証言を確認。</p>
+      </div>
+    </div>
+    <div class="feat-hero-sidebar">
+      <div style="font-size:10px;letter-spacing:.2em;color:var(--text-dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px">案件データ</div>
+      分類: <span style="color:var(--ic)">INCIDENT CASE</span><br>担当課: 調査課<br>担当者: 三枝 由佳<br>閲覧Level: Level 1<br>証言数: 7件<br>状態: <span style="color:var(--amber)">ACTIVE</span><br><br>
+      <div style="font-size:10px;letter-spacing:.2em;color:var(--text-dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px">関連記録</div>
+      <span class="xref" style="color:var(--ph)">PH-0007</span> 繰り返す春の夢<br><span class="xref" style="color:var(--an)">AN-2019-0031</span> 桜花弁成分分析
+    </div>
+  </div>
+  <div class="feat-report">
+    <div class="field-report has-stamp">
+      <div class="feat-report-label">// 調査レポート抜粋 — IC-0047</div>
+      <div class="feat-report-header">IC-0047 ／ Case#0047 ／ INCIDENT CASE ／ Level 1<br>担当: 三枝 由佳（調査課）／ 現地調査: 2026.02.22 01:45〜03:30 ／ 曇 ／ 4℃</div>
+      <div class="feat-report-body">
+        <h3>▌ 現場概況</h3>
+        <p>目撃報告のあった自動販売機前に深夜1時45分に到着。気温4℃、視界良好。音声記録のために <a class="inline-affiliate" href="#">▶ ICレコーダー [Amazon]</a> を三脚に固定。</p>
+        <div class="inline-note">⚠ 02:12、音量レベルが+18dBに急上昇。伊東調査員（観測課）に音響解析を依頼。→ <span class="xref">AN-0047-audio</span></div>
+        <h3>▌ 現地観測</h3>
+        <p>02:00ちょうど、4名が縦列を形成。全員前方を向き動きが極めて少ない。EMF計測器で通常の3倍超の電磁波を記録。<span class="xref">PH-0029</span>の数値パターンとの類似性を確認中。</p>
+        <h3>▌ 暫定結論</h3>
+        <p>再現性は高い。複数回の追加調査が必要。次回調査日は<span class="redacted">　　　　</span>。桐嶋課長の承認を得て、協力調査員の追加投入を検討中。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURED 2: IC-0093 -->
+<div class="featured-article">
+  <div class="feat-hero">
+    <div class="feat-hero-main">
+      <div class="feat-case-num mono">IC-0093 ／ Case#0093 ／ 調査課</div>
+      <div class="feat-title">商店街の怪——閉店後の客</div>
+      <div class="feat-meta"><span class="cls-tag cls-ic">IC</span><span class="status-tag status-active">調査継続中</span><span>担当: 三枝 由佳</span><span>初報: 2026.01.08</span></div>
+      <div class="feat-body">
+        <p>シャッター通りと化した商店街で、深夜に「営業中の店」が現れるという報告。店内には<span class="redacted">　　　</span>が確認されたが、翌朝には痕跡が完全に消失した。</p>
+        <p>防犯カメラには該当時間帯の映像が記録されていない。記録領域が「上書きされた形跡」があると<span class="xref">AN-0093-cam</span>で報告されている。</p>
+      </div>
+    </div>
+    <div class="feat-hero-sidebar">
+      <div style="font-size:10px;letter-spacing:.2em;color:var(--text-dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px">案件データ</div>
+      分類: <span style="color:var(--ic)">INCIDENT CASE</span><br>担当課: 調査課<br>担当者: 三枝 由佳<br>閲覧Level: Level 1<br>証言数: 3件<br>状態: <span style="color:var(--amber)">ACTIVE</span>
+    </div>
+  </div>
+  <div class="feat-report">
+    <div class="field-report has-stamp">
+      <div class="feat-report-label">// 調査レポート抜粋 — IC-0093</div>
+      <div class="feat-report-header">IC-0093 ／ Case#0093 ／ INCIDENT CASE ／ Level 1<br>担当: 三枝 由佳（調査課）／ 現地調査: 2026.02.15 23:30〜02:00 ／ 晴 ／ 2℃</div>
+      <div class="feat-report-body">
+        <h3>▌ 現場概況</h3>
+        <p>報告のあった商店街に23時30分に到着。全店舗シャッター降下済。街灯3本中2本が消灯。視認性は低い。</p>
+        <h3>▌ 現地観測</h3>
+        <p>0時15分、東端から4軒目の店舗にて微弱な光を確認。シャッター隙間から暖色の照明。近づくと<span class="redacted">　　　　　　　</span>が聞こえた。0時22分、光が消失。翌朝確認で当該店舗は6ヶ月前に閉店済。</p>
+        <h3>▌ 暫定結論</h3>
+        <p>発生条件の特定が必要。気温・曜日・月齢との相関を<span class="xref">AN-0093-env</span>で解析中。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURED 3: PH-0029 -->
+<div class="featured-article">
+  <div class="feat-hero">
+    <div class="feat-hero-main">
+      <div class="feat-case-num mono">PH-0029 ／ Case#0029 ／ 観測課</div>
+      <div class="feat-title">気圧の異常——数値が戻らない場所</div>
+      <div class="feat-meta"><span class="cls-tag cls-ph">PH</span><span class="status-tag status-active">観測継続中</span><span>担当: 野口 朔</span><span>初報: 1997.06.22</span></div>
+      <div class="feat-body">
+        <p>特定地点で気圧計の数値が恒常的に周囲と乖離する現象。野口課長が1997年から29年間継続観測。偏差は年々拡大傾向にある。</p>
+        <p>2018年の計測では<span class="xref">AN-2018-0024</span>で報告された時間軸偏差との相関が示唆されている。</p>
+      </div>
+    </div>
+    <div class="feat-hero-sidebar">
+      <div style="font-size:10px;letter-spacing:.2em;color:var(--text-dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px">案件データ</div>
+      分類: <span style="color:var(--ph)">PHENOMENON</span><br>担当課: 観測課<br>担当者: 野口 朔<br>閲覧Level: Level 0<br>観測年数: 29年<br>状態: <span style="color:var(--amber)">ACTIVE</span>
+    </div>
+  </div>
+  <div class="feat-report">
+    <div class="field-report">
+      <div class="feat-report-label">// 観測レポート抜粋 — PH-0029</div>
+      <div class="feat-report-header">PH-0029 ／ Case#0029 ／ PHENOMENON ／ Level 0<br>担当: 野口 朔（観測課 課長）／ 最新観測: 2026.03.01 ／ 観測開始: 1997.06.22</div>
+      <div class="feat-report-body">
+        <h3>▌ 観測概要</h3>
+        <p>当該地点の気圧計は半径500m以内の他計器と比較して常に-3.2〜-4.8hPaの偏差。計器交換でも同結果。</p>
+        <h3>▌ 長期推移</h3>
+        <p>1997年: -1.8hPa → 2005年: -2.4hPa → 2015年: -3.1hPa → 2026年: -4.8hPa。偏差は加速的に拡大。このまま推移した場合、<span class="redacted">　　　　　　　</span>と予測される。</p>
+        <div class="inline-note">⚠ 野口課長の私的メモ（<span class="xref">Case#0057</span>）:「数値は戻らない。一度ずれた場所は、二度と元には戻らない」</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ARCHIVE GRID -->
+<section class="section" id="archive">
+  <div class="section-header"><span class="section-title">記録一覧</span><span class="section-title-en">ARCHIVE INDEX</span><span class="section-id mono">SEC.01</span></div>
+  <div class="case-grid" id="record-grid">
+    <div class="case-card card-en" data-level="2" onclick="showAuth(2,'EN-0052')"><div class="card-num"><span class="cls-tag cls-en">EN</span> Case#0052</div><div class="card-title poetic">鏡の中の住人——もう一人の観察者</div><div class="card-desc">中古の姿見に「自分と同じ姿の何か」が映る事例。4件の報告が同一メーカー製に集中。</div><div class="card-footer"><span class="status-tag status-active">ACTIVE</span><span>担当: 本田 沙織（解析課）</span></div></div>
+    <div class="case-card card-fl"><div class="card-num"><span class="cls-tag cls-fl">FL</span> FL-2019-0284</div><div class="card-title clinical">FL-2019-0284_施設封鎖手続書</div><div class="card-desc">研究対象の管理困難を理由とする封鎖手続。2019年3月15日施行。</div><div class="card-footer"><span class="status-tag status-archived">ARCHIVED</span><span>作成: 管理部</span></div></div>
+    <div class="case-card card-an"><div class="card-num"><span class="cls-tag cls-an">AN</span> AN-2018-0024</div><div class="card-title clinical">AN-2018-0024_時間軸偏差計測データ</div><div class="card-desc">第三区画の原子時計比較。72時間で+0.00037秒の偏差。</div><div class="card-footer"><span class="status-tag status-archived">ARCHIVED</span><span>担当: 天野 浩二（解析課）</span></div></div>
+    <div class="case-card card-ic" data-level="2" onclick="showAuth(2,'IC-0019')"><div class="card-num"><span class="cls-tag cls-ic">IC</span> Case#0019</div><div class="card-title poetic">深夜電話の<span class="redacted">　　</span>番——応答する声</div><div class="card-desc">特定番号に特定時刻に電話すると「亡くなった人物の声」が応答。</div><div class="card-footer"><span class="status-tag status-active">ACTIVE</span><span>担当: 朝倉 文（記録課）</span></div></div>
+    <div class="case-card card-an"><div class="card-num"><span class="cls-tag cls-an">AN</span> AN-2019-0031</div><div class="card-title clinical">AN-2019-0031_桜花弁成分分析結果</div><div class="card-desc">採取後112日のサンプルに代謝活動。最終報告は施設封鎖により中断。</div><div class="card-footer"><span class="status-tag" style="color:var(--ph);border-color:var(--ph-dim)">PENDING</span><span>外部委託</span></div></div>
+    <div class="case-card card-en" data-level="4" onclick="showAuth(4,'EN-0012')"><div class="card-num"><span class="cls-tag" style="color:var(--red-bright);border-color:var(--red)">EN</span> Case#0012</div><div class="card-title poetic">時を喰む者の残り香</div><div class="card-locked">⟐ ACCESS DENIED — Level 4 required</div><div class="card-footer"><span class="status-tag status-redacted">REDACTED</span><span style="color:var(--red)">Level 4</span></div></div>
+  </div>
+</section>
+
+<!-- GLOSSARY -->
+<section class="section" id="glossary">
+  <div class="section-header"><span class="section-title">用語集</span><span class="section-title-en">GLOSSARY / CANON</span><span class="section-id mono">SEC.02</span></div>
+  <p style="font-size:13px;color:var(--text-dim);margin-bottom:28px;font-family:'Share Tech Mono',monospace">当研究所で使用される用語の定義。正典として管理。</p>
+  <div class="glossary-grid">
+    <div class="gloss-card"><div class="gloss-term">時間軸偏差</div><div class="gloss-reading mono">じかんじくへんさ / TEMPORAL AXIS DEVIATION</div><div class="gloss-def">特定区画内における時間経過速度の標準値からの乖離。第三区画では72時間で+0.00037秒。</div><div class="gloss-links">関連: <a class="xref" style="color:var(--an)">AN-2018-0024</a> <a class="xref" style="color:var(--ph)">PH-0007</a></div></div>
+    <div class="gloss-card"><div class="gloss-term">第三区画</div><div class="gloss-reading mono">だいさんくかく / SECTOR 3</div><div class="gloss-def">対象構造物内の特定区画。桜樹群が存在し、時間軸偏差の中心地。2019年3月より単独立入禁止。</div><div class="gloss-links">関連: <a class="xref" style="color:var(--fl)">FL-2019-0271</a> <a class="xref" style="color:var(--ic)">IC-0023</a></div></div>
+    <div class="gloss-card"><div class="gloss-term">協力調査員</div><div class="gloss-reading mono">きょうりょくちょうさいん / COOPERATIVE INVESTIGATOR</div><div class="gloss-def">Level 1 IDカードを所持する外部協力者。各課の下部組織として機能。</div><div class="gloss-links">関連: <span style="color:var(--text-dim)">→ IDカード → 調査課</span></div></div>
+    <div class="gloss-card"><div class="gloss-term">桜樹群</div><div class="gloss-reading mono">おうじゅぐん / CHERRY TREE CLUSTER</div><div class="gloss-def">第三区画内の桜樹群生（計7本）。2017年以来、継続的な開花状態を維持。</div><div class="gloss-links">関連: <a class="xref" style="color:var(--ic)">IC-0017</a> <a class="xref" style="color:var(--an)">AN-2019-0031</a></div></div>
+  </div>
+</section>
+
+<!-- REFERENCES -->
+<section class="section" id="references">
+  <div class="section-header"><span class="section-title">参考文献</span><span class="section-title-en">REFERENCE ARCHIVE</span><span class="section-id mono">SEC.03</span></div>
+  <p style="font-size:13px;color:var(--text-dim);margin-bottom:28px;font-family:'Share Tech Mono',monospace">記録課・解析課が参照した文献。新入所員の自主学習にも推奨。</p>
+  <div class="book-grid">
+    <div class="book-card"><div class="book-cover" style="background:linear-gradient(90deg,#1a0a0a,#3a1010)"></div><div class="book-title">新耳袋</div><div class="book-author">木原 浩勝 / 中山 市朗</div><div class="book-relevance">実話怪談の一次資料。朝倉課長の推薦。</div><a href="#" class="affiliate-btn">Amazon で確認 →</a><div class="affiliate-note">※ Amazonアソシエイト参加</div></div>
+    <div class="book-card"><div class="book-cover" style="background:linear-gradient(90deg,#0a1a0a,#10301a)"></div><div class="book-title">遠野物語</div><div class="book-author">柳田 國男</div><div class="book-relevance">日本民俗学の原典。田部調査員が頻繁参照。</div><a href="#" class="affiliate-btn">Amazon で確認 →</a><div class="affiliate-note">※ Amazonアソシエイト参加</div></div>
+    <div class="book-card"><div class="book-cover" style="background:linear-gradient(90deg,#0a0a1a,#101030)"></div><div class="book-title">怪異の風景学</div><div class="book-author">（参考書籍）</div><div class="book-relevance">空間と怪異の関係を地理学的に分析。</div><a href="#" class="affiliate-btn">Amazon で確認 →</a><div class="affiliate-note">※ Amazonアソシエイト参加</div></div>
+    <div class="book-card"><div class="book-cover" style="background:linear-gradient(90deg,#1a1a0a,#2a2a10)"></div><div class="book-title">都市伝説の社会学</div><div class="book-author">（参考書籍）</div><div class="book-relevance">噂の伝播メカニズム。朝倉課長が参照。</div><a href="#" class="affiliate-btn">Amazon で確認 →</a><div class="affiliate-note">※ Amazonアソシエイト参加</div></div>
+  </div>
+</section>
+
+<!-- ORGANIZATION -->
+<section class="section" id="organization">
+  <div class="section-header"><span class="section-title">組織概要</span><span class="section-title-en">ORGANIZATION</span><span class="section-id mono">SEC.04</span></div>
+  <p style="font-size:13px;color:var(--text-dim);margin-bottom:12px;font-family:'Share Tech Mono',monospace">所長代理2名による分掌体制で運営されている。</p>
+  <p style="font-size:12px;color:var(--text-dim);margin-bottom:28px;font-family:'Share Tech Mono',monospace">▌ 前衛管轄（今宮 睦子）: 調査課・観測課 ／ ▌ 後衛管轄（坂崎 隆）: 記録課・解析課・保管課</p>
+  <div class="org-grid">
+    <div class="org-card"><div class="org-dept">調査課 ／ INVESTIGATION</div><div class="org-chief">桐嶋 信二【課長】</div><div class="org-info">在籍6名<br>現地調査・協力調査員管理</div></div>
+    <div class="org-card"><div class="org-dept">観測課 ／ OBSERVATION</div><div class="org-chief">野口 朔【課長】</div><div class="org-info">在籍5名<br>定点観測・長期モニタリング</div></div>
+    <div class="org-card"><div class="org-dept">記録課 ／ RECORDS</div><div class="org-chief">朝倉 文【課長】</div><div class="org-info">在籍5名<br>文献照合・記録・考察</div></div>
+    <div class="org-card"><div class="org-dept">解析課 ／ ANALYSIS</div><div class="org-chief">早川 博【課長】</div><div class="org-info">在籍5名<br>サンプル・データ解析</div></div>
+    <div class="org-card"><div class="org-dept">保管課 ／ STORAGE</div><div class="org-chief">沖田 正【課長】</div><div class="org-info">在籍4名<br>異物・物証の保管管理</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col"><div class="footer-col-title">本端末について</div><p style="font-size:12px;color:var(--text-dim);line-height:1.9;font-family:'Share Tech Mono',monospace">本端末は第弐拾七研究所の統合記録管理システムへの外部アクセス用インターフェースです。新入所員の自主学習、および現場での調査記録確認を目的として運用されています。</p></div>
+    <div class="footer-col"><div class="footer-col-title">記録</div><ul><li><a href="#archive">記録一覧</a></li><li><a href="#glossary">用語集</a></li></ul></div>
+    <div class="footer-col"><div class="footer-col-title">リソース</div><ul><li><a href="#references">参考文献</a></li><li><a href="#organization">組織概要</a></li></ul></div>
+  </div>
+  <div class="footer-disclaimer">⚠ 本端末に表示される全ての記録・人物・組織はフィクションです。実在の人物・団体・場所とは一切関係ありません。<br>当サイトはAmazonアソシエイトプログラムに参加しています。<br><br>本サイトは、「株式会社アークライト」及び「株式会社KADOKAWA」が権利を有する『クトゥルフ神話TRPG』の二次創作物です。<br><br>© 第弐拾七研究所 / THE 27th INSTITUTE</div>
+</footer>
+</div>
+
+<script>
+// CHAIN LOOP TICKER
+!function(){
+  var txt = '▌ IC-0047「深夜2時の自販機列」三枝調査員より新規報告 ／ AN-2019-0031 桜花弁成分分析——最終報告未着 ／ PH-0007「繰り返す春の夢」観測範囲が拡大傾向 ／ FL-2019-0284 施設封鎖手続書 施行済 ／ 次回同期予定: 不明 ／ ';
+  document.getElementById('ticker-track').textContent = txt + txt + txt;
+}();
+
+// TYPEWRITER BOOT (4x speed, periods unchanged)
+!function(){
+  var bootData = [
+    {t:'INS27-BIOS v4.2.1 .................. OK',c:''},
+    {t:'MEMORY   512K EXTENDED .............. OK',c:''},
+    {t:'STORAGE  SECTOR 0-447 .............. OK',c:''},
+    {t:'NETWORK  EXTERNAL PORT ............. CONNECTED',c:''},
+    {t:' ',c:''},
+    {t:'第弐拾七研究所 統合記録管理システム',c:'bright'},
+    {t:'THE 27th INSTITUTE — INTEGRATED ARCHIVE SYSTEM v2.4',c:'bright'},
+    {t:' ',c:''},
+    {t:'LOADING ARCHIVE INDEX ...',c:''},
+    {t:'  > IC  INCIDENT CASE    : 23 records',c:''},
+    {t:'  > EN  ENTITY           : 14 records',c:''},
+    {t:'  > PH  PHENOMENON        :  9 records',c:''},
+    {t:'  > FL  FILE              : 47 records',c:''},
+    {t:'  > AN  ANALYSIS          : 31 records',c:''},
+    {t:' ',c:''},
+    {t:'WARNING: 6 files corrupted — partial recovery attempted',c:'amber'},
+    {t:'WARNING: 4 records require LEVEL-3+ clearance',c:'amber'},
+    {t:'ALERT: Last authorized internal access — 2019/03/14 06:22:08',c:'red'},
+    {t:' ',c:''},
+    {t:'CLEARANCE: LEVEL-0 (GUEST / EXTERNAL)',c:''},
+    {t:'TERMINAL READY_',c:'bright'},
+  ];
+  var bs=document.getElementById('boot-screen'),li=0;
+  var cur=document.createElement('span');cur.className='boot-cursor';cur.textContent='█';
+
+  function nextLine(){
+    if(li>=bootData.length){setTimeout(transition,600);return}
+    var d=bootData[li],div=document.createElement('div');
+    div.className='boot-line'+(d.c?' '+d.c:'');
+    bs.appendChild(div);
+    if(d.t.trim()===''){div.innerHTML='&nbsp;';li++;setTimeout(nextLine,40);return}
+    var span=document.createElement('span');
+    div.appendChild(span);div.appendChild(cur);
+    var ci=0,txt=d.t;
+    function typeChar(){
+      if(ci<txt.length){
+        span.textContent=txt.substring(0,ci+1);
+        ci++;
+        var ch=txt.charAt(ci-1);
+        var delay=ch==='.'?20:3;
+        setTimeout(typeChar,delay);
+      } else {
+        if(cur.parentNode)cur.parentNode.removeChild(cur);
+        li++;setTimeout(nextLine,30);
+      }
+    }
+    typeChar();
+  }
+  setTimeout(nextLine,400);
+
+  function transition(){
+    var ct=document.getElementById('crt-trans'),cl=document.getElementById('crt-line');
+    var canvas=document.getElementById('crt-noise'),ctx=canvas.getContext('2d');
+    canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+    ct.style.display='block';bs.style.display='none';
+
+    // Static noise renderer
+    var noiseId=null;
+    function drawNoise(green){
+      var w=canvas.width,h=canvas.height;
+      var img=ctx.createImageData(w,h);
+      var d=img.data;
+      for(var i=0;i<d.length;i+=4){
+        var v=Math.random()*255|0;
+        if(green){d[i]=v*.2|0;d[i+1]=v*.8|0;d[i+2]=v*.15|0}
+        else{d[i]=d[i+1]=d[i+2]=v}
+        d[i+3]=255;
+      }
+      ctx.putImageData(img,0,0);
+    }
+
+    // Phase 1: burst of green static (ザザッ)
+    cl.style.display='none';
+    var f1=0;
+    noiseId=setInterval(function(){drawNoise(true);f1++},30);
+
+    // Phase 2: screen collapses to line
+    setTimeout(function(){
+      clearInterval(noiseId);
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      canvas.style.opacity='0';
+      cl.style.display='block';
+      cl.style.transition='none';cl.style.top='0';cl.style.height='100%';cl.style.opacity='1';
+      requestAnimationFrame(function(){
+        cl.style.transition='top .4s ease-in, height .4s ease-in';
+        cl.style.top='50%';cl.style.height='3px';
+      });
+    },500);
+
+    // Phase 3: another burst (ザザッ)
+    setTimeout(function(){
+      canvas.style.opacity='1';
+      var f2=0;
+      noiseId=setInterval(function(){drawNoise(true);f2++},25);
+      setTimeout(function(){clearInterval(noiseId);canvas.style.opacity='0'},250);
+    },950);
+
+    // Phase 4: line glow and fade
+    setTimeout(function(){
+      cl.style.transition='opacity .1s, box-shadow .1s';
+      cl.style.boxShadow='0 0 60px var(--green-bright),0 0 150px var(--green)';
+    },1000);
+    setTimeout(function(){cl.style.transition='opacity .4s';cl.style.opacity='0'},1200);
+
+    // Phase 5: show site
+    setTimeout(function(){
+      ct.style.display='none';
+      document.getElementById('main-site').style.display='block';
+      applyLevelStyling();
+    },1600);
+  }
+}();
+
+// CLOCK
+function uc(){var n=new Date;document.getElementById('clock').textContent=String(n.getHours()).padStart(2,'0')+' : '+String(n.getMinutes()).padStart(2,'0')+' : '+String(n.getSeconds()).padStart(2,'0')}
+setInterval(uc,1000);uc();
+var d=new Date;document.getElementById('last-sync').textContent=d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0');
+
+// GLITCH
+document.querySelectorAll('.case-card').forEach(function(c){c.addEventListener('mouseenter',function(){var t=c.querySelector('.card-title');if(!t)return;t.style.textShadow='1px 0 var(--red), -1px 0 var(--green-dim)';setTimeout(function(){t.style.textShadow=''},150)})});
+
+// AUTH 12HR
+var SK='ins27_auth',SH=12,currentLevel=0;
+function getAuth(){try{var r=localStorage.getItem(SK);if(!r)return 0;var s=JSON.parse(r);if(Date.now()-s.ts>SH*36e5){localStorage.removeItem(SK);return 0}return s.lv||0}catch(e){return 0}}
+function setAuth(l){localStorage.setItem(SK,JSON.stringify({lv:l,ts:Date.now()}))}
+currentLevel=getAuth();
+
+function updateBadge(){var b=document.getElementById('badge');b.textContent='CLEARANCE : LEVEL-'+currentLevel;b.style.borderColor=currentLevel>=2?'var(--green-bright)':currentLevel>=1?'var(--green)':'var(--green-dim)';b.style.color=currentLevel>=2?'var(--green-bright)':currentLevel>=1?'var(--green)':'var(--green-dim)'}
+
+function applyLevelStyling(){
+  updateBadge();
+  document.querySelectorAll('.case-card[data-level]').forEach(function(c){
+    var req=parseInt(c.getAttribute('data-level'));
+    if(req>currentLevel){c.classList.add('locked')}else{c.classList.remove('locked')}
+  });
+}
+
+var pendingArticle=null;
+function showAuth(req,aid){
+  if(currentLevel>=req&&req<3){alert(aid+' — アクセス許可済み');return}
+  pendingArticle=aid;
+  document.getElementById('auth-level-info').textContent=req>=4?aid+' — Level '+req+' クリアランスが必要です。このレベルは流通していません。':aid+' — Level '+req+' 以上のクリアランスが必要です';
+  document.getElementById('auth-result').textContent='';document.getElementById('id-input').value='';document.getElementById('pw-input').value='';
+  document.getElementById('auth-overlay').classList.add('active');
+}
+function closeAuth(){document.getElementById('auth-overlay').classList.remove('active');pendingArticle=null}
+function attemptAuth(){
+  var id=document.getElementById('id-input').value.trim(),pw=document.getElementById('pw-input').value.trim(),r=document.getElementById('auth-result');
+  if(!id){r.textContent='⚠ IDカード番号を入力してください';r.style.color='var(--amber)';return}
+  if(id.includes('27')){
+    if(pw){currentLevel=2;r.innerHTML='認証成功 — <span style="color:var(--green-bright)">LEVEL 2 GRANTED</span>'}
+    else{currentLevel=1;r.innerHTML='認証成功 — <span style="color:var(--green-bright)">LEVEL 1 GRANTED</span>'}
+    r.style.color='var(--green)';setAuth(currentLevel);applyLevelStyling();setTimeout(closeAuth,1000);
+  }else{r.textContent='⚠ 認証失敗 — IDカード番号が無効です';r.style.color='var(--red-bright)'}
+}
+document.getElementById('auth-overlay').addEventListener('click',function(e){if(e.target===this)closeAuth()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAuth()});
+applyLevelStyling();
+</script>
+</body>
+</html>
