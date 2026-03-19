@@ -1,4 +1,464 @@
-<!-- INS27-MANAGER v1.0 -->
-<!-- この中身は manager.html（ダウンロード済み）の内容で置き換えてください -->
-<!-- GitHub Web UIの「Edit file」から全文ペーストできます -->
-<html><body><h1>Manager Placeholder</h1><p>Replace with full manager.html content</p></body></html>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INS27-MANAGER ／ 統合記録管理</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#08080b;--bg2:#0e0e13;--bg3:#16161e;--bg4:#1e1e28;
+--fg:#c0c0cc;--fg2:#7a7a88;--fg3:#4a4a58;
+--accent:#c9a84c;--accent2:#a08030;--accent-dim:#3d3520;
+--red:#b83030;--red-dim:#2a1515;--green:#2a9d5c;--green-dim:#0f2a1a;
+--blue:#3070b0;--blue-dim:#0f1a2a;
+--border:#1e1e2a;--border2:#2a2a38;
+--mono:'Courier New','Noto Sans Mono',monospace;
+}
+html{font-size:13px}
+body{background:var(--bg);color:var(--fg);font-family:var(--mono);min-height:100vh;display:flex;flex-direction:column}
+.hdr{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100}
+.hdr-logo{color:var(--accent);font-size:10px;letter-spacing:3px}
+.hdr-sep{color:var(--fg3)}
+.hdr-title{color:var(--fg2);font-size:12px}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:16px}
+.hdr-dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;margin-right:4px}
+.hdr-status{font-size:10px;color:var(--fg2)}
+.wrap{display:flex;flex:1;overflow:hidden}
+.side{width:220px;background:var(--bg2);border-right:1px solid var(--border);flex-shrink:0;overflow-y:auto}
+.side-sec{padding:10px 12px;border-bottom:1px solid var(--border)}
+.side-lbl{font-size:9px;letter-spacing:2px;color:var(--fg3);text-transform:uppercase;margin-bottom:6px}
+.side-btn{display:block;width:100%;text-align:left;background:none;border:none;color:var(--fg2);font-family:var(--mono);font-size:11px;padding:5px 8px;cursor:pointer;border-radius:2px;transition:.15s}
+.side-btn:hover{background:var(--bg3);color:var(--fg)}
+.side-btn.on{background:var(--accent-dim);color:var(--accent);border-left:2px solid var(--accent);padding-left:6px}
+.side-cnt{float:right;font-size:10px;color:var(--fg3)}
+.main{flex:1;overflow-y:auto;padding:20px 24px}
+.pnl{display:none}.pnl.on{display:block}
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.sec-ttl{font-size:14px;color:var(--accent);letter-spacing:1px}
+.sec-ttl2{font-size:11px;color:var(--fg2)}
+.btn{background:var(--bg3);border:1px solid var(--border2);color:var(--fg);font-family:var(--mono);font-size:11px;padding:5px 12px;cursor:pointer;border-radius:2px;transition:.15s;white-space:nowrap}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn-p{background:var(--accent-dim);border-color:var(--accent2);color:var(--accent)}
+.btn-p:hover{background:var(--accent2);color:#fff}
+.btn-d{border-color:var(--red);color:var(--red)}
+.btn-d:hover{background:var(--red);color:#fff}
+.btn-s{padding:2px 7px;font-size:10px}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{text-align:left;padding:6px 10px;background:var(--bg2);color:var(--fg3);font-weight:normal;text-transform:uppercase;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--border)}
+td{padding:6px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:hover td{background:var(--bg2)}
+.tg{display:inline-block;padding:1px 5px;border-radius:2px;font-size:9px;letter-spacing:.5px;font-family:var(--mono)}
+.tg-ic{background:#2a1a10;color:#d08030}.tg-ph{background:#102a1a;color:#30b060}
+.tg-en{background:#10182a;color:#4090d0}.tg-an{background:#201028;color:#9060c0}
+.tg-fl{background:#28280e;color:#c0b030}
+.st-active{color:var(--green)}.st-archived{color:var(--fg3)}.st-pending{color:var(--accent)}.st-redacted{color:var(--red)}
+.fg{margin-bottom:12px}
+.fl{display:block;font-size:9px;color:var(--fg3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.fi,.fs,.ft{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--fg);font-family:var(--mono);font-size:12px;padding:6px 8px;border-radius:2px}
+.fi:focus,.fs:focus,.ft:focus{outline:none;border-color:var(--accent)}
+.ft{min-height:60px;resize:vertical}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+.mc{background:var(--bg2);border:1px solid var(--border2);border-radius:4px;width:100%;max-width:720px;max-height:90vh;overflow-y:auto;padding:20px}
+.mt{font-size:12px;color:var(--accent);margin-bottom:14px;letter-spacing:1px}
+.ma{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;padding-top:12px;border-top:1px solid var(--border)}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-bottom:20px}
+.sc{background:var(--bg2);border:1px solid var(--border);border-radius:3px;padding:12px}
+.sv{font-size:20px;color:var(--accent);font-weight:bold}
+.sl{font-size:9px;color:var(--fg3);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+.jp{background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:14px;font-size:10px;line-height:1.5;max-height:450px;overflow:auto;white-space:pre-wrap;word-break:break-all;color:var(--fg2)}
+.jp .k{color:var(--accent)}.jp .s{color:var(--green)}.jp .n{color:var(--blue)}
+.rse{background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:10px;margin-bottom:6px;position:relative}
+.rse-rm{position:absolute;top:6px;right:8px;cursor:pointer;color:var(--red);font-size:10px;background:none;border:none;font-family:var(--mono)}
+.toast{position:fixed;bottom:16px;right:16px;background:var(--bg3);border:1px solid var(--accent2);color:var(--accent);padding:8px 16px;border-radius:3px;font-size:11px;z-index:300;opacity:0;transition:opacity .3s}
+.toast.show{opacity:1}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-logo">&#x27D0; INS27-MANAGER</div>
+  <span class="hdr-sep">／</span>
+  <div class="hdr-title">統合記録管理 v1.0</div>
+  <div class="hdr-right"><span class="hdr-status"><span class="hdr-dot"></span>READY</span></div>
+</div>
+<div class="wrap">
+  <div class="side">
+    <div class="side-sec">
+      <div class="side-lbl">Data</div>
+      <button class="side-btn on" data-p="dash">// ダッシュボード</button>
+      <button class="side-btn" data-p="articles">記事管理<span class="side-cnt" id="cnt-art">0</span></button>
+      <button class="side-btn" data-p="glossary">用語集<span class="side-cnt" id="cnt-gls">0</span></button>
+      <button class="side-btn" data-p="refs">参考文献<span class="side-cnt" id="cnt-ref">0</span></button>
+      <button class="side-btn" data-p="org">組織情報</button>
+    </div>
+    <div class="side-sec">
+      <div class="side-lbl">I/O</div>
+      <button class="side-btn" onclick="doImport()">&#8593; JSONインポート</button>
+      <button class="side-btn" onclick="doExportAll()">&#8595; 全エクスポート</button>
+      <button class="side-btn" onclick="doExportSingle()">&#8595; 個別エクスポート</button>
+    </div>
+    <div class="side-sec">
+      <div class="side-lbl">Tools</div>
+      <button class="side-btn" onclick="doValidate()">&#10003; バリデーション</button>
+      <button class="side-btn" onclick="doPreview()">&#9673; JSONプレビュー</button>
+      <button class="side-btn" onclick="doBuildGuide()">&#9654; ビルド手順</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="pnl on" id="p-dash">
+      <div class="sec-hdr"><div class="sec-ttl">DASHBOARD</div></div>
+      <div class="sg" id="dash-stats"></div>
+      <div class="sec-hdr"><div class="sec-ttl2">// 操作ログ</div></div>
+      <div id="dash-log" style="font-size:11px;color:var(--fg3);max-height:300px;overflow-y:auto">&#8212; データをインポートまたは新規追加してください &#8212;</div>
+    </div>
+    <div class="pnl" id="p-articles">
+      <div class="sec-hdr">
+        <div class="sec-ttl">記事管理</div>
+        <button class="btn btn-p" onclick="openArt('featured')">+ Featured</button>
+        <button class="btn" onclick="openArt('archive')">+ Archive</button>
+      </div>
+      <table><thead><tr><th>ID</th><th>Type</th><th>タイトル</th><th>担当</th><th>Lv</th><th>Status</th><th>配置</th><th style="width:150px">操作</th></tr></thead><tbody id="tb-art"></tbody></table>
+    </div>
+    <div class="pnl" id="p-glossary">
+      <div class="sec-hdr">
+        <div class="sec-ttl">用語集</div>
+        <button class="btn btn-p" onclick="openGls()">+ 用語追加</button>
+      </div>
+      <table><thead><tr><th>用語</th><th>読み</th><th>English</th><th>定義</th><th style="width:100px">操作</th></tr></thead><tbody id="tb-gls"></tbody></table>
+    </div>
+    <div class="pnl" id="p-refs">
+      <div class="sec-hdr">
+        <div class="sec-ttl">参考文献</div>
+        <button class="btn btn-p" onclick="openRef()">+ 文献追加</button>
+      </div>
+      <table><thead><tr><th>タイトル</th><th>著者</th><th>説明</th><th>URL</th><th style="width:100px">操作</th></tr></thead><tbody id="tb-ref"></tbody></table>
+    </div>
+    <div class="pnl" id="p-org">
+      <div class="sec-hdr">
+        <div class="sec-ttl">組織情報</div>
+        <button class="btn btn-p" onclick="openOrg()">編集</button>
+      </div>
+      <div id="org-view" style="font-size:11px;color:var(--fg2)">&#8212; データなし &#8212;</div>
+    </div>
+  </div>
+</div>
+<div id="modal-root"></div>
+<div class="toast" id="toast-el"></div>
+<input type="file" id="f-import" accept=".json" style="display:none">
+<script>
+var S={articles:{featured:[],archive:[]},glossary:{terms:[]},references:{books:[]},organization:{leadership:[],departments:[]}};
+var logs=[];
+function addLog(m){logs.unshift('['+new Date().toLocaleTimeString('ja-JP')+'] '+m);if(logs.length>30)logs.pop()}
+var $=function(s){return document.querySelector(s)};
+var $$=function(s){return document.querySelectorAll(s)};
+function esc(s){return s==null?'':String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function toast(msg){var el=$('#toast-el');el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show')},2500)}
+function modal(h){$('#modal-root').innerHTML=h}
+function closeModal(){$('#modal-root').innerHTML=''}
+
+document.addEventListener('click',function(e){
+  var btn=e.target.closest('[data-p]');
+  if(!btn)return;
+  $$('.side-btn').forEach(function(b){b.classList.remove('on')});
+  btn.classList.add('on');
+  $$('.pnl').forEach(function(p){p.classList.remove('on')});
+  $('#p-'+btn.dataset.p).classList.add('on');
+});
+
+function render(){
+  var fa=S.articles.featured,aa=S.articles.archive,all=fa.concat(aa);
+  $('#cnt-art').textContent=all.length;
+  $('#cnt-gls').textContent=S.glossary.terms.length;
+  $('#cnt-ref').textContent=S.references.books.length;
+  renderDash(all,fa);renderArt(fa,aa);renderGls();renderRef();renderOrg();
+}
+
+function renderDash(all,fa){
+  var types={};all.forEach(function(a){types[a.type]=(types[a.type]||0)+1});
+  var active=all.filter(function(a){return a.status==='ACTIVE'}).length;
+  var h='<div class="sc"><div class="sv">'+all.length+'</div><div class="sl">総記事</div></div>';
+  h+='<div class="sc"><div class="sv">'+fa.length+'</div><div class="sl">Featured</div></div>';
+  h+='<div class="sc"><div class="sv">'+active+'</div><div class="sl">Active</div></div>';
+  h+='<div class="sc"><div class="sv">'+S.glossary.terms.length+'</div><div class="sl">用語</div></div>';
+  h+='<div class="sc"><div class="sv">'+S.references.books.length+'</div><div class="sl">文献</div></div>';
+  for(var t in types)h+='<div class="sc"><div class="sv">'+types[t]+'</div><div class="sl">'+t+'</div></div>';
+  $('#dash-stats').innerHTML=h;
+  $('#dash-log').innerHTML=logs.length?logs.map(function(l){return '<div style="padding:3px 0;border-bottom:1px solid var(--border)">'+esc(l)+'</div>'}).join(''):'&#8212; ログなし &#8212;';
+}
+
+function renderArt(fa,aa){
+  var h='';
+  function row(a,i,pl){
+    var tc='tg-'+a.type.toLowerCase();
+    var sc='st-'+(a.status||'active').toLowerCase();
+    return '<tr><td style="color:var(--accent)">'+esc(a.id)+'</td><td><span class="tg '+tc+'">'+a.type+'</span></td><td>'+esc(a.title)+'</td><td>'+esc(a.assignee||'\u2014')+'</td><td>'+(a.level!=null?a.level:'?')+'</td><td><span class="'+sc+'">'+(a.status||'\u2014')+'</span></td><td>'+pl+'</td><td><button class="btn btn-s" onclick="openArt(\''+pl+'\','+i+')">編集</button> <button class="btn btn-s btn-d" onclick="delArt(\''+pl+'\','+i+')">削除</button> '+(pl==='archive'?'<button class="btn btn-s" onclick="promote('+i+')">&#8593;FT</button>':'<button class="btn btn-s" onclick="demote('+i+')">&#8595;AR</button>')+'</td></tr>';
+  }
+  fa.forEach(function(a,i){h+=row(a,i,'featured')});
+  aa.forEach(function(a,i){h+=row(a,i,'archive')});
+  $('#tb-art').innerHTML=h||'<tr><td colspan="8" style="color:var(--fg3)">記事なし</td></tr>';
+}
+
+function renderGls(){
+  var h='';
+  S.glossary.terms.forEach(function(t,i){
+    h+='<tr><td style="color:var(--accent)">'+esc(t.term)+'</td><td>'+esc(t.reading||'')+'</td><td>'+esc(t.english||'')+'</td><td style="max-width:280px">'+esc(t.definition||'')+'</td><td><button class="btn btn-s" onclick="openGls('+i+')">編集</button> <button class="btn btn-s btn-d" onclick="delGls('+i+')">削除</button></td></tr>';
+  });
+  $('#tb-gls').innerHTML=h||'<tr><td colspan="5" style="color:var(--fg3)">用語なし</td></tr>';
+}
+
+function renderRef(){
+  var h='';
+  S.references.books.forEach(function(b,i){
+    h+='<tr><td style="color:var(--accent)">'+esc(b.title)+'</td><td>'+esc(b.author||'')+'</td><td style="max-width:220px">'+esc(b.description||'')+'</td><td style="max-width:120px;word-break:break-all;font-size:10px">'+esc(b.amazon_url||'')+'</td><td><button class="btn btn-s" onclick="openRef('+i+')">編集</button> <button class="btn btn-s btn-d" onclick="delRef('+i+')">削除</button></td></tr>';
+  });
+  $('#tb-ref').innerHTML=h||'<tr><td colspan="5" style="color:var(--fg3)">文献なし</td></tr>';
+}
+
+function renderOrg(){
+  var o=S.organization;
+  if(!o||(!(o.leadership&&o.leadership.length)&&!(o.departments&&o.departments.length))){$('#org-view').innerHTML='&#8212; データなし &#8212;';return}
+  var h='';
+  if(o.leadership&&o.leadership.length){
+    h+='<div style="color:var(--accent);font-size:10px;letter-spacing:1px;margin-bottom:6px">LEADERSHIP</div>';
+    o.leadership.forEach(function(l){h+='<div style="padding:4px 0">'+esc(l.name)+' &#8212; '+esc(l.role)+' ('+esc(l.jurisdiction)+'): '+(l.departments||[]).join('\u30FB')+'</div>'});
+    h+='<div style="height:12px"></div>';
+  }
+  if(o.departments&&o.departments.length){
+    h+='<div style="color:var(--accent);font-size:10px;letter-spacing:1px;margin-bottom:6px">DEPARTMENTS</div>';
+    h+='<table><thead><tr><th>名称</th><th>English</th><th>課長</th><th>人数</th><th>業務</th></tr></thead><tbody>';
+    o.departments.forEach(function(d){h+='<tr><td>'+esc(d.name)+'</td><td>'+esc(d.english||'')+'</td><td>'+esc(d.chief||'')+'</td><td>'+(d.staff_count||'\u2014')+'</td><td>'+esc(d.description||'')+'</td></tr>'});
+    h+='</tbody></table>';
+  }
+  $('#org-view').innerHTML=h;
+}
+
+// ═══ ARTICLE FORM ═══
+var TYPE_LABELS={IC:'INCIDENT CASE',PH:'PHENOMENON',EN:'ENTITY',AN:'ANALYSIS',FL:'FILE'};
+var DEPTS=['調査課','観測課','記録課','解析課','保管課','管理部'];
+var STATUSES=['ACTIVE','ARCHIVED','PENDING','REDACTED'];
+
+function openArt(pl,idx){
+  var isEdit=idx!==undefined;
+  var a=isEdit?JSON.parse(JSON.stringify(S.articles[pl][idx])):{id:'',case_number:'',type:'IC',type_label:'INCIDENT CASE',title:'',department:'調査課',assignee:'',level:1,status:'ACTIVE',first_report:'',summary:'',summary_extra:'',metadata:{},related:[],redacted:false};
+  var isFt=pl==='featured';
+  var rpt=a.report||null;
+  var metaStr=a.metadata?Object.entries(a.metadata).map(function(e){return e[0]+':'+e[1]}).join('\n'):'';
+  var relStr=(a.related||[]).map(function(r){return r.id+'|'+r.title}).join('\n');
+  var typeOpts=Object.keys(TYPE_LABELS).map(function(t){return '<option value="'+t+'"'+(t===a.type?' selected':'')+'>'+t+' \u2014 '+TYPE_LABELS[t]+'</option>'}).join('');
+  var deptOpts=DEPTS.map(function(d){return '<option value="'+d+'"'+(d===a.department?' selected':'')+'>'+d+'</option>'}).join('');
+  var statOpts=STATUSES.map(function(s){return '<option value="'+s+'"'+(s===a.status?' selected':'')+'>'+s+'</option>'}).join('');
+  var secHtml='';
+  if(isFt){
+    var secs=rpt&&rpt.sections?rpt.sections:[{title:'',content:'',warning:''}];
+    secHtml=secs.map(function(s){return '<div class="rse"><button class="rse-rm" onclick="this.parentElement.remove()">&#10005;</button><div class="fr2"><div class="fg"><label class="fl">セクション名</label><input class="fi js-sec-t" value="'+esc(s.title||'')+'"></div><div class="fg"><label class="fl">Warning / Note</label><input class="fi js-sec-w" value="'+esc(s.warning||s.note||'')+'"></div></div><div class="fg"><label class="fl">本文</label><textarea class="ft js-sec-c">'+esc(s.content||'')+'</textarea></div></div>'}).join('');
+  }
+  modal('<div class="mo" onclick="if(event.target===this)closeModal()"><div class="mc"><div class="mt">'+(isEdit?'EDIT':'NEW')+' &#8212; '+pl.toUpperCase()+'</div><div class="fr3"><div class="fg"><label class="fl">ID *</label><input class="fi" id="a-id" value="'+esc(a.id)+'" placeholder="IC-0100"></div><div class="fg"><label class="fl">Case#</label><input class="fi" id="a-case" value="'+esc(a.case_number||'')+'" placeholder="0100"></div><div class="fg"><label class="fl">Type</label><select class="fs" id="a-type">'+typeOpts+'</select></div></div><div class="fg"><label class="fl">タイトル *</label><input class="fi" id="a-title" value="'+esc(a.title)+'"></div><div class="fr3"><div class="fg"><label class="fl">担当課</label><select class="fs" id="a-dept">'+deptOpts+'</select></div><div class="fg"><label class="fl">担当者</label><input class="fi" id="a-assignee" value="'+esc(a.assignee||'')+'"></div><div class="fg"><label class="fl">初報日</label><input class="fi" id="a-date" value="'+esc(a.first_report||'')+'" placeholder="2026.03.19"></div></div><div class="fr3"><div class="fg"><label class="fl">Level (0-5)</label><input type="number" class="fi" id="a-level" value="'+(a.level!=null?a.level:1)+'" min="0" max="5"></div><div class="fg"><label class="fl">Status</label><select class="fs" id="a-status">'+statOpts+'</select></div><div class="fg"><label class="fl">Redacted</label><select class="fs" id="a-red"><option value="0"'+(!a.redacted?' selected':'')+'>No</option><option value="1"'+(a.redacted?' selected':'')+'>Yes</option></select></div></div><div class="fg"><label class="fl">概要 *</label><textarea class="ft" id="a-sum">'+esc(a.summary||'')+'</textarea></div><div class="fg"><label class="fl">概要（追加テキスト）</label><textarea class="ft" id="a-extra" style="min-height:40px">'+esc(a.summary_extra||'')+'</textarea></div><div class="fr2"><div class="fg"><label class="fl">メタデータ (key:value 改行)</label><textarea class="ft" id="a-meta" style="min-height:40px">'+metaStr+'</textarea></div><div class="fg"><label class="fl">関連記録 (ID|タイトル 改行)</label><textarea class="ft" id="a-rel" style="min-height:40px">'+relStr+'</textarea></div></div>'+(isFt?'<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="fl" style="margin:0">調査レポート</span><button class="btn btn-s" type="button" onclick="addSec()">+ セクション</button></div><div class="fr2" style="margin-bottom:8px"><div class="fg"><label class="fl">ヘッダー</label><input class="fi" id="a-rh" value="'+esc(rpt?rpt.header:'')+'"></div><div class="fg"><label class="fl">サブヘッダー</label><input class="fi" id="a-rs" value="'+esc(rpt?rpt.subheader:'')+'"></div></div><div id="sec-wrap">'+secHtml+'</div></div>':'')+'<div class="ma"><button class="btn" onclick="closeModal()">キャンセル</button><button class="btn btn-p" onclick="saveArt(\''+pl+'\','+(isEdit?idx:'null')+')">'+(isEdit?'更新':'追加')+'</button></div></div></div>');
+}
+
+function addSec(){
+  var w=$('#sec-wrap');if(!w)return;
+  var d=document.createElement('div');d.className='rse';
+  d.innerHTML='<button class="rse-rm" onclick="this.parentElement.remove()">&#10005;</button><div class="fr2"><div class="fg"><label class="fl">セクション名</label><input class="fi js-sec-t"></div><div class="fg"><label class="fl">Warning / Note</label><input class="fi js-sec-w"></div></div><div class="fg"><label class="fl">本文</label><textarea class="ft js-sec-c"></textarea></div>';
+  w.appendChild(d);
+}
+
+function saveArt(pl,idx){
+  var type=$('#a-type').value;
+  var obj={id:$('#a-id').value.trim(),case_number:$('#a-case').value.trim()||null,type:type,type_label:TYPE_LABELS[type]||type,title:$('#a-title').value.trim(),department:$('#a-dept').value,assignee:$('#a-assignee').value.trim()||null,level:parseInt($('#a-level').value)||0,status:$('#a-status').value,first_report:$('#a-date').value.trim()||null,summary:$('#a-sum').value.trim(),summary_extra:$('#a-extra').value.trim()||null,metadata:{},related:[],redacted:$('#a-red').value==='1'};
+  var mt=$('#a-meta').value.trim();
+  if(mt)mt.split('\n').forEach(function(l){var p=l.indexOf(':');if(p>0)obj.metadata[l.slice(0,p).trim()]=l.slice(p+1).trim()});
+  var rl=$('#a-rel').value.trim();
+  if(rl)rl.split('\n').forEach(function(l){var parts=l.split('|');if(parts[0])obj.related.push({id:parts[0].trim(),title:(parts.slice(1).join('|')||'').trim()})});
+  if(pl==='featured'&&$('#a-rh')){
+    var secs=[];
+    $$('.rse').forEach(function(el){
+      var t=el.querySelector('.js-sec-t'),c=el.querySelector('.js-sec-c'),w=el.querySelector('.js-sec-w');
+      if(!t)return;var tv=t.value.trim(),cv=c?c.value.trim():'',wv=w?w.value.trim():'';
+      if(tv||cv){var s={title:tv,content:cv};if(wv)s.warning=wv;secs.push(s)}
+    });
+    obj.report={header:$('#a-rh').value.trim(),subheader:$('#a-rs').value.trim(),sections:secs};
+  }
+  if(!obj.id||!obj.title){toast('\u26A0 IDとタイトルは必須');return}
+  if(idx!==null&&idx!==undefined){S.articles[pl][idx]=obj;addLog('\u66F4\u65B0 '+obj.id)}
+  else{S.articles[pl].push(obj);addLog('\u8FFD\u52A0 '+obj.id+' \u2192 '+pl)}
+  closeModal();render();toast('\u2713 保存');
+}
+
+function delArt(pl,i){
+  var a=S.articles[pl][i];
+  if(!confirm('\u300C'+a.title+'\u300D\u3092\u524A\u9664\uFF1F'))return;
+  S.articles[pl].splice(i,1);addLog('\u524A\u9664 '+a.id);render();toast('\u524A\u9664\u5B8C\u4E86');
+}
+
+function promote(i){
+  var a=JSON.parse(JSON.stringify(S.articles.archive[i]));
+  if(!a.report)a.report={header:'',subheader:'',sections:[{title:'',content:''}]};
+  S.articles.archive.splice(i,1);S.articles.featured.push(a);
+  addLog('\u2191 Featured\u6607\u683C '+a.id);render();toast('Featured\u306B\u79FB\u52D5');
+}
+
+function demote(i){
+  var a=JSON.parse(JSON.stringify(S.articles.featured[i]));
+  delete a.report;S.articles.featured.splice(i,1);S.articles.archive.push(a);
+  addLog('\u2193 Archive\u964D\u683C '+a.id);render();toast('Archive\u306B\u79FB\u52D5');
+}
+
+// ═══ GLOSSARY FORM ═══
+function openGls(idx){
+  var isEdit=idx!==undefined;
+  var t=isEdit?S.glossary.terms[idx]:{term:'',reading:'',english:'',definition:'',related:[]};
+  var relStr=(t.related||[]).join(', ');
+  modal('<div class="mo" onclick="if(event.target===this)closeModal()"><div class="mc" style="max-width:500px"><div class="mt">'+(isEdit?'\u7528\u8A9E\u7DE8\u96C6':'\u7528\u8A9E\u8FFD\u52A0')+'</div><div class="fg"><label class="fl">\u7528\u8A9E *</label><input class="fi" id="g-term" value="'+esc(t.term)+'"></div><div class="fr2"><div class="fg"><label class="fl">\u8AAD\u307F</label><input class="fi" id="g-read" value="'+esc(t.reading||'')+'"></div><div class="fg"><label class="fl">English</label><input class="fi" id="g-en" value="'+esc(t.english||'')+'"></div></div><div class="fg"><label class="fl">\u5B9A\u7FA9</label><textarea class="ft" id="g-def">'+esc(t.definition||'')+'</textarea></div><div class="fg"><label class="fl">\u95A2\u9023\uFF08\u30AB\u30F3\u30DE\u533A\u5207\u308A\uFF09</label><input class="fi" id="g-rel" value="'+esc(relStr)+'"></div><div class="ma"><button class="btn" onclick="closeModal()">\u30AD\u30E3\u30F3\u30BB\u30EB</button><button class="btn btn-p" onclick="saveGls('+(isEdit?idx:'null')+')">'+(isEdit?'\u66F4\u65B0':'\u8FFD\u52A0')+'</button></div></div></div>');
+}
+
+function saveGls(idx){
+  var obj={term:$('#g-term').value.trim(),reading:$('#g-read').value.trim(),english:$('#g-en').value.trim(),definition:$('#g-def').value.trim(),related:$('#g-rel').value.split(',').map(function(s){return s.trim()}).filter(Boolean)};
+  if(!obj.term){toast('\u26A0 \u7528\u8A9E\u540D\u306F\u5FC5\u9808');return}
+  if(idx!==null&&idx!==undefined){S.glossary.terms[idx]=obj;addLog('\u7528\u8A9E\u66F4\u65B0: '+obj.term)}
+  else{S.glossary.terms.push(obj);addLog('\u7528\u8A9E\u8FFD\u52A0: '+obj.term)}
+  closeModal();render();toast('\u2713 \u4FDD\u5B58');
+}
+
+function delGls(i){
+  var t=S.glossary.terms[i];
+  if(!confirm('\u300C'+t.term+'\u300D\u3092\u524A\u9664\uFF1F'))return;
+  S.glossary.terms.splice(i,1);addLog('\u7528\u8A9E\u524A\u9664: '+t.term);render();toast('\u524A\u9664\u5B8C\u4E86');
+}
+
+// ═══ REFERENCE FORM ═══
+function openRef(idx){
+  var isEdit=idx!==undefined;
+  var b=isEdit?S.references.books[idx]:{title:'',author:'',description:'',amazon_url:'',amazon_asin:null};
+  modal('<div class="mo" onclick="if(event.target===this)closeModal()"><div class="mc" style="max-width:500px"><div class="mt">'+(isEdit?'\u6587\u732E\u7DE8\u96C6':'\u6587\u732E\u8FFD\u52A0')+'</div><div class="fg"><label class="fl">\u30BF\u30A4\u30C8\u30EB *</label><input class="fi" id="r-title" value="'+esc(b.title)+'"></div><div class="fg"><label class="fl">\u8457\u8005</label><input class="fi" id="r-author" value="'+esc(b.author||'')+'"></div><div class="fg"><label class="fl">\u8AAC\u660E</label><textarea class="ft" id="r-desc">'+esc(b.description||'')+'</textarea></div><div class="fr2"><div class="fg"><label class="fl">Amazon URL</label><input class="fi" id="r-url" value="'+esc(b.amazon_url||'')+'"></div><div class="fg"><label class="fl">ASIN</label><input class="fi" id="r-asin" value="'+esc(b.amazon_asin||'')+'"></div></div><div class="ma"><button class="btn" onclick="closeModal()">\u30AD\u30E3\u30F3\u30BB\u30EB</button><button class="btn btn-p" onclick="saveRef('+(isEdit?idx:'null')+')">'+(isEdit?'\u66F4\u65B0':'\u8FFD\u52A0')+'</button></div></div></div>');
+}
+
+function saveRef(idx){
+  var obj={title:$('#r-title').value.trim(),author:$('#r-author').value.trim(),description:$('#r-desc').value.trim(),amazon_url:$('#r-url').value.trim()||'#',amazon_asin:$('#r-asin').value.trim()||null};
+  if(!obj.title){toast('\u26A0 \u30BF\u30A4\u30C8\u30EB\u306F\u5FC5\u9808');return}
+  if(idx!==null&&idx!==undefined){S.references.books[idx]=obj;addLog('\u6587\u732E\u66F4\u65B0: '+obj.title)}
+  else{S.references.books.push(obj);addLog('\u6587\u732E\u8FFD\u52A0: '+obj.title)}
+  closeModal();render();toast('\u2713 \u4FDD\u5B58');
+}
+
+function delRef(i){
+  var b=S.references.books[i];
+  if(!confirm('\u300C'+b.title+'\u300D\u3092\u524A\u9664\uFF1F'))return;
+  S.references.books.splice(i,1);addLog('\u6587\u732E\u524A\u9664: '+b.title);render();toast('\u524A\u9664\u5B8C\u4E86');
+}
+
+// ═══ ORGANIZATION FORM ═══
+function openOrg(){
+  var o=S.organization;
+  var lStr=(o.leadership||[]).map(function(l){return l.name+'|'+l.role+'|'+l.jurisdiction+'|'+(l.departments||[]).join('\u30FB')}).join('\n');
+  var dStr=(o.departments||[]).map(function(d){return d.name+'|'+(d.english||'')+'|'+(d.chief||'')+'|'+(d.staff_count||'')+'|'+(d.description||'')}).join('\n');
+  modal('<div class="mo" onclick="if(event.target===this)closeModal()"><div class="mc"><div class="mt">\u7D44\u7E54\u60C5\u5831\u7DE8\u96C6</div><div class="fg"><label class="fl">\u30EA\u30FC\u30C0\u30FC\u30B7\u30C3\u30D7 (\u540D\u524D|\u5F79\u8077|\u7BA1\u8F44|\u90E8\u7F721\u30FB\u90E8\u7F722 \u6539\u884C\u533A\u5207\u308A)</label><textarea class="ft" id="o-lead" style="min-height:80px">'+lStr+'</textarea></div><div class="fg"><label class="fl">\u90E8\u7F72 (\u540D\u79F0|English|\u8AB2\u9577|\u4EBA\u6570|\u696D\u52D9 \u6539\u884C\u533A\u5207\u308A)</label><textarea class="ft" id="o-dept" style="min-height:120px">'+dStr+'</textarea></div><div class="ma"><button class="btn" onclick="closeModal()">\u30AD\u30E3\u30F3\u30BB\u30EB</button><button class="btn btn-p" onclick="saveOrg()">\u66F4\u65B0</button></div></div></div>');
+}
+
+function saveOrg(){
+  var leadership=[];
+  $('#o-lead').value.trim().split('\n').filter(Boolean).forEach(function(l){
+    var p=l.split('|');if(p[0])leadership.push({name:p[0].trim(),role:(p[1]||'').trim(),jurisdiction:(p[2]||'').trim(),departments:(p[3]||'').split('\u30FB').map(function(s){return s.trim()}).filter(Boolean)})
+  });
+  var departments=[];
+  $('#o-dept').value.trim().split('\n').filter(Boolean).forEach(function(l){
+    var p=l.split('|');if(p[0])departments.push({name:p[0].trim(),english:(p[1]||'').trim(),chief:(p[2]||'').trim(),staff_count:parseInt(p[3])||0,description:(p[4]||'').trim()})
+  });
+  S.organization={leadership:leadership,departments:departments};
+  addLog('\u7D44\u7E54\u60C5\u5831\u3092\u66F4\u65B0');closeModal();render();toast('\u2713 \u4FDD\u5B58');
+}
+
+// ═══ IMPORT / EXPORT ═══
+function doImport(){
+  var fi=$('#f-import');
+  fi.onchange=function(e){
+    var file=e.target.files[0];if(!file)return;
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      try{
+        var data=JSON.parse(ev.target.result);
+        var name=file.name.replace('.json','');
+        if(name.indexOf('article')>=0||(data.featured&&data.archive)){
+          S.articles={featured:data.featured||[],archive:data.archive||[]};
+          addLog('\u30A4\u30F3\u30DD\u30FC\u30C8: articles ('+(S.articles.featured.length+S.articles.archive.length)+'\u4EF6)');
+        }else if(name.indexOf('glossary')>=0||data.terms){
+          S.glossary={terms:data.terms||[]};
+          addLog('\u30A4\u30F3\u30DD\u30FC\u30C8: glossary ('+S.glossary.terms.length+'\u4EF6)');
+        }else if(name.indexOf('reference')>=0||data.books){
+          S.references={books:data.books||[]};
+          addLog('\u30A4\u30F3\u30DD\u30FC\u30C8: references ('+S.references.books.length+'\u4EF6)');
+        }else if(name.indexOf('org')>=0||data.departments){
+          S.organization=data;
+          addLog('\u30A4\u30F3\u30DD\u30FC\u30C8: organization');
+        }else{toast('\u26A0 \u30D5\u30A1\u30A4\u30EB\u7A2E\u5225\u3092\u5224\u5225\u3067\u304D\u307E\u305B\u3093');return}
+        render();toast('\u2713 \u30A4\u30F3\u30DD\u30FC\u30C8\u5B8C\u4E86');
+      }catch(err){toast('\u26A0 JSON\u30D1\u30FC\u30B9\u30A8\u30E9\u30FC');console.error(err)}
+    };
+    reader.readAsText(file);fi.value='';
+  };
+  fi.click();
+}
+
+function dlJSON(data,filename){
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();URL.revokeObjectURL(a.href);
+}
+
+function doExportAll(){
+  dlJSON(S.articles,'articles.json');
+  setTimeout(function(){dlJSON(S.glossary,'glossary.json')},200);
+  setTimeout(function(){dlJSON(S.references,'references.json')},400);
+  setTimeout(function(){dlJSON(S.organization,'organization.json')},600);
+  addLog('\u5168\u30C7\u30FC\u30BF\u30A8\u30AF\u30B9\u30DD\u30FC\u30C8');toast('\u2713 4\u30D5\u30A1\u30A4\u30EB DL');
+}
+
+function doExportSingle(){
+  modal('<div class="mo" onclick="if(event.target===this)closeModal()"><div class="mc" style="max-width:350px"><div class="mt">\u500B\u5225\u30A8\u30AF\u30B9\u30DD\u30FC\u30C8</div><div style="display:flex;flex-direction:column;gap:8px"><button class="btn" onclick="dlJSON(S.articles,\'articles.json\');closeModal();toast(\'\u2713\')">articles.json</button><button class="btn" onclick="dlJSON(S.glossary,\'glossary.json\');closeModal();toast(\'\u2713\')">glossary.json</button><button class="btn" onclick="dlJSON(S.references,\'references.json\');closeModal();toast(\'\u2713\')">references.json</button><button class="btn" onclick="dlJSON(S.organization,\'organization.json\');closeModal();toast(\'\u2713\')">organization.json</button></div><div class="ma"><button class="btn" onclick="closeModal()">\u9589\u3058\u308B</button></div></div></div>');
+}
+
+// ═══ VALIDATE ═══
+function doValidate(){
+  var errs=[],ids={};
+  function chk(a,ctx){
+    if(!a.id)errs.push(ctx+': ID\u672A\u8A2D\u5B9A');
+    if(!a.title)errs.push(ctx+': \u30BF\u30A4\u30C8\u30EB\u672A\u8A2D\u5B9A');
+    if(['IC','PH','EN','AN','FL'].indexOf(a.type)<0)errs.push(ctx+': \u4E0D\u6B63\u306Atype "'+a.type+'"');
+    if(a.id&&ids[a.id])errs.push(ctx+': ID\u91CD\u8907 "'+a.id+'"');
+    if(a.id)ids[a.id]=true;
+  }
+  S.articles.featured.forEach(function(a,i){chk(a,'featured['+i+']')});
+  S.articles.archive.forEach(function(a,i){chk(a,'archive['+i+']')});
+  S.glossary.terms.forEach(function(t,i){if(!t.term)errs.push('glossary['+i+']: \u7528\u8A9E\u540D\u672A\u8A2D\u5B9A')});
+  S.references.books.forEach(function(b,i){if(!b.title)errs.push('references['+i+']: \u30BF\u30A4\u30C8\u30EB\u672A\u8A2D\u5B9A')});
+  var total=S.articles.featured.length+S.articles.archive.length;
+  var h='<div style="margin-bottom:12px;color:var(--fg)">\u8A18\u4E8B: '+total+'\u4EF6 (Featured '+S.articles.featured.length+' / Archive '+S.articles.archive.length+')<br>\u7528\u8A9E: '+S.glossary.terms.length+'\u4EF6<br>\u6587\u732E: '+S.references.books.length+'\u4EF6</div>';
+  if(errs.length){
+    h+='<div style="color:var(--red);margin-bottom:8px">\u26A0 \u30A8\u30E9\u30FC '+errs.length+'\u4EF6:</div>';
+    errs.forEach(function(e){h+='<div style="padding:2px 0;color:var(--red)">\u2717 '+esc(e)+'</div>'});
+  }else{h+='<div style="color:var(--green)">\u2713 \u30D0\u30EA\u30C7\u30FC\u30B7\u30E7\u30F3\u901A\u904E</div>'}
+  modal('<div class="mo" onclick="if(event.target===this)closeModal()"><div class="mc" style="max-width:500px"><div class="mt">\u30D0\u30EA\u30C7\u30FC\u30B7\u30E7\u30F3\u7D50\u679C</div>'+h+'<div class="ma"><button class="btn" onclick="closeModal()">\u9589\u3058\u308B</button></div></div></div>');
+}
+
+// ═══ JSON PREVIEW ═══
+function doPreview(){
+  var data={articles:S.articles,glossary:S.glossary,references:S.references,organization:S.organization};
+  var raw=JSON.stringify(data,null,2);
+  var colored=esc(raw).replace(/"([^"]+)":/g,'<span class="k">"$1"</span>:').replace(/: "([^"]*?)"/g,': <span class="s">"$1"</span>').replace(/: (\d+)/g,': <span class="n">$1</span>').replace(/: (true|false|null)/g,': <span class="n">$1</span>');
+  modal('<div class="mo" onclick="if(event.target===this)closeModal()"><div class="mc" style="max-width:800px"><div class="mt">JSON PREVIEW</div><div class="jp">'+colored+'</div><div class="ma"><button class="btn" onclick="navigator.clipboard.writeText(JSON.stringify({articles:S.articles,glossary:S.glossary,references:S.references,organization:S.organization},null,2));toast(\'\u2713 \u30B3\u30D4\u30FC\')">\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9</button><button class="btn" onclick="closeModal()">\u9589\u3058\u308B</button></div></div></div>');
+}
+
+// ═══ BUILD GUIDE ═══
+function doBuildGuide(){
+  modal('<div class="mo" onclick="if(event.target===this)closeModal()"><div class="mc" style="max-width:600px"><div class="mt">\u30D3\u30EB\u30C9\uFF06\u30C7\u30D7\u30ED\u30A4\u624B\u9806</div><div style="font-size:12px;line-height:1.8;color:var(--fg)"><div style="color:var(--accent);margin-bottom:4px">1. \u30C7\u30FC\u30BF\u30A8\u30AF\u30B9\u30DD\u30FC\u30C8</div><div style="color:var(--fg2);margin-bottom:10px;padding-left:12px">\u300C\u5168\u30A8\u30AF\u30B9\u30DD\u30FC\u30C8\u300DでJSON 4\u30D5\u30A1\u30A4\u30EB\u3092DL\u2192 data/ \u306B\u914D\u7F6E</div><div style="color:var(--accent);margin-bottom:4px">2. \u30D3\u30EB\u30C9</div><div style="background:var(--bg);border:1px solid var(--border);padding:6px 10px;border-radius:3px;margin-bottom:10px"><code style="color:var(--green)">python build.py</code></div><div style="color:var(--accent);margin-bottom:4px">3. \u30C7\u30D7\u30ED\u30A4</div><div style="background:var(--bg);border:1px solid var(--border);padding:6px 10px;border-radius:3px;margin-bottom:10px"><code style="color:var(--green)">git add . && git commit -m "update" && git push</code></div><div style="color:var(--accent);margin-bottom:4px">4. Claude\u3068\u306E\u9023\u643A</div><div style="color:var(--fg2);padding-left:12px">JSON\u3092Claude\u306B\u6E21\u3057\u3066\u8A18\u4E8B\u3092\u5171\u540C\u57F7\u7B46<br>\u2192 \u30A8\u30AF\u30B9\u30DD\u30FC\u30C8 \u2192 \u30D3\u30EB\u30C9 \u2192 \u30C7\u30D7\u30ED\u30A4</div></div><div class="ma"><button class="btn" onclick="closeModal()">\u9589\u3058\u308B</button></div></div></div>');
+}
+
+// ═══ INIT ═══
+addLog('\u30DE\u30CD\u30FC\u30B8\u30E3\u30FC\u8D77\u52D5');
+render();
+</script>
+</body>
+</html>
