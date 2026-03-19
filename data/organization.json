@@ -1,0 +1,53 @@
+{
+  "leadership": [
+    {
+      "name": "ä»å®® ç¦å­",
+      "role": "æé·ä»£ç",
+      "jurisdiction": "åè¡ç®¡è½",
+      "departments": ["èª¿æ»èª²", "è¦³æ¸¬èª²"]
+    },
+    {
+      "name": "åå´ é",
+      "role": "æé·ä»£ç",
+      "jurisdiction": "å¾è¡ç®¡è½",
+      "departments": ["è¨é²èª²", "è§£æèª²", "ä¿ç®¡èª²"]
+    }
+  ],
+  "departments": [
+    {
+      "name": "èª¿æ»èª²",
+      "english": "INVESTIGATION",
+      "chief": "æ¡å¶ ä¿¡äº",
+      "staff_count": 6,
+      "description": "ç¾å°èª¿æ»ã»ååèª¿æ»å¡ç®¡ç"
+    },
+    {
+      "name": "è¦³æ¸¬èª²",
+      "english": "OBSERVATION",
+      "chief": "éå£ æ",
+      "staff_count": 5,
+      "description": "å®ç¹è¦³æ¸¬ã»é·æã¢ãã¿ãªã³ã°"
+    },
+    {
+      "name": "è¨é²èª²",
+      "english": "RECORDS",
+      "chief": "æå æ",
+      "staff_count": 5,
+      "description": "æç®ç§åã»è¨é²ã»èå¯"
+    },
+    {
+      "name": "è§£æèª²",
+      "english": "ANALYSIS",
+      "chief": "æ©å· å",
+      "staff_count": 5,
+      "description": "ãµã³ãã«ã»ãã¼ã¿è§£æ"
+    },
+    {
+      "name": "ä¿ç®¡èª²",
+      "english": "STORAGE",
+      "chief": "æ²ç° æ­£",
+      "staff_count": 4,
+      "description": "ç°ç©ã»ç©è¨¼ã®ä¿ç®¡ç®¡ç"
+    }
+  ]
+}
