@@ -27,6 +27,27 @@
       "english": "Cherry Tree Cluster",
       "definition": "第三区画内の桜樹群生（計7本）。2017年以来、継続的な開花状態を維持。",
       "related": ["IC-0017", "AN-2019-0031"]
+    },
+    {
+      "term": "残留思念",
+      "reading": "ざんりゅうしねん",
+      "english": "Residual Consciousness",
+      "definition": "特定の場所や物品に付着した意識の断片。EMF計測器で間接的に検出可能とされる。",
+      "related": ["IC-0047", "EN-0052"]
+    },
+    {
+      "term": "観測閾値",
+      "reading": "かんそくいきち",
+      "english": "Observation Threshold",
+      "definition": "現象が計測機器により検出可能となる最低条件。野口課長が1998年に定義した基準値体系。",
+      "related": ["PH-0029"]
+    },
+    {
+      "term": "封鎖手続",
+      "reading": "ふうさてつづき",
+      "english": "Containment Procedure",
+      "definition": "管理困難と判定された対象・区画に対する隔離措置。所長代理2名の承認が必要。",
+      "related": ["FL-2019-0284"]
     }
   ]
 }
