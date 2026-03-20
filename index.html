@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>第弐拾七研究所 ｜ 統合記録管理システム [外部端末]</title>
+<title>ç¬¬å¼æ¾ä¸ç ç©¶æ ï½ çµ±åè¨é²ç®¡çã·ã¹ãã  [å¤é¨ç«¯æ«]</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Serif+JP:wght@300;400;700&family=VT323&display=swap" rel="stylesheet">
@@ -105,7 +105,7 @@ nav a{color:var(--text-dim)}nav a:hover{color:var(--green-bright)}
 .feat-report-body h3{font-family:'Noto Serif JP',serif;font-size:16px;color:var(--green-bright);margin:20px 0 8px;letter-spacing:.08em}
 .feat-report-body p{margin-bottom:12px}
 .field-report{position:relative}
-.field-report.has-stamp::before{content:'機密解除';position:absolute;top:24px;right:24px;font-family:'Noto Serif JP',serif;font-size:28px;font-weight:700;color:var(--stamp-red);border:3px solid var(--stamp-red);padding:4px 12px;transform:rotate(12deg);opacity:.4;pointer-events:none;letter-spacing:.1em}
+.field-report.has-stamp::before{content:'æ©å¯è§£é¤';position:absolute;top:24px;right:24px;font-family:'Noto Serif JP',serif;font-size:28px;font-weight:700;color:var(--stamp-red);border:3px solid var(--stamp-red);padding:4px 12px;transform:rotate(12deg);opacity:.4;pointer-events:none;letter-spacing:.1em}
 
 /* SECTION */
 .section{padding:56px 40px;border-bottom:1px solid var(--border)}
@@ -182,14 +182,14 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:40px 40
 
 <div id="auth-overlay">
 <div id="auth-modal">
-<button class="auth-close" onclick="closeAuth()">✕</button>
-<div class="gate-icon">⟐</div>
+<button class="auth-close" onclick="closeAuth()">â</button>
+<div class="gate-icon">â</div>
 <div class="gate-title">ACCESS RESTRICTED</div>
 <div id="auth-level-info"></div>
-<div class="gate-desc">IDカード番号を入力してください。<br>Level 2以上の記録にはパスワードも必要です。</div>
-<div class="level-input-group"><input type="text" class="level-input" placeholder="IDカード番号" id="id-input"></div>
-<div class="level-input-group"><input type="password" class="level-input" placeholder="パスワード（Level 2以上）" id="pw-input"></div>
-<button class="level-submit" onclick="attemptAuth()">▶ 認証 / AUTHENTICATE</button>
+<div class="gate-desc">IDã«ã¼ãçªå·ãå¥åãã¦ãã ããã<br>Level 2ä»¥ä¸ã®è¨é²ã«ã¯ãã¹ã¯ã¼ããå¿è¦ã§ãã</div>
+<div class="level-input-group"><input type="text" class="level-input" placeholder="IDã«ã¼ãçªå·" id="id-input"></div>
+<div class="level-input-group"><input type="password" class="level-input" placeholder="ãã¹ã¯ã¼ãï¼Level 2ä»¥ä¸ï¼" id="pw-input"></div>
+<button class="level-submit" onclick="attemptAuth()">â¶ èªè¨¼ / AUTHENTICATE</button>
 <p id="auth-result"></p>
 </div>
 </div>
@@ -200,23 +200,23 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:40px 40
 <div class="header-top mono">
 <span>INS27-ARCHIVE / EXTERNAL-TERMINAL-V2.4</span>
 <span id="clock">--:--:--</span>
-<span>最終同期: <span id="last-sync"></span></span>
+<span>æçµåæ: <span id="last-sync"></span></span>
 </div>
 <div class="header-main">
-<div class="logo"><span class="logo-ja">第弐拾七研究所</span><span class="logo-en">THE 27th INSTITUTE — INTEGRATED ARCHIVE SYSTEM</span></div>
-<nav><a href="#featured">最新記録</a><a href="#archive">記録一覧</a><a href="#glossary">用語集</a><a href="#references">参考文献</a><a href="#organization">組織</a></nav>
+<div class="logo"><span class="logo-ja">ç¬¬å¼æ¾ä¸ç ç©¶æ</span><span class="logo-en">THE 27th INSTITUTE â INTEGRATED ARCHIVE SYSTEM</span></div>
+<nav><a href="#featured">ææ°è¨é²</a><a href="#archive">è¨é²ä¸è¦§</a><a href="#glossary">ç¨èªé</a><a href="#references">åèæç®</a><a href="#organization">çµç¹</a></nav>
 <div class="clearance-badge" id="badge">CLEARANCE : LEVEL-0</div>
 </div>
 </header>
 
 <div class="ticker-wrap">
-<span class="ticker-label">更新通知</span>
+<span class="ticker-label">æ´æ°éç¥</span>
 <span class="ticker-track" id="ticker-track"></span>
 </div>
 
 <div class="welcome-banner">
-<div class="welcome-title">// 新入所員向けガイダンス</div>
-<p>本端末は、第弐拾七研究所の統合記録管理システムへの外部アクセス用インターフェースです。新入所の研究員は本端末を通じて既存の調査記録・分析データ・用語集を確認し、自主学習に役立ててください。現場での調査中にも、過去の類似案件や観測データを参照できます。</p>
+<div class="welcome-title">// æ°å¥æå¡åãã¬ã¤ãã³ã¹</div>
+<p>æ¬ç«¯æ«ã¯ãç¬¬å¼æ¾ä¸ç ç©¶æã®çµ±åè¨é²ç®¡çã·ã¹ãã ã¸ã®å¤é¨ã¢ã¯ã»ã¹ç¨ã¤ã³ã¿ã¼ãã§ã¼ã¹ã§ããæ°å¥æã®ç ç©¶å¡ã¯æ¬ç«¯æ«ãéãã¦æ¢å­ã®èª¿æ»è¨é²ã»åæãã¼ã¿ã»ç¨èªéãç¢ºèªããèªä¸»å­¦ç¿ã«å½¹ç«ã¦ã¦ãã ãããç¾å ´ã§ã®èª¿æ»ä¸­ã«ããéå»ã®é¡ä¼¼æ¡ä»¶ãè¦³æ¸¬ãã¼ã¿ãåç§ã§ãã¾ãã</p>
 </div>
 
 <!-- FEATURED: rendered dynamically -->
@@ -224,27 +224,27 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:40px 40
 
 <!-- ARCHIVE GRID -->
 <section class="section" id="archive">
-<div class="section-header"><span class="section-title">記録一覧</span><span class="section-title-en">ARCHIVE INDEX</span><span class="section-id mono">SEC.01</span></div>
+<div class="section-header"><span class="section-title">è¨é²ä¸è¦§</span><span class="section-title-en">ARCHIVE INDEX</span><span class="section-id mono">SEC.01</span></div>
 <div class="case-grid" id="record-grid"></div>
 </section>
 
 <!-- GLOSSARY -->
 <section class="section" id="glossary">
-<div class="section-header"><span class="section-title">用語集</span><span class="section-title-en">GLOSSARY / CANON</span><span class="section-id mono">SEC.02</span></div>
-<p style="font-size:13px;color:var(--text-dim);margin-bottom:28px;font-family:'Share Tech Mono',monospace">当研究所で使用される用語の定義。正典として管理。</p>
+<div class="section-header"><span class="section-title">ç¨èªé</span><span class="section-title-en">GLOSSARY / CANON</span><span class="section-id mono">SEC.02</span></div>
+<p style="font-size:13px;color:var(--text-dim);margin-bottom:28px;font-family:'Share Tech Mono',monospace">å½ç ç©¶æã§ä½¿ç¨ãããç¨èªã®å®ç¾©ãæ­£å¸ã¨ãã¦ç®¡çã</p>
 <div class="glossary-grid" id="glossary-grid"></div>
 </section>
 
 <!-- REFERENCES -->
 <section class="section" id="references">
-<div class="section-header"><span class="section-title">参考文献</span><span class="section-title-en">REFERENCE ARCHIVE</span><span class="section-id mono">SEC.03</span></div>
-<p style="font-size:13px;color:var(--text-dim);margin-bottom:28px;font-family:'Share Tech Mono',monospace">記録課・解析課が参照した文献。新入所員の自主学習にも推奨。</p>
+<div class="section-header"><span class="section-title">åèæç®</span><span class="section-title-en">REFERENCE ARCHIVE</span><span class="section-id mono">SEC.03</span></div>
+<p style="font-size:13px;color:var(--text-dim);margin-bottom:28px;font-family:'Share Tech Mono',monospace">è¨é²èª²ã»è§£æèª²ãåç§ããæç®ãæ°å¥æå¡ã®èªä¸»å­¦ç¿ã«ãæ¨å¥¨ã</p>
 <div class="book-grid" id="book-grid"></div>
 </section>
 
 <!-- ORGANIZATION -->
 <section class="section" id="organization">
-<div class="section-header"><span class="section-title">組織概要</span><span class="section-title-en">ORGANIZATION</span><span class="section-id mono">SEC.04</span></div>
+<div class="section-header"><span class="section-title">çµç¹æ¦è¦</span><span class="section-title-en">ORGANIZATION</span><span class="section-id mono">SEC.04</span></div>
 <p id="org-leadership" style="font-size:13px;color:var(--text-dim);margin-bottom:12px;font-family:'Share Tech Mono',monospace"></p>
 <p id="org-jurisdictions" style="font-size:12px;color:var(--text-dim);margin-bottom:28px;font-family:'Share Tech Mono',monospace"></p>
 <div class="org-grid" id="org-grid"></div>
@@ -252,18 +252,18 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:40px 40
 
 <footer>
 <div class="footer-grid">
-<div class="footer-col"><div class="footer-col-title">本端末について</div><p style="font-size:12px;color:var(--text-dim);line-height:1.9;font-family:'Share Tech Mono',monospace">本端末は第弐拾七研究所の統合記録管理システムへの外部アクセス用インターフェースです。新入所員の自主学習、および現場での調査記録確認を目的として運用されています。</p></div>
-<div class="footer-col"><div class="footer-col-title">記録</div><ul><li><a href="#archive">記録一覧</a></li><li><a href="#glossary">用語集</a></li></ul></div>
-<div class="footer-col"><div class="footer-col-title">リソース</div><ul><li><a href="#references">参考文献</a></li><li><a href="#organization">組織概要</a></li></ul></div>
+<div class="footer-col"><div class="footer-col-title">æ¬ç«¯æ«ã«ã¤ãã¦</div><p style="font-size:12px;color:var(--text-dim);line-height:1.9;font-family:'Share Tech Mono',monospace">æ¬ç«¯æ«ã¯ç¬¬å¼æ¾ä¸ç ç©¶æã®çµ±åè¨é²ç®¡çã·ã¹ãã ã¸ã®å¤é¨ã¢ã¯ã»ã¹ç¨ã¤ã³ã¿ã¼ãã§ã¼ã¹ã§ããæ°å¥æå¡ã®èªä¸»å­¦ç¿ãããã³ç¾å ´ã§ã®èª¿æ»è¨é²ç¢ºèªãç®çã¨ãã¦éç¨ããã¦ãã¾ãã</p></div>
+<div class="footer-col"><div class="footer-col-title">è¨é²</div><ul><li><a href="#archive">è¨é²ä¸è¦§</a></li><li><a href="#glossary">ç¨èªé</a></li></ul></div>
+<div class="footer-col"><div class="footer-col-title">ãªã½ã¼ã¹</div><ul><li><a href="#references">åèæç®</a></li><li><a href="#organization">çµç¹æ¦è¦</a></li></ul></div>
 </div>
-<div class="footer-disclaimer">⚠ 本端末に表示される全ての記録・人物・組織はフィクションです。実在の人物・団体・場所とは一切関係ありません。<br>当サイトはAmazonアソシエイトプログラムに参加しています。<br><br>本サイトは、「株式会社アークライト」及び「株式会社KADOKAWA」が権利を有する『クトゥルフ神話TRPG』の二次創作物です。<br><br>© 第弐拾七研究所 / THE 27th INSTITUTE</div>
+<div class="footer-disclaimer">â  æ¬ç«¯æ«ã«è¡¨ç¤ºãããå¨ã¦ã®è¨é²ã»äººç©ã»çµç¹ã¯ãã£ã¯ã·ã§ã³ã§ããå®å¨ã®äººç©ã»å£ä½ã»å ´æã¨ã¯ä¸åé¢ä¿ããã¾ããã<br>å½ãµã¤ãã¯Amazonã¢ã½ã·ã¨ã¤ããã­ã°ã©ã ã«åå ãã¦ãã¾ãã<br><br>æ¬ãµã¤ãã¯ããæ ªå¼ä¼ç¤¾ã¢ã¼ã¯ã©ã¤ããåã³ãæ ªå¼ä¼ç¤¾KADOKAWAããæ¨©å©ãæãããã¯ãã¥ã«ãç¥è©±TRPGãã®äºæ¬¡åµä½ç©ã§ãã<br><br>Â© ç¬¬å¼æ¾ä¸ç ç©¶æ / THE 27th INSTITUTE</div>
 </footer>
 
 </div>
 
 <script>
 /* ============================================================
-   DATA FETCHER — loads all JSON during boot, renders on show
+   DATA FETCHER â loads all JSON during boot, renders on show
    ============================================================ */
 var DATA = { articles: null, glossary: null, references: null, organization: null };
 var DATA_BASE = 'data/';
@@ -294,8 +294,8 @@ var STATUS_MAP = {
   REDACTED: { cls:'status-redacted', label:'REDACTED' }
 };
 var STATUS_LABELS = {
-  IC: { ACTIVE:'調査継続中' },
-  PH: { ACTIVE:'観測継続中' },
+  IC: { ACTIVE:'èª¿æ»ç¶ç¶ä¸­' },
+  PH: { ACTIVE:'è¦³æ¸¬ç¶ç¶ä¸­' },
   EN: { ACTIVE:'ACTIVE' },
   AN: { ACTIVE:'ACTIVE' },
   FL: { ACTIVE:'ACTIVE' }
@@ -329,6 +329,16 @@ function escR(s) {
   return redact(esc(s));
 }
 
+// Fisher-Yates shuffle, returns new array
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.random() * (i + 1) | 0;
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
 function typeClass(type) { return TYPE_COLORS[type] || 'fl'; }
 
 function statusTag(status, type) {
@@ -354,13 +364,13 @@ function xrefHtml(id, title) {
 function renderTicker(articles) {
   var parts = [];
   (articles.featured || []).forEach(function(a) {
-    parts.push('▌ ' + a.id + '「' + a.title + '」' + (a.assignee || '') + 'より新規報告');
+    parts.push('â ' + a.id + 'ã' + a.title + 'ã' + (a.assignee || '') + 'ããæ°è¦å ±å');
   });
   (articles.archive || []).slice(0,3).forEach(function(a) {
-    parts.push(a.id + ' ' + a.title + (a.status === 'ARCHIVED' ? ' 施行済' : ''));
+    parts.push(a.id + ' ' + a.title + (a.status === 'ARCHIVED' ? ' æ½è¡æ¸' : ''));
   });
-  parts.push('次回同期予定: 不明');
-  var txt = parts.join(' ／ ') + ' ／ ';
+  parts.push('æ¬¡ååæäºå®: ä¸æ');
+  var txt = parts.join(' ï¼ ') + ' ï¼ ';
   document.getElementById('ticker-track').textContent = txt + txt + txt;
 }
 
@@ -372,21 +382,21 @@ function renderFeatured(articles) {
     var tc = typeClass(a.type);
     // Sidebar metadata
     var metaHtml = '';
-    metaHtml += '分類: <span style="color:var(--' + tc + ')">' + esc(a.type_label) + '</span><br>';
-    metaHtml += '担当課: ' + esc(a.department) + '<br>';
-    metaHtml += '担当者: ' + esc(a.assignee) + '<br>';
-    metaHtml += '閲覧Level: Level ' + a.level + '<br>';
+    metaHtml += 'åé¡: <span style="color:var(--' + tc + ')">' + esc(a.type_label) + '</span><br>';
+    metaHtml += 'æå½èª²: ' + esc(a.department) + '<br>';
+    metaHtml += 'æå½è: ' + esc(a.assignee) + '<br>';
+    metaHtml += 'é²è¦§Level: Level ' + a.level + '<br>';
     if (a.metadata) {
       Object.keys(a.metadata).forEach(function(k) {
         metaHtml += esc(k) + ': ' + esc(a.metadata[k]) + '<br>';
       });
     }
-    metaHtml += '状態: <span style="color:var(--amber)">' + esc(a.status) + '</span>';
+    metaHtml += 'ç¶æ: <span style="color:var(--amber)">' + esc(a.status) + '</span>';
 
     // Related records
     var relHtml = '';
     if (a.related && a.related.length) {
-      relHtml = '<br><br><div style="font-size:10px;letter-spacing:.2em;color:var(--text-dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px">関連記録</div>';
+      relHtml = '<br><br><div style="font-size:10px;letter-spacing:.2em;color:var(--text-dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px">é¢é£è¨é²</div>';
       a.related.forEach(function(r) {
         var rtc = typeClass(r.id.replace(/[-\d]/g, '').replace(/_.*/,''));
         relHtml += '<span class="xref" style="color:var(--' + rtc + ')">' + esc(r.id) + '</span> ' + esc(r.title) + '<br>';
@@ -402,16 +412,16 @@ function renderFeatured(articles) {
     if (a.report) {
       var hasStamp = a.level >= 1 ? ' has-stamp' : '';
       reportHtml += '<div class="feat-report"><div class="field-report' + hasStamp + '">';
-      reportHtml += '<div class="feat-report-label">// ' + (a.type === 'PH' ? '観測' : '調査') + 'レポート抜粋 — ' + esc(a.id) + '</div>';
+      reportHtml += '<div class="feat-report-label">// ' + (a.type === 'PH' ? 'è¦³æ¸¬' : 'èª¿æ»') + 'ã¬ãã¼ãæç² â ' + esc(a.id) + '</div>';
       reportHtml += '<div class="feat-report-header">' + esc(a.report.header) + '<br>' + esc(a.report.subheader) + '</div>';
       reportHtml += '<div class="feat-report-body">';
       (a.report.sections || []).forEach(function(sec) {
-        reportHtml += '<h3>▌ ' + esc(sec.title) + '</h3>';
+        reportHtml += '<h3>â ' + esc(sec.title) + '</h3>';
         var content = sec.content || '';
         if (content.indexOf('<') === -1) content = '<p>' + content + '</p>';
         reportHtml += content;
         if (sec.warning) {
-          reportHtml += '<div class="inline-note">⚠ ' + sec.warning + '</div>';
+          reportHtml += '<div class="inline-note">â  ' + sec.warning + '</div>';
         }
         if (sec.note) {
           reportHtml += '<div class="inline-note">' + sec.note + '</div>';
@@ -421,7 +431,7 @@ function renderFeatured(articles) {
     }
 
     // Case number label
-    var caseLabel = (idx === 0 ? 'LATEST ／ ' : '') + a.id + ' ／ Case#' + esc(a.case_number) + ' ／ ' + esc(a.department);
+    var caseLabel = (idx === 0 ? 'LATEST ï¼ ' : '') + a.id + ' ï¼ Case#' + esc(a.case_number) + ' ï¼ ' + esc(a.department);
 
     html += '<div class="featured-article"' + (idx === 0 ? ' id="featured-anchor"' : '') + '>';
     html += '<div class="feat-hero"><div class="feat-hero-main">';
@@ -429,12 +439,12 @@ function renderFeatured(articles) {
     html += '<div class="feat-title">' + escR(a.title) + '</div>';
     html += '<div class="feat-meta"><span class="cls-tag cls-' + tc + '">' + esc(a.type) + '</span>';
     html += statusTag(a.status, a.type);
-    html += '<span>担当: ' + esc(a.assignee) + '</span>';
-    html += '<span>初報: ' + esc(a.first_report) + '</span></div>';
+    html += '<span>æå½: ' + esc(a.assignee) + '</span>';
+    html += '<span>åå ±: ' + esc(a.first_report) + '</span></div>';
     html += '<div class="feat-body">' + bodyHtml + '</div>';
     html += '</div>';
     html += '<div class="feat-hero-sidebar">';
-    html += '<div style="font-size:10px;letter-spacing:.2em;color:var(--text-dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px">案件データ</div>';
+    html += '<div style="font-size:10px;letter-spacing:.2em;color:var(--text-dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px">æ¡ä»¶ãã¼ã¿</div>';
     html += metaHtml + relHtml;
     html += '</div></div>';
     html += reportHtml;
@@ -461,7 +471,7 @@ function renderArchive(articles) {
     if (isRedacted) {
       html += '<div class="card-num"><span class="cls-tag" style="color:var(--red-bright);border-color:var(--red)">' + esc(a.type) + '</span> ' + esc(caseNum) + '</div>';
       html += '<div class="card-title poetic">' + esc(a.title) + '</div>';
-      html += '<div class="card-locked">⟐ ACCESS DENIED — Level ' + a.level + ' required</div>';
+      html += '<div class="card-locked">â ACCESS DENIED â Level ' + a.level + ' required</div>';
       html += '<div class="card-footer"><span class="status-tag status-redacted">REDACTED</span><span style="color:var(--red)">Level ' + a.level + '</span></div>';
     } else {
       var titleStyle = (a.type === 'FL' || a.type === 'AN') ? 'clinical' : 'poetic';
@@ -469,8 +479,8 @@ function renderArchive(articles) {
       html += '<div class="card-title ' + titleStyle + '">' + escR(a.title || '') + '</div>';
       html += '<div class="card-desc">' + esc(a.summary) + '</div>';
       html += '<div class="card-footer">' + statusTag(a.status, a.type);
-      if (a.assignee) html += '<span>担当: ' + esc(a.assignee) + '</span>';
-      else if (a.department) html += '<span>作成: ' + esc(a.department) + '</span>';
+      if (a.assignee) html += '<span>æå½: ' + esc(a.assignee) + '</span>';
+      else if (a.department) html += '<span>ä½æ: ' + esc(a.department) + '</span>';
       html += '</div>';
     }
     html += '</div>';
@@ -478,17 +488,18 @@ function renderArchive(articles) {
   grid.innerHTML = html;
 }
 
-// --- GLOSSARY ---
+// --- GLOSSARY (random 4 from full list) ---
 function renderGlossary(glossary) {
   var grid = document.getElementById('glossary-grid');
   var html = '';
-  (glossary.terms || []).forEach(function(t) {
+  var picked = shuffle(glossary.terms || []).slice(0, 4);
+  picked.forEach(function(t) {
     html += '<div class="gloss-card">';
     html += '<div class="gloss-term">' + esc(t.term) + '</div>';
     html += '<div class="gloss-reading mono">' + esc(t.reading) + ' / ' + esc(t.english) + '</div>';
     html += '<div class="gloss-def">' + esc(t.definition) + '</div>';
     if (t.related && t.related.length) {
-      html += '<div class="gloss-links">関連: ';
+      html += '<div class="gloss-links">é¢é£: ';
       t.related.forEach(function(r) {
         if (typeof r === 'string') {
           var rtc = typeClass(r.replace(/[-\d]/g, '').replace(/_.*/,''));
@@ -502,11 +513,12 @@ function renderGlossary(glossary) {
   grid.innerHTML = html;
 }
 
-// --- REFERENCES ---
+// --- REFERENCES (random 4 from full list) ---
 function renderReferences(refs) {
   var grid = document.getElementById('book-grid');
   var html = '';
-  (refs.books || []).forEach(function(b, i) {
+  var picked = shuffle(refs.books || []).slice(0, 4);
+  picked.forEach(function(b, i) {
     var cover = BOOK_COVERS[i % BOOK_COVERS.length];
     html += '<div class="book-card">';
     html += '<div class="book-cover" style="background:' + cover + '"></div>';
@@ -514,11 +526,11 @@ function renderReferences(refs) {
     html += '<div class="book-author">' + esc(b.author) + '</div>';
     html += '<div class="book-relevance">' + esc(b.description) + '</div>';
     if (b.amazon_url) {
-      html += '<a href="' + esc(b.amazon_url) + '" class="affiliate-btn" target="_blank" rel="noopener">Amazon で確認 →</a>';
+      html += '<a href="' + esc(b.amazon_url) + '" class="affiliate-btn" target="_blank" rel="noopener">Amazon ã§ç¢ºèª â</a>';
     } else {
-      html += '<a href="#" class="affiliate-btn">Amazon で確認 →</a>';
+      html += '<a href="#" class="affiliate-btn">Amazon ã§ç¢ºèª â</a>';
     }
-    html += '<div class="affiliate-note">※ Amazonアソシエイト参加</div>';
+    html += '<div class="affiliate-note">â» Amazonã¢ã½ã·ã¨ã¤ãåå </div>';
     html += '</div>';
   });
   grid.innerHTML = html;
@@ -530,18 +542,18 @@ function renderOrganization(org) {
   var ldr = document.getElementById('org-leadership');
   if (org.leadership && org.leadership.length) {
     ldr.textContent = org.leadership.length > 1
-      ? '所長代理' + org.leadership.length + '名による分掌体制で運営されている。'
-      : org.leadership[0].role + 'による管理体制で運営されている。';
+      ? 'æé·ä»£ç' + org.leadership.length + 'åã«ããåæä½å¶ã§éå¶ããã¦ããã'
+      : org.leadership[0].role + 'ã«ããç®¡çä½å¶ã§éå¶ããã¦ããã';
   }
 
   // Jurisdictions
   var jur = document.getElementById('org-jurisdictions');
   if (org.leadership) {
     var parts = org.leadership.map(function(l) {
-      var depts = (l.departments || []).join('・');
-      return '▌ ' + l.jurisdiction + '（' + l.name + '）: ' + depts;
+      var depts = (l.departments || []).join('ã»');
+      return 'â ' + l.jurisdiction + 'ï¼' + l.name + 'ï¼: ' + depts;
     });
-    jur.textContent = parts.join(' ／ ');
+    jur.textContent = parts.join(' ï¼ ');
   }
 
   // Department grid
@@ -549,9 +561,9 @@ function renderOrganization(org) {
   var html = '';
   (org.departments || []).forEach(function(d) {
     html += '<div class="org-card">';
-    html += '<div class="org-dept">' + esc(d.name) + ' ／ ' + esc(d.english) + '</div>';
-    html += '<div class="org-chief">' + esc(d.chief) + '【課長】</div>';
-    html += '<div class="org-info">在籍' + d.staff_count + '名<br>' + esc(d.description) + '</div>';
+    html += '<div class="org-dept">' + esc(d.name) + ' ï¼ ' + esc(d.english) + '</div>';
+    html += '<div class="org-chief">' + esc(d.chief) + 'ãèª²é·ã</div>';
+    html += '<div class="org-info">å¨ç±' + d.staff_count + 'å<br>' + esc(d.description) + '</div>';
     html += '</div>';
   });
   grid.innerHTML = html;
@@ -578,8 +590,8 @@ var bootData = [
 {t:'STORAGE SECTOR 0-447 .............. OK',c:''},
 {t:'NETWORK EXTERNAL PORT ............. CONNECTED',c:''},
 {t:' ',c:''},
-{t:'第弐拾七研究所 統合記録管理システム',c:'bright'},
-{t:'THE 27th INSTITUTE — INTEGRATED ARCHIVE SYSTEM v2.4',c:'bright'},
+{t:'ç¬¬å¼æ¾ä¸ç ç©¶æ çµ±åè¨é²ç®¡çã·ã¹ãã ',c:'bright'},
+{t:'THE 27th INSTITUTE â INTEGRATED ARCHIVE SYSTEM v2.4',c:'bright'},
 {t:' ',c:''},
 {t:'LOADING ARCHIVE INDEX ...',c:''},
 {t:' > IC INCIDENT CASE : 23 records',c:''},
@@ -588,15 +600,15 @@ var bootData = [
 {t:' > FL FILE : 47 records',c:''},
 {t:' > AN ANALYSIS : 31 records',c:''},
 {t:' ',c:''},
-{t:'WARNING: 6 files corrupted — partial recovery attempted',c:'amber'},
+{t:'WARNING: 6 files corrupted â partial recovery attempted',c:'amber'},
 {t:'WARNING: 4 records require LEVEL-3+ clearance',c:'amber'},
-{t:'ALERT: Last authorized internal access — 2019/03/14 06:22:08',c:'red'},
+{t:'ALERT: Last authorized internal access â 2019/03/14 06:22:08',c:'red'},
 {t:' ',c:''},
 {t:'CLEARANCE: LEVEL-0 (GUEST / EXTERNAL)',c:''},
 {t:'TERMINAL READY_',c:'bright'},
 ];
 var bs=document.getElementById('boot-screen'),li=0;
-var cur=document.createElement('span');cur.className='boot-cursor';cur.textContent='█';
+var cur=document.createElement('span');cur.className='boot-cursor';cur.textContent='â';
 function nextLine(){
 if(li>=bootData.length){setTimeout(transition,600);return}
 var d=bootData[li],div=document.createElement('div');
@@ -700,21 +712,21 @@ if(req>currentLevel){c.classList.add('locked')}else{c.classList.remove('locked')
 
 var pendingArticle=null;
 function showAuth(req,aid){
-if(currentLevel>=req&&req<3){alert(aid+' — アクセス許可済み');return}
+if(currentLevel>=req&&req<3){alert(aid+' â ã¢ã¯ã»ã¹è¨±å¯æ¸ã¿');return}
 pendingArticle=aid;
-document.getElementById('auth-level-info').textContent=req>=4?aid+' — Level '+req+' クリアランスが必要です。このレベルは流通していません。':aid+' — Level '+req+' 以上のクリアランスが必要です';
+document.getElementById('auth-level-info').textContent=req>=4?aid+' â Level '+req+' ã¯ãªã¢ã©ã³ã¹ãå¿è¦ã§ãããã®ã¬ãã«ã¯æµéãã¦ãã¾ããã':aid+' â Level '+req+' ä»¥ä¸ã®ã¯ãªã¢ã©ã³ã¹ãå¿è¦ã§ã';
 document.getElementById('auth-result').textContent='';document.getElementById('id-input').value='';document.getElementById('pw-input').value='';
 document.getElementById('auth-overlay').classList.add('active');
 }
 function closeAuth(){document.getElementById('auth-overlay').classList.remove('active');pendingArticle=null}
 function attemptAuth(){
 var id=document.getElementById('id-input').value.trim(),pw=document.getElementById('pw-input').value.trim(),r=document.getElementById('auth-result');
-if(!id){r.textContent='⚠ IDカード番号を入力してください';r.style.color='var(--amber)';return}
+if(!id){r.textContent='â  IDã«ã¼ãçªå·ãå¥åãã¦ãã ãã';r.style.color='var(--amber)';return}
 if(id.includes('27')){
-if(pw){currentLevel=2;r.innerHTML='認証成功 — <span style="color:var(--green-bright)">LEVEL 2 GRANTED</span>'}
-else{currentLevel=1;r.innerHTML='認証成功 — <span style="color:var(--green-bright)">LEVEL 1 GRANTED</span>'}
+if(pw){currentLevel=2;r.innerHTML='èªè¨¼æå â <span style="color:var(--green-bright)">LEVEL 2 GRANTED</span>'}
+else{currentLevel=1;r.innerHTML='èªè¨¼æå â <span style="color:var(--green-bright)">LEVEL 1 GRANTED</span>'}
 r.style.color='var(--green)';setAuth(currentLevel);applyLevelStyling();setTimeout(closeAuth,1000);
-}else{r.textContent='⚠ 認証失敗 — IDカード番号が無効です';r.style.color='var(--red-bright)'}
+}else{r.textContent='â  èªè¨¼å¤±æ â IDã«ã¼ãçªå·ãç¡å¹ã§ã';r.style.color='var(--red-bright)'}
 }
 document.getElementById('auth-overlay').addEventListener('click',function(e){if(e.target===this)closeAuth()});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAuth()});
