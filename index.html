@@ -714,7 +714,7 @@ var pendingArticle=null;
 function showAuth(req,aid){
 if(currentLevel>=req&&req<3){alert(aid+' — アクセス許可済み');return}
 pendingArticle=aid;
-document.getElementById('auth-level-info').textContent=req>=4?aid+' — Level '+req+' クリアランスが必要です。このレベルは流通していません。':aid+' — Level '+req+' 以上のクリアランスが必要です';
+document.getElementById('auth-level-info').textContent=req>=4?aid+' — Level '+req+' クリアランスが必要です。':aid+' — Level '+req+' 以上のクリアランスが必要です';
 document.getElementById('auth-result').textContent='';document.getElementById('id-input').value='';document.getElementById('pw-input').value='';
 document.getElementById('auth-overlay').classList.add('active');
 }
