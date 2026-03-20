@@ -1,0 +1,174 @@
+{
+  "featured": [
+    {
+      "id": "IC-0047",
+      "case_number": "0047",
+      "type": "IC",
+      "type_label": "INCIDENT CASE",
+      "title": "深夜2時の自販機前に並ぶ「列」について",
+      "department": "調査課",
+      "assignee": "三枝 由佳",
+      "level": 1,
+      "status": "ACTIVE",
+      "first_report": "2025.09.14",
+      "summary": "複数の匿名通報者より、深夜2時頃に特定の自動販売機前に人が「列を作って立っている」という報告が相次いでいる。列に並ぶ人物は全員が前方を向き、声をかけても反応がない。",
+      "summary_extra": "<p>複数の匿名通報者より、深夜2時頃に特定の自動販売機前に人が「列を作って立っている」という報告が相次いでいる。列に並ぶ人物は全員が前方を向き、声をかけても反応がない。</p><p>通報者の一人は「<span class=\"redacted\">　　　　　　</span>と気づいた瞬間、全員が同時に振り向いた」と述べている。計<strong style=\"color:var(--green-bright)\">7件</strong>の独立した目撃証言を確認。</p>",
+      "metadata": { "証言数": "7件" },
+      "related": [
+        { "id": "PH-0007", "title": "繰り返す春の夢" },
+        { "id": "AN-2019-0031", "title": "桜花弁成分分析" }
+      ],
+      "report": {
+        "header": "IC-0047 ／ Case#0047 ／ INCIDENT CASE ／ Level 1",
+        "subheader": "担当: 三枝 由佳（調査課）／ 現地調査: 2026.02.22 01:45〜03:30 ／ 曇 ／ 4℃",
+        "sections": [
+          {
+            "title": "現場概況",
+            "content": "<p>目撃報告のあった自動販売機前に深夜1時45分に到着。気温4℃、視界良好。音声記録のために <a class=\"inline-affiliate\" href=\"#\">▶ ICレコーダー [Amazon]</a> を三脚に固定。</p>",
+            "warning": "02:12、音量レベルが+18dBに急上昇。伊東調査員（観測課）に音響解析を依頼。→ <span class=\"xref\">AN-0047-audio</span>"
+          },
+          {
+            "title": "現地観測",
+            "content": "<p>02:00ちょうど、4名が縦列を形成。全員前方を向き動きが極めて少ない。EMF計測器で通常の3倍超の電磁波を記録。<span class=\"xref\">PH-0029</span>の数値パターンとの類似性を確認中。</p>"
+          },
+          {
+            "title": "暫定結論",
+            "content": "<p>再現性は高い。複数回の追加調査が必要。次回調査日は<span class=\"redacted\">　　　　</span>。桐嶋課長の承認を得て、協力調査員の追加投入を検討中。</p>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "IC-0093",
+      "case_number": "0093",
+      "type": "IC",
+      "type_label": "INCIDENT CASE",
+      "title": "商店街の怪——閉店後の客",
+      "department": "調査課",
+      "assignee": "三枝 由佳",
+      "level": 1,
+      "status": "ACTIVE",
+      "first_report": "2026.01.08",
+      "summary": "シャッター通りと化した商店街で、深夜に「営業中の店」が現れるという報告。店内には客が確認されたが、翌朝には痕跡が完全に消失した。",
+      "summary_extra": "<p>シャッター通りと化した商店街で、深夜に「営業中の店」が現れるという報告。店内には<span class=\"redacted\">　　　</span>が確認されたが、翌朝には痕跡が完全に消失した。</p><p>防犯カメラには該当時間帯の映像が記録されていない。記録領域が「上書きされた形跡」があると<span class=\"xref\">AN-0093-cam</span>で報告されている。</p>",
+      "metadata": { "証言数": "3件" },
+      "related": [],
+      "report": {
+        "header": "IC-0093 ／ Case#0093 ／ INCIDENT CASE ／ Level 1",
+        "subheader": "担当: 三枝 由佳（調査課）／ 現地調査: 2026.02.15 23:30〜02:00 ／ 晴 ／ 2℃",
+        "sections": [
+          {
+            "title": "現場概況",
+            "content": "<p>報告のあった商店街に23時30分に到着。全店舗シャッター降下済。街灯3本中2本が消灯。視認性は低い。</p>"
+          },
+          {
+            "title": "現地観測",
+            "content": "<p>0時15分、杲端から4軒目の店舗にて微弱な光を確認。シャッター隙間から暖色の照明。近づくと<span class=\"redacted\">　　　　　　　</span>が聞こえた。0時22分、光が消失。翌朝確認で当該店舗は6ヶ月前に閉店済。</p>"
+          },
+          {
+            "title": "暫定結論",
+            "content": "<p>発生条件の特定が必要。気温・曜日・月齢との相関を<span class=\"xref\">AN-0093-env</span>で解析中。</p>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "PH-0029",
+      "case_number": "0029",
+      "type": "PH",
+      "type_label": "PHENOMENON",
+      "title": "気圧の瞖常——数値が戻らない場所",
+      "department": "観測課",
+      "assignee": "野口 朔",
+      "level": 0,
+      "status": "ACTIVE",
+      "first_report": "1997.06.22",
+      "summary": "特定地点で気圧計の数値が恒常的に周囲と乖離する現象。野口課長が1997年から29年間継続観測。偏差は年々拡大傾向にある。",
+      "summary_extra": "<p>特定地点で気圧計の数値が恒常的に周囲と乖離する現象。野口課長が1997年から29年間継続観測。偏差は年々拡大傾向にある。</p><p>2018年の計測では<span class=\"xref\">AN-2018-0024</span>で報告された時間軸偏差との相関が示唇されている。</p>",
+      "metadata": { "観測年数": "29年" },
+      "related": [],
+      "report": {
+        "header": "PH-0029 ／ Case#0029 ／ PHENOMENON ／ Level 0",
+        "subheader": "担当: 野口 朔（観測課 課長）／ 最新観測: 2026.03.01 ／ 観測開始: 1997.06.22",
+        "sections": [
+          {
+            "title": "観測概要",
+            "content": "<p>当該地点の気圧計は半径500m以内の他計器と比較して常に-3.2〜-4.8hPaの偏差。計器交換でも同結果。</p>"
+          },
+          {
+            "title": "長期推移",
+            "content": "<p>1997年: -1.8hPa → 2005年: -2.4hPa → 2015年: -3.1hPa → 2026年: -4.8hPa。偏差は加速的に拡大。このまま推移した場合、<span class=\"redacted\">　　　　　　　</span>と予測される。</p>",
+            "note": "⚠ 野口課長の私的メモ（<span class=\"xref\">Case#0057</span>）:「数値は戻らない。一度ずれた場所は、二度と元には戻らない」"
+          }
+        ]
+      }
+    }
+  ],
+  "archive": [
+    {
+      "id": "EN-0052",
+      "type": "EN",
+      "type_label": "ENTITY",
+      "title": "鏡の中の住人——もう一人の観察者",
+      "level": 2,
+      "status": "ACTIVE",
+      "summary": "中古の姿見に「自分と同じ姿の何か」が映る事例。4件の報告が同一メーカー製に集中。",
+      "assignee": "本田 沙織（解析課）",
+      "redacted": false
+    },
+    {
+      "id": "FL-2019-0284",
+      "type": "FL",
+      "type_label": "FILE",
+      "title": "FL-2019-0284_施設封鎖手続書",
+      "level": 0,
+      "status": "ARCHIVED",
+      "summary": "研究対象の管理困難を理由とする封鎖手続。2019年3月15日施行。",
+      "department": "管理部",
+      "redacted": false
+    },
+    {
+      "id": "AN-2018-0024",
+      "type": "AN",
+      "type_label": "ANALYSIS",
+      "title": "AN-2018-0024_時間軸偏差計測データ",
+      "level": 0,
+      "status": "ARCHIVED",
+      "summary": "第三区画の原子時計比較。72時間で+0.00037秒の偏差。",
+      "assignee": "天野 浩二（解析課）",
+      "redacted": false
+    },
+    {
+      "id": "IC-0019",
+      "type": "IC",
+      "type_label": "INCIDENT CASE",
+      "title": "深夜電話の　　番——応答する声",
+      "level": 2,
+      "status": "ACTIVE",
+      "summary": "特定番号に特定時刻に電話すると「亡くなった人物の声」が応答。",
+      "assignee": "朝倉 文（記録課）",
+      "redacted": false
+    },
+    {
+      "id": "AN-2019-0031",
+      "type": "AN",
+      "type_label": "ANALYSIS",
+      "title": "AN-2019-0031_桜花弁成分分析結果",
+      "level": 0,
+      "status": "PENDING",
+      "summary": "採取後112日のサンプルに代謝活動。最絢報告は施設封鎖により中断。",
+      "department": "外部委託",
+      "redacted": false
+    },
+    {
+      "id": "EN-0012",
+      "type": "EN",
+      "type_label": "ENTITY",
+      "title": "時を喰む者の残り香",
+      "level": 4,
+      "status": "REDACTED",
+      "summary": "",
+      "redacted": true
+    }
+  ]
+}
