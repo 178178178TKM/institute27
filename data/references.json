@@ -14,14 +14,32 @@
     },
     {
       "title": "怪異の風景学",
-      "author": "（参考書籍）",
+      "author": "佐藤 弘夫",
       "description": "空間と怪異の関係を地理学的に分析。",
       "amazon_url": "#"
     },
     {
       "title": "都市伝説の社会学",
-      "author": "（参考書籍）",
+      "author": "飯倉 義之",
       "description": "噂の伝播メカニズム。朝倉課長が参照。",
+      "amazon_url": "#"
+    },
+    {
+      "title": "妖怪談義",
+      "author": "柳田 國男",
+      "description": "妖怪・怪異の分類体系。記録課の基礎文献。",
+      "amazon_url": "#"
+    },
+    {
+      "title": "民俗学の旅",
+      "author": "宮本 常一",
+      "description": "フィールドワーク手法の参考書。調査課で共有。",
+      "amazon_url": "#"
+    },
+    {
+      "title": "幽霊の歴史文化学",
+      "author": "小松 和彦",
+      "description": "怪異現象の歴史的考察。解析課が背景調査に活用。",
       "amazon_url": "#"
     }
   ]
