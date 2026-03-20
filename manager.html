@@ -107,6 +107,9 @@ tr:hover td{background:var(--bg2)}
       <button class="side-btn" onclick="doValidate()">&#10003; バリデーション</button>
       <button class="side-btn" onclick="doPreview()">&#9673; JSONプレビュー</button>
       <button class="side-btn" onclick="doBuildGuide()">&#9654; ビルド手順</button>
+    <span style="border-left:1px solid var(--border);margin:0 8px;height:20px;display:inline-block;vertical-align:middle"></span>
+    <button class="tool-btn" onclick="showPATModal()">⚙ PAT</button>
+    <button class="tool-btn" onclick="pushToGitHub()" style="color:var(--amber);border-color:var(--amber-dim)">⬆ GitHub保存</button>
     </div>
   </div>
   <div class="main">
@@ -150,6 +153,7 @@ tr:hover td{background:var(--bg2)}
 <div id="modal-root"></div>
 <div class="toast" id="toast-el"></div>
 <input type="file" id="f-import" accept=".json" style="display:none">
+<div id="pat-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:10000;justify-content:center;align-items:center"><div style="background:var(--bg2);border:1px solid var(--border2);padding:32px;max-width:480px;width:90%;position:relative"><button style="position:absolute;top:8px;right:12px;background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px" onclick="document.getElementById('pat-overlay').style.display='none'">X</button><div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--amber);margin-bottom:16px;letter-spacing:.15em">GITHUB PAT SETTINGS</div><p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;line-height:1.8">Personal Access Token. localStorage saved.</p><div style="margin-bottom:12px"><input type="password" id="pat-input" style="width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--green);font-family:'Share Tech Mono',monospace;font-size:12px;padding:8px 12px;outline:none" placeholder="github_pat_..."></div><div style="display:flex;gap:8px"><button class="tool-btn" onclick="savePAT()" style="flex:1;color:var(--green-bright)">SAVE</button><button class="tool-btn" onclick="clearPAT()" style="flex:1;color:var(--red-bright)">CLEAR</button></div><div id="pat-status" style="margin-top:12px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim)"></div></div></div>
 <script>
 var S={articles:{featured:[],archive:[]},glossary:{terms:[]},references:{books:[]},organization:{leadership:[],departments:[]}};
 var logs=[];
@@ -459,6 +463,83 @@ function doBuildGuide(){
 // ═══ INIT ═══
 addLog('\u30DE\u30CD\u30FC\u30B8\u30E3\u30FC\u8D77\u52D5');
 render();
+
+
+/* ========== GITHUB API SAVE ========== */
+var GH_REPO = '178178178TKM/institute27';
+var GH_SK = 'ins27_pat';
+
+function getPAT() { return localStorage.getItem(GH_SK) || ''; }
+function savePAT() {
+  var v = document.getElementById('pat-input').value.trim();
+  if (!v) { document.getElementById('pat-status').textContent = 'ERROR: empty'; return; }
+  localStorage.setItem(GH_SK, v);
+  document.getElementById('pat-status').textContent = 'SAVED';
+  document.getElementById('pat-status').style.color = 'var(--green-bright)';
+  setTimeout(function(){ document.getElementById('pat-overlay').style.display='none'; }, 800);
+}
+function clearPAT() {
+  localStorage.removeItem(GH_SK);
+  document.getElementById('pat-input').value = '';
+  document.getElementById('pat-status').textContent = 'CLEARED';
+  document.getElementById('pat-status').style.color = 'var(--amber)';
+}
+function showPATModal() {
+  var ov = document.getElementById('pat-overlay');
+  ov.style.display = 'flex';
+  document.getElementById('pat-input').value = getPAT();
+  document.getElementById('pat-status').textContent = getPAT() ? 'TOKEN SET' : 'NO TOKEN';
+}
+function utf8b64(str) {
+  var enc = new TextEncoder();
+  var bytes = enc.encode(str);
+  var bin = '';
+  for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin);
+}
+async function ghPut(path, content, pat) {
+  var h = { Authorization: 'Bearer ' + pat, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' };
+  var url = 'https://api.github.com/repos/' + GH_REPO + '/contents/' + path;
+  var gr = await fetch(url, { headers: h });
+  var gd = await gr.json();
+  var b64 = utf8b64(content);
+  var pr = await fetch(url, { method: 'PUT', headers: h, body: JSON.stringify({ message: 'Update ' + path + ' via manager', content: b64, sha: gd.sha }) });
+  var pd = await pr.json();
+  return { ok: pr.ok, sha: pd.commit ? pd.commit.sha : null, err: pd.message };
+}
+async function pushToGitHub() {
+  var pat = getPAT();
+  if (!pat) { showPATModal(); toast('PATを設定してください','warn'); return; }
+  addLog('GitHub push 開始...');
+  toast('GitHubにプッシュ中...','info');
+  try {
+    var files = [
+      { path: 'data/articles.json', data: { featured: D.articles.featured, archive: D.articles.archive } },
+      { path: 'data/glossary.json', data: D.glossary },
+      { path: 'data/references.json', data: D.references },
+      { path: 'data/organization.json', data: D.organization }
+    ];
+    var ok = 0;
+    for (var i = 0; i < files.length; i++) {
+      var f = files[i];
+      addLog('  > ' + f.path + '...');
+      var json = JSON.stringify(f.data, null, 2) + '\n';
+      var r = await ghPut(f.path, json, pat);
+      if (r.ok) { ok++; addLog('    OK: ' + r.sha.substring(0,8)); }
+      else { addLog('    ERROR: ' + r.err); }
+    }
+    if (ok === files.length) {
+      toast('GitHub保存完了 (' + ok + '/' + files.length + ')','ok');
+      addLog('GitHub push 完了: ' + ok + ' files');
+    } else {
+      toast('一部失敗 (' + ok + '/' + files.length + ')','warn');
+      addLog('GitHub push 一部失敗');
+    }
+  } catch (e) {
+    toast('GitHub push エラー: ' + e.message,'err');
+    addLog('GitHub push エラー: ' + e.message);
+  }
+}
 </script>
 </body>
 </html>
