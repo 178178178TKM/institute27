@@ -1,53 +1,53 @@
 {
   "leadership": [
     {
-      "name": "ä»å®® ç¦å­",
-      "role": "æé·ä»£ç",
-      "jurisdiction": "åè¡ç®¡è½",
-      "departments": ["èª¿æ»èª²", "è¦³æ¸¬èª²"]
+      "name": "今宮 睦子",
+      "role": "所長代理",
+      "jurisdiction": "前衛管轄",
+      "departments": ["調査課", "観測課"]
     },
     {
-      "name": "åå´ é",
-      "role": "æé·ä»£ç",
-      "jurisdiction": "å¾è¡ç®¡è½",
-      "departments": ["è¨é²èª²", "è§£æèª²", "ä¿ç®¡èª²"]
+      "name": "坂崎 隆",
+      "role": "所長代理",
+      "jurisdiction": "後衛管轄",
+      "departments": ["記録課", "解析課", "保管課"]
     }
   ],
   "departments": [
     {
-      "name": "èª¿æ»èª²",
-      "english": "INVESTIGATION",
-      "chief": "æ¡å¶ ä¿¡äº",
+      "name": "調査課",
+      "english": "Investigation Division",
+      "chief": "桐嶋 信二",
       "staff_count": 6,
-      "description": "ç¾å°èª¿æ»ã»ååèª¿æ»å¡ç®¡ç"
+      "description": "現地調査・協力調査員管理"
     },
     {
-      "name": "è¦³æ¸¬èª²",
-      "english": "OBSERVATION",
-      "chief": "éå£ æ",
+      "name": "観測課",
+      "english": "Observation Division",
+      "chief": "野口 朔",
       "staff_count": 5,
-      "description": "å®ç¹è¦³æ¸¬ã»é·æã¢ãã¿ãªã³ã°"
+      "description": "定点観測・長期モニタリング"
     },
     {
-      "name": "è¨é²èª²",
-      "english": "RECORDS",
-      "chief": "æå æ",
+      "name": "記録課",
+      "english": "Records Division",
+      "chief": "朝倉 文",
       "staff_count": 5,
-      "description": "æç®ç§åã»è¨é²ã»èå¯"
+      "description": "文献照合・記録・考察"
     },
     {
-      "name": "è§£æèª²",
-      "english": "ANALYSIS",
-      "chief": "æ©å· å",
+      "name": "解析課",
+      "english": "Analysis Division",
+      "chief": "早川 博",
       "staff_count": 5,
-      "description": "ãµã³ãã«ã»ãã¼ã¿è§£æ"
+      "description": "サンプル・データ解析"
     },
     {
-      "name": "ä¿ç®¡èª²",
-      "english": "STORAGE",
-      "chief": "æ²ç° æ­£",
+      "name": "保管課",
+      "english": "Storage Division",
+      "chief": "沖田 正",
       "staff_count": 4,
-      "description": "ç°ç©ã»ç©è¨¼ã®ä¿ç®¡ç®¡ç"
+      "description": "異物・物証の保管管理"
     }
   ]
 }
