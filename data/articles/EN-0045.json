@@ -1,0 +1,12 @@
+{
+  "id": "EN-0045",
+  "type": "EN",
+  "type_label": "ENTITY",
+  "title": "影だけの猫——足跡のない通行者",
+  "level": 1,
+  "status": "ACTIVE",
+  "summary": "実体を持たない猫の影が路地を移動する。影は壁面を通過し、時折振り返る。",
+  "assignee": "本田 沙織（解析課）",
+  "department": "",
+  "redacted": false
+}
