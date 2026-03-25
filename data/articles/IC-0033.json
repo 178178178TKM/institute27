@@ -1,0 +1,12 @@
+{
+  "id": "IC-0033",
+  "type": "IC",
+  "type_label": "INCIDENT CASE",
+  "title": "送信者不明の手紙——宛名だけが正確な郵便物",
+  "level": 1,
+  "status": "ACTIVE",
+  "summary": "消印・差出人なしの手紙が特定の住所に届く。内容は受取人の翌日の行動を記述。",
+  "assignee": "朝倉 文（記録課）",
+  "department": "",
+  "redacted": false
+}
