@@ -1,0 +1,12 @@
+{
+  "id": "AN-0071-thermal",
+  "type": "AN",
+  "type_label": "ANALYSIS",
+  "title": "AN-0071-thermal_残留体温分析報告",
+  "level": 1,
+  "status": "ACTIVE",
+  "summary": "IC-0071で検出された座席残留体温の分析。通常の体温減衰曲線から逸脱。",
+  "assignee": "天野 浩二（解析課）",
+  "department": "",
+  "redacted": false
+}
