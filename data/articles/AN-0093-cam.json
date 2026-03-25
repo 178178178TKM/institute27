@@ -1,0 +1,12 @@
+{
+  "id": "AN-0093-cam",
+  "type": "AN",
+  "type_label": "ANALYSIS",
+  "title": "AN-0093-cam_防犯カメラ映像解析",
+  "level": 1,
+  "status": "ARCHIVED",
+  "summary": "IC-0093に関連する防犯カメラ映像の解析結果。記録領域に不自然な上書き痕跡。",
+  "assignee": "",
+  "department": "解析課",
+  "redacted": false
+}
