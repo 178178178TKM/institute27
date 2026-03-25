@@ -270,7 +270,7 @@ var DATA_BASE = 'data/';
 
 function fetchAllData() {
   var files = [
-    ['articles',     DATA_BASE + 'articles.json'],
+    ['articles',     DATA_BASE + 'articles-index.json'],
     ['glossary',     DATA_BASE + 'glossary.json'],
     ['references',   DATA_BASE + 'references.json'],
     ['organization', DATA_BASE + 'organization.json']
@@ -362,93 +362,52 @@ function xrefHtml(id, title) {
 
 // --- TICKER ---
 function renderTicker(articles) {
+  var all = articles.articles || [];
   var parts = [];
-  (articles.featured || []).forEach(function(a) {
-    parts.push('▌ ' + a.id + '「' + a.title + '」' + (a.assignee || '') + 'より新規報告');
-  });
-  (articles.archive || []).slice(0,3).forEach(function(a) {
-    parts.push(a.id + ' ' + a.title + (a.status === 'ARCHIVED' ? ' 施行済' : ''));
+  shuffle(all).slice(0,8).forEach(function(a) {
+    if (a.has_report) {
+      parts.push('▌ ' + a.id + '「' + a.title + '」' + (a.assignee || '') + 'より新規報告');
+    } else {
+      parts.push(a.id + ' ' + a.title + (a.status === 'ARCHIVED' ? ' 施行済' : ''));
+    }
   });
   parts.push('次回同期予定: 不明');
   var txt = parts.join(' ／ ') + ' ／ ';
   document.getElementById('ticker-track').textContent = txt + txt + txt;
 }
 
-// --- FEATURED ARTICLES ---
+// --- FEATURED ARTICLES (preview cards → link to article pages) ---
 function renderFeatured(articles) {
   var container = document.getElementById('featured');
+  var withReport = (articles.articles || []).filter(function(a) { return a.has_report && !a.redacted; });
+  var picked = shuffle(withReport).slice(0, 3);
   var html = '';
-  (articles.featured || []).forEach(function(a, idx) {
+  picked.forEach(function(a, idx) {
     var tc = typeClass(a.type);
-    // Sidebar metadata
-    var metaHtml = '';
-    metaHtml += '分類: <span style="color:var(--' + tc + ')">' + esc(a.type_label) + '</span><br>';
-    metaHtml += '担当課: ' + esc(a.department) + '<br>';
-    metaHtml += '担当者: ' + esc(a.assignee) + '<br>';
-    metaHtml += '閲覧Level: Level ' + a.level + '<br>';
-    if (a.metadata) {
-      Object.keys(a.metadata).forEach(function(k) {
-        metaHtml += esc(k) + ': ' + esc(a.metadata[k]) + '<br>';
-      });
-    }
-    metaHtml += '状態: <span style="color:var(--amber)">' + esc(a.status) + '</span>';
+    var caseLabel = (idx === 0 ? 'LATEST ／ ' : '') + a.id + ' ／ ' + esc(a.type_label);
+    var bodyHtml = '<p>' + escR(a.summary) + '</p>';
 
-    // Related records
-    var relHtml = '';
-    if (a.related && a.related.length) {
-      relHtml = '<br><br><div style="font-size:10px;letter-spacing:.2em;color:var(--text-dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px">関連記録</div>';
-      a.related.forEach(function(r) {
-        var rtc = typeClass(r.id.replace(/[-\d]/g, '').replace(/_.*/,''));
-        relHtml += '<span class="xref" style="color:var(--' + rtc + ')">' + esc(r.id) + '</span> ' + esc(r.title) + '<br>';
-      });
-    }
-
-    // Summary body
-    var bodyHtml = a.summary_extra || ('<p>' + escR(a.summary) + '</p>');
-    if (bodyHtml.indexOf('<') === -1) bodyHtml = '<p>' + bodyHtml + '</p>';
-
-    // Report sections
-    var reportHtml = '';
-    if (a.report) {
-      var hasStamp = a.level >= 1 ? ' has-stamp' : '';
-      reportHtml += '<div class="feat-report"><div class="field-report' + hasStamp + '">';
-      reportHtml += '<div class="feat-report-label">// ' + (a.type === 'PH' ? '観測' : '調査') + 'レポート抜粋 — ' + esc(a.id) + '</div>';
-      reportHtml += '<div class="feat-report-header">' + esc(a.report.header) + '<br>' + esc(a.report.subheader) + '</div>';
-      reportHtml += '<div class="feat-report-body">';
-      (a.report.sections || []).forEach(function(sec) {
-        reportHtml += '<h3>▌ ' + esc(sec.title) + '</h3>';
-        var content = sec.content || '';
-        if (content.indexOf('<') === -1) content = '<p>' + content + '</p>';
-        reportHtml += content;
-        if (sec.warning) {
-          reportHtml += '<div class="inline-note">⚠ ' + sec.warning + '</div>';
-        }
-        if (sec.note) {
-          reportHtml += '<div class="inline-note">' + sec.note + '</div>';
-        }
-      });
-      reportHtml += '</div></div></div>';
-    }
-
-    // Case number label
-    var caseLabel = (idx === 0 ? 'LATEST ／ ' : '') + a.id + ' ／ Case#' + esc(a.case_number) + ' ／ ' + esc(a.department);
-
-    html += '<div class="featured-article"' + (idx === 0 ? ' id="featured-anchor"' : '') + '>';
+    html += '<a href="articles/' + a.id + '.html" class="featured-article" style="display:block;color:inherit;text-decoration:none"' + (idx === 0 ? ' id="featured-anchor"' : '') + '>';
     html += '<div class="feat-hero"><div class="feat-hero-main">';
     html += '<div class="feat-case-num mono">' + esc(caseLabel) + '</div>';
     html += '<div class="feat-title">' + escR(a.title) + '</div>';
     html += '<div class="feat-meta"><span class="cls-tag cls-' + tc + '">' + esc(a.type) + '</span>';
     html += statusTag(a.status, a.type);
-    html += '<span>担当: ' + esc(a.assignee) + '</span>';
-    html += '<span>初報: ' + esc(a.first_report) + '</span></div>';
+    if (a.assignee) html += '<span>担当: ' + esc(a.assignee) + '</span>';
+    if (a.first_report) html += '<span>初報: ' + esc(a.first_report) + '</span>';
+    html += '</div>';
     html += '<div class="feat-body">' + bodyHtml + '</div>';
+    html += '<div style="font-family:Share Tech Mono,monospace;font-size:11px;color:var(--green-dim);letter-spacing:.1em">▶ レポート全文を閲覧する</div>';
     html += '</div>';
     html += '<div class="feat-hero-sidebar">';
     html += '<div style="font-size:10px;letter-spacing:.2em;color:var(--text-dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px">案件データ</div>';
-    html += metaHtml + relHtml;
+    html += '分類: <span style="color:var(--' + tc + ')">' + esc(a.type_label) + '</span><br>';
+    if (a.department) html += '担当課: ' + esc(a.department) + '<br>';
+    if (a.assignee) html += '担当者: ' + esc(a.assignee) + '<br>';
+    html += '閲覧Level: Level ' + a.level + '<br>';
+    html += '状態: <span style="color:var(--amber)">' + esc(a.status) + '</span>';
     html += '</div></div>';
-    html += reportHtml;
-    html += '</div>';
+    html += '</a>';
   });
   container.innerHTML = html;
 }
@@ -456,17 +415,15 @@ function renderFeatured(articles) {
 // --- ARCHIVE GRID ---
 function renderArchive(articles) {
   var grid = document.getElementById('record-grid');
+  var all = articles.articles || [];
+  var picked = shuffle(all).slice(0, 6);
   var html = '';
-  (articles.archive || []).forEach(function(a) {
+  picked.forEach(function(a) {
     var tc = typeClass(a.type);
     var isRedacted = a.status === 'REDACTED' || a.redacted;
-    var reqLevel = a.level >= 4 ? 4 : (a.level >= 2 ? 2 : 0);
-    var needsAuth = reqLevel >= 2;
     var caseNum = a.id.match(/\d+/) ? 'Case#' + a.id.replace(/[^\d]/g,'') : a.id;
 
-    html += '<div class="case-card card-' + tc + '"';
-    if (needsAuth) html += ' data-level="' + reqLevel + '" onclick="showAuth(' + reqLevel + ',\'' + esc(a.id) + '\')"';
-    html += '>';
+    html += '<a href="articles/' + a.id + '.html" class="case-card card-' + tc + '" style="color:inherit;text-decoration:none">';
     
     if (isRedacted) {
       html += '<div class="card-num"><span class="cls-tag" style="color:var(--red-bright);border-color:var(--red)">' + esc(a.type) + '</span> ' + esc(caseNum) + '</div>';
@@ -483,7 +440,7 @@ function renderArchive(articles) {
       else if (a.department) html += '<span>作成: ' + esc(a.department) + '</span>';
       html += '</div>';
     }
-    html += '</div>';
+    html += '</a>';
   });
   grid.innerHTML = html;
 }
