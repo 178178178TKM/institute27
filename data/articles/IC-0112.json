@@ -1,0 +1,46 @@
+{
+  "id": "IC-0112",
+  "case_number": "0112",
+  "type": "IC",
+  "type_label": "INCIDENT CASE",
+  "title": "踏切の向こう側——渡れない横断者",
+  "department": "調査課",
+  "assignee": "朝倉 文",
+  "level": 1,
+  "status": "ACTIVE",
+  "first_report": "2025.12.02",
+  "summary": "遮断機が上がった後も渡り終えない人物が目撃される踏切。当該人物は遮断機が再び降りると消失する。",
+  "summary_extra": "<p>遮断機が上がった後も渡り終えない人物が目撃される踏切。当該人物は遮断機が再び降りると消失する。</p><p>鉄道会社の監視映像では人影は確認できるが、顔の判別が<span class=\"redacted\">　　　　　</span>不可能。目撃者<strong style=\"color:var(--green-bright)\">12名</strong>が同一の服装を証言。</p>",
+  "metadata": {
+    "目撃件数": "12件",
+    "消失確認": "8回"
+  },
+  "related": [
+    {
+      "id": "PH-0029",
+      "title": "気圧の瞖常"
+    },
+    {
+      "id": "EN-0052",
+      "title": "鏡の中の住人"
+    }
+  ],
+  "report": {
+    "header": "IC-0112 ／ Case#0112 ／ INCIDENT CASE ／ Level 1",
+    "subheader": "担当: 朝倉 文（調査課→記録課）／ 現地調査: 2026.01.20 17:00〜22:00 ／ 曇 ／ 6℃",
+    "sections": [
+      {
+        "title": "現場概況",
+        "content": "<p>該当踏切は1日平均87本の列車が通過。目撃報告は夕方以降に集中。</p>"
+      },
+      {
+        "title": "観測結果",
+        "content": "<p>19:42、遮断機上昇後に男性型の人影を目視確認。線路中央付近で歩行速度が著しく低下。<span class=\"redacted\">　　　　　</span>秒後、遮断機降下と同時に消失。</p>"
+      },
+      {
+        "title": "暫定結論",
+        "content": "<p>空間の境界的性質が関与している可能性。<span class=\"xref\">PH-0029</span>との共通メカニズムを調査中。</p>"
+      }
+    ]
+  }
+}
