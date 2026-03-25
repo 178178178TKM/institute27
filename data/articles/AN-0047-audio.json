@@ -1,0 +1,12 @@
+{
+  "id": "AN-0047-audio",
+  "type": "AN",
+  "type_label": "ANALYSIS",
+  "title": "AN-0047-audio_自販機前音響解析",
+  "level": 1,
+  "status": "ACTIVE",
+  "summary": "IC-0047現場で録音された音声の周波数分析。可聴域外の低周波成分を検出。",
+  "assignee": "天野 浩二（解析課）",
+  "department": "",
+  "redacted": false
+}
