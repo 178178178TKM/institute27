@@ -1,0 +1,12 @@
+{
+  "id": "IC-0019",
+  "type": "IC",
+  "type_label": "INCIDENT CASE",
+  "title": "深夜電話の　　番——応答する声",
+  "level": 2,
+  "status": "ACTIVE",
+  "summary": "特定番号に特定時刻に電話すると「亡くなった人物の声」が応答。",
+  "assignee": "朝倉 文（記録課）",
+  "department": "",
+  "redacted": false
+}
