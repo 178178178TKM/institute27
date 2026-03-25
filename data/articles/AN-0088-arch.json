@@ -1,0 +1,12 @@
+{
+  "id": "AN-0088-arch",
+  "type": "AN",
+  "type_label": "ANALYSIS",
+  "title": "AN-0088-arch_ビル設計図面調査報告",
+  "level": 1,
+  "status": "PENDING",
+  "summary": "IC-0088に関連するビル設計図面の調査。施工時の変更履歴に不審な空白期間あり。",
+  "assignee": "",
+  "department": "管理部",
+  "redacted": false
+}
