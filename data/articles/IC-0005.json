@@ -1,0 +1,12 @@
+{
+  "id": "IC-0005",
+  "type": "IC",
+  "type_label": "INCIDENT CASE",
+  "title": "階段の数が合わない建物",
+  "level": 1,
+  "status": "ACTIVE",
+  "summary": "登りは37段、降りは36段。差分の1段がどこに消えるのかは不明。",
+  "assignee": "三枝 由佳（調査課）",
+  "department": "",
+  "redacted": false
+}
