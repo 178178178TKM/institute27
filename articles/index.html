@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>記録閲覧 ｜ 第弐拾七研究所</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Serif+JP:wght@300;400;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+--bg: #060b06; --bg2: #0a110a; --bg3: #0e180e;
+--green: #7aab6e; --green-dim: #3d6636; --green-bright: #a8d49a;
+--amber: #c8a030; --amber-dim: #7a5e12;
+--red: #9b2020; --red-bright: #cc3333;
+--text: #8aab80; --text-dim: #4a6644; --text-bright: #c2ddb8;
+--border: #1e2e1a; --border2: #2a3e24;
+--stamp-red: #8b1515; --scan-line: rgba(0,20,0,0.35);
+--ic: #e07848; --ic-dim: #7a3820; --en: #d45888; --en-dim: #6a2844;
+--ph: #9878cc; --ph-dim: #4a3868; --fl: #607888; --fl-dim: #2e3e48;
+--an: #608878; --an-dim: #2e4838;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Noto Serif JP',serif;font-size:15px;line-height:1.8;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,var(--scan-line) 0px,var(--scan-line) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:9999;opacity:.4}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9998;opacity:.3}
+a{color:var(--green);text-decoration:none}a:hover{color:var(--green-bright)}
+.mono{font-family:'Share Tech Mono',monospace}
+.redacted{background:var(--text-dim);color:transparent;border-radius:2px;user-select:none;padding:0 2px}
+.xref{color:var(--green);border-bottom:1px dashed var(--green-dim);cursor:pointer}
+.xref:hover{color:var(--green-bright)}
+.cls-tag{display:inline-block;border:1px solid;padding:2px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.12em;vertical-align:middle}
+.cls-ic{color:var(--ic);border-color:var(--ic-dim)}.cls-en{color:var(--en);border-color:var(--en-dim)}.cls-ph{color:var(--ph);border-color:var(--ph-dim)}.cls-fl{color:var(--fl);border-color:var(--fl-dim)}.cls-an{color:var(--an);border-color:var(--an-dim)}
+.status-tag{display:inline-block;border:1px solid currentColor;padding:2px 8px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.1em}
+.status-active{color:var(--amber);border-color:var(--amber-dim)}.status-archived{color:var(--text-dim);border-color:var(--border2)}.status-pending{color:var(--ph);border-color:var(--ph-dim)}.status-redacted{color:var(--red-bright);border-color:var(--red)}
+.inline-note{background:var(--bg3);border-left:2px solid var(--amber-dim);padding:10px 16px;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--amber);margin:14px 0;line-height:1.8}
+.inline-affiliate{display:inline-flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border2);padding:6px 12px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--amber);margin:0 4px;vertical-align:middle}
+.inline-affiliate:hover{border-color:var(--amber-dim)}
+
+/* HEADER */
+#site-header{border-bottom:1px solid var(--border2);background:var(--bg2);position:sticky;top:0;z-index:100}
+.header-top{display:flex;justify-content:space-between;align-items:center;padding:6px 32px;border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim)}
+.header-main{display:flex;align-items:center;justify-content:space-between;padding:16px 32px}
+.logo{display:flex;flex-direction:column}
+.logo-ja{font-family:'Noto Serif JP',serif;font-weight:700;font-size:22px;color:var(--green-bright);letter-spacing:.15em}
+.logo-en{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.2em}
+nav{display:flex;gap:32px;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.08em}
+nav a{color:var(--text-dim)}nav a:hover{color:var(--green-bright)}
+
+/* BREADCRUMB */
+.breadcrumb{padding:16px 40px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);border-bottom:1px solid var(--border);background:var(--bg2);letter-spacing:.08em}
+.breadcrumb a{color:var(--text-dim)}.breadcrumb a:hover{color:var(--green-bright)}
+.breadcrumb .sep{margin:0 8px;opacity:.5}
+
+/* ARTICLE PAGE */
+.article-header{padding:48px 40px 40px;border-bottom:1px solid var(--border2)}
+.article-case-num{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:.2em;margin-bottom:12px}
+.article-title{font-family:'Noto Serif JP',serif;font-weight:700;font-size:32px;color:var(--green-bright);line-height:1.4;margin-bottom:16px;letter-spacing:.05em}
+.article-meta{display:flex;gap:16px;flex-wrap:wrap;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);margin-bottom:24px;align-items:center}
+.article-summary{font-size:15px;color:var(--text);line-height:2;max-width:800px}
+.article-summary p+p{margin-top:12px}
+
+.article-body{display:grid;grid-template-columns:1fr 280px;gap:0}
+.article-content{padding:40px;border-right:1px solid var(--border2)}
+.article-sidebar{padding:28px 20px;background:var(--bg2);font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text-dim);line-height:2;position:sticky;top:80px;align-self:start}
+.sidebar-section-title{font-size:10px;letter-spacing:.2em;color:var(--text-dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;margin-top:20px}
+.sidebar-section-title:first-child{margin-top:0}
+
+/* REPORT */
+.report-section{margin-bottom:32px}
+.report-section-title{font-family:'Noto Serif JP',serif;font-size:18px;color:var(--green-bright);margin-bottom:12px;letter-spacing:.08em}
+.report-section-content{font-size:14px;line-height:2.2;color:var(--text)}
+.report-section-content p{margin-bottom:12px}
+.report-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.2em;margin-bottom:16px}
+.report-header-block{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);line-height:2;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.field-report{position:relative}
+.field-report.has-stamp::before{content:'機密解除';position:absolute;top:24px;right:24px;font-family:'Noto Serif JP',serif;font-size:28px;font-weight:700;color:var(--stamp-red);border:3px solid var(--stamp-red);padding:4px 12px;transform:rotate(12deg);opacity:.4;pointer-events:none;letter-spacing:.1em}
+
+/* RELATED */
+.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--border);margin-top:8px}
+.related-card{background:var(--bg2);padding:16px 20px;transition:background .2s;cursor:pointer;position:relative;overflow:hidden}
+.related-card:hover{background:var(--bg3)}
+.related-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;transition:height .3s}
+.related-card:hover::before{height:100%}
+.related-card.card-ic::before{background:var(--ic)}.related-card.card-en::before{background:var(--en)}.related-card.card-ph::before{background:var(--ph)}.related-card.card-fl::before{background:var(--fl)}.related-card.card-an::before{background:var(--an)}
+.related-id{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.15em;margin-bottom:4px}
+.related-title{font-family:'Noto Serif JP',serif;font-size:14px;color:var(--green-bright);line-height:1.5}
+
+/* BACK LINK */
+.back-bar{padding:24px 40px;border-top:1px solid var(--border2);background:var(--bg2)}
+.back-link{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text-dim);letter-spacing:.1em;display:inline-flex;align-items:center;gap:8px}
+.back-link:hover{color:var(--green-bright)}
+
+/* NO REPORT */
+.no-report{padding:60px 40px;text-align:center}
+.no-report-icon{font-family:'VT323',monospace;font-size:48px;color:var(--text-dim);margin-bottom:16px}
+.no-report-text{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--text-dim);letter-spacing:.1em}
+
+/* REDACTED PAGE */
+.redacted-page{padding:80px 40px;text-align:center}
+.redacted-icon{font-family:'VT323',monospace;font-size:64px;color:var(--red);margin-bottom:16px}
+.redacted-title{font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--red-bright);letter-spacing:.15em;margin-bottom:12px}
+.redacted-desc{font-size:14px;color:var(--text-dim);line-height:2}
+
+/* FOOTER */
+footer{background:var(--bg2);border-top:1px solid var(--border2);padding:24px 40px}
+.footer-disclaimer{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);line-height:1.9;text-align:center}
+
+/* LOADING */
+.loading{padding:80px 40px;text-align:center;font-family:'Share Tech Mono',monospace;color:var(--text-dim)}
+.loading-spinner{font-family:'VT323',monospace;font-size:24px;color:var(--green);animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:.3}}
+
+@media(max-width:900px){
+.article-body{grid-template-columns:1fr}
+.article-sidebar{position:static;border-right:none;border-top:1px solid var(--border2)}
+.article-header{padding:32px 20px}
+.article-content{padding:28px 20px}
+.header-main{flex-direction:column;gap:12px}nav{flex-wrap:wrap;gap:16px}
+.related-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="main-site">
+
+<header id="site-header">
+<div class="header-top mono">
+<span>INS27-ARCHIVE / EXTERNAL-TERMINAL-V2.4</span>
+<span id="clock">--:--:--</span>
+</div>
+<div class="header-main">
+<div class="logo"><a href="../"><span class="logo-ja">第弐拾七研究所</span><span class="logo-en">THE 27th INSTITUTE — INTEGRATED ARCHIVE SYSTEM</span></a></div>
+<nav><a href="../#featured">最新記録</a><a href="../#archive">記録一覧</a><a href="../#glossary">用語集</a><a href="../#references">参考文献</a><a href="../#organization">組織</a></nav>
+</div>
+</header>
+
+<div class="breadcrumb">
+<a href="../">TOP</a><span class="sep">／</span><a href="../#archive">記録一覧</a><span class="sep">／</span><span id="bc-id"></span>
+</div>
+
+<div id="article-container">
+<div class="loading"><div class="loading-spinner">▌ LOADING...</div><p style="margin-top:12px;font-size:11px">データ読込中</p></div>
+</div>
+
+<div class="back-bar">
+<a href="../" class="back-link">◁ 記録一覧に戻る ／ BACK TO ARCHIVE</a>
+</div>
+
+<footer>
+<div class="footer-disclaimer">
+本サイトは架空のTRPGシナリオ素材です。実在の人物・団体・事件とは一切関係ありません。<br>
+© 第弐拾七研究所 — 統合記録管理システム [外部端末] — TRPG Scenario Material
+</div>
+</footer>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded",function(){document.getElementById("bc-id").textContent=new URLSearchParams(window.location.search).get("id")||"unknown";});
+var ARTICLE_ID = new URLSearchParams(window.location.search).get('id') || 'unknown';
+var DATA_BASE = '../data/articles/';
+
+function esc(s) { if (!s) return ''; var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function escR(s) {
+  if (!s) return '';
+  var e = esc(s);
+  return e.replace(/\u3000{2,}/g, function(m) {
+    return '<span class="redacted">' + m + '</span>';
+  });
+}
+
+var TYPE_COLORS = { IC:'ic', EN:'en', PH:'ph', FL:'fl', AN:'an' };
+function typeClass(type) { return TYPE_COLORS[type] || 'fl'; }
+var STATUS_MAP = {
+  ACTIVE:   { cls:'status-active',   label:null },
+  ARCHIVED: { cls:'status-archived', label:'ARCHIVED' },
+  PENDING:  { cls:'status-pending',  label:'PENDING' },
+  REDACTED: { cls:'status-redacted', label:'REDACTED' }
+};
+var STATUS_LABELS = {
+  IC: { ACTIVE:'調査継��������続中' }, PH: { ACTIVE:'観測継��������続中' },
+  EN: { ACTIVE:'ACTIVE' }, AN: { ACTIVE:'ACTIVE' }, FL: { ACTIVE:'ACTIVE' }
+};
+
+function statusTag(status, type) {
+  var s = STATUS_MAP[status] || STATUS_MAP.ACTIVE;
+  var label = s.label;
+  if (!label && STATUS_LABELS[type] && STATUS_LABELS[type][status]) label = STATUS_LABELS[type][status];
+  if (!label) label = status;
+  return '<span class="status-tag ' + s.cls + '">' + esc(label) + '</span>';
+}
+
+function renderArticle(a) {
+  var container = document.getElementById('article-container');
+  var tc = typeClass(a.type);
+
+  // Check if redacted
+  if (a.redacted || a.status === 'REDACTED') {
+    container.innerHTML = '<div class="redacted-page">' +
+      '<div class="redacted-icon">⟐</div>' +
+      '<div class="redacted-title">ACCESS DENIED</div>' +
+      '<div class="redacted-desc">この記録は Level ' + a.level + ' 以上のクリアランスが必要です。<br>アクセスにはIDカード認証が必要です。</div>' +
+      '</div>';
+    return;
+  }
+
+  var html = '';
+
+  // Header
+  var caseNum = a.case_number ? 'Case#' + esc(a.case_number) : a.id;
+  html += '<div class="article-header">';
+  html += '<div class="article-case-num mono">' + esc(a.id) + ' ／ ' + caseNum + ' ／ ' + esc(a.type_label) + '</div>';
+  html += '<div class="article-title">' + escR(a.title) + '</div>';
+  html += '<div class="article-meta">';
+  html += '<span class="cls-tag cls-' + tc + '">' + esc(a.type) + '</span>';
+  html += statusTag(a.status, a.type);
+  if (a.assignee) html += '<span>担当: ' + esc(a.assignee) + '</span>';
+  if (a.department) html += '<span>部署: ' + esc(a.department) + '</span>';
+  if (a.first_report) html += '<span>初報: ' + esc(a.first_report) + '</span>';
+  html += '</div>';
+  // Summary
+  var summaryHtml = a.summary_extra || ('<p>' + escR(a.summary) + '</p>');
+  if (summaryHtml.indexOf('<') === -1) summaryHtml = '<p>' + summaryHtml + '</p>';
+  html += '<div class="article-summary">' + summaryHtml + '</div>';
+  html += '</div>';
+
+  // Body: report + sidebar
+  if (a.report) {
+    html += '<div class="article-body">';
+    html += '<div class="article-content">';
+    var hasStamp = a.level >= 1 ? ' has-stamp' : '';
+    html += '<div class="field-report' + hasStamp + '">';
+    html += '<div class="report-label">// ' + (a.type === 'PH' ? '観測' : '調査') + 'レポート — ' + esc(a.id) + '</div>';
+    html += '<div class="report-header-block">' + esc(a.report.header) + '<br>' + esc(a.report.subheader) + '</div>';
+
+    (a.report.sections || []).forEach(function(sec) {
+      html += '<div class="report-section">';
+      html += '<div class="report-section-title">▌ ' + esc(sec.title) + '</div>';
+      var content = sec.content || '';
+      if (content.indexOf('<') === -1) content = '<p>' + content + '</p>';
+      html += '<div class="report-section-content">' + content + '</div>';
+      if (sec.warning) html += '<div class="inline-note">⚠ ' + sec.warning + '</div>';
+      if (sec.note) html += '<div class="inline-note">' + sec.note + '</div>';
+      html += '</div>';
+    });
+
+    html += '</div></div>';
+
+    // Sidebar
+    html += '<div class="article-sidebar">';
+    html += '<div class="sidebar-section-title">案件データ</div>';
+    html += '分類: <span style="color:var(--' + tc + ')">' + esc(a.type_label) + '</span><br>';
+    if (a.department) html += '担当課: ' + esc(a.department) + '<br>';
+    if (a.assignee) html += '担当者: ' + esc(a.assignee) + '<br>';
+    html += '閲覧Level: Level ' + a.level + '<br>';
+    if (a.metadata) {
+      Object.keys(a.metadata).forEach(function(k) {
+        html += esc(k) + ': ' + esc(a.metadata[k]) + '<br>';
+      });
+    }
+    html += '状態: <span style="color:var(--amber)">' + esc(a.status) + '</span>';
+
+    // Related
+    if (a.related && a.related.length) {
+      html += '<div class="sidebar-section-title">関連記録</div>';
+      a.related.forEach(function(r) {
+        var rtc = typeClass(r.id.replace(/[-\d]/g, '').replace(/_.*/,''));
+        html += '<a href="?id=' + r.id + '" class="xref" style="color:var(--' + rtc + ')">' + esc(r.id) + '</a> ' + esc(r.title) + '<br>';
+      });
+    }
+    html += '</div></div>';
+  } else {
+    // No report
+    html += '<div class="no-report">';
+    html += '<div class="no-report-icon">▤</div>';
+    html += '<div class="no-report-text">この記録にはレポートが含まれていません</div>';
+    html += '</div>';
+  }
+
+  container.innerHTML = html;
+  document.title = a.title + ' ｜ 第弐拾七研究所';
+}
+
+// Clock
+function updateClock() {
+  var n = new Date();
+  document.getElementById('clock').textContent =
+    String(n.getHours()).padStart(2,'0') + ':' +
+    String(n.getMinutes()).padStart(2,'0') + ':' +
+    String(n.getSeconds()).padStart(2,'0');
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// Fetch & render
+fetch(DATA_BASE + ARTICLE_ID + '.json?v=' + Date.now())
+  .then(function(r) {
+    if (!r.ok) throw new Error('Article not found');
+    return r.json();
+  })
+  .then(function(data) {
+    renderArticle(data);
+  })
+  .catch(function(e) {
+    document.getElementById('article-container').innerHTML =
+      '<div class="no-report"><div class="no-report-icon">✕</div>' +
+      '<div class="no-report-text">記録 ' + esc(ARTICLE_ID) + ' は見つかりませんでした</div></div>';
+  });
+</script>
+</body>
+</html>
