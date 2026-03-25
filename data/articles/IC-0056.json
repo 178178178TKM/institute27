@@ -1,0 +1,12 @@
+{
+  "id": "IC-0056",
+  "type": "IC",
+  "type_label": "INCIDENT CASE",
+  "title": "古書店の　　　冊——読み終えられない本",
+  "level": 2,
+  "status": "ACTIVE",
+  "summary": "特定の古書店で購入した書籍の最終章が毎回異なる内容に変化。ページ数自体も可変。",
+  "assignee": "朝倉 文（記録課）",
+  "department": "",
+  "redacted": false
+}
