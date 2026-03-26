@@ -153,33 +153,19 @@ tr:hover td{background:var(--bg2)}
 </div>
 
     <div class="pnl" id="p-vault">
-      <div class="sec-hdr"><div class="sec-ttl">VAULT — アクセス制御</div></div>
-      <div style="font-size:11px;color:var(--fg2);margin-bottom:20px;line-height:1.8">各レベルのアクセスコードを設定します。設定後「Vaultを保存」でGitHubに反映。<br><span style="color:var(--red)">※ SHA-256ハッシュ化されます。元の文字列はサーバーに送信されません。</span></div>
-      <div class="fg"><label class="fl">管理者ID（全レベル共通・変更時のみ入力）</label><input type="text" class="fi" id="vault-id" placeholder="178takumi@admin" autocomplete="off"></div>
-      <div id="vault-hash-id" style="font-size:10px;color:var(--fg3);margin-bottom:16px">IDハッシュ: 読み込み中...</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-        <div style="background:var(--bg2);border:1px solid var(--border2);padding:16px">
-          <div style="font-size:10px;letter-spacing:2px;color:var(--fg2);margin-bottom:8px">LEVEL 1</div>
-          <div class="fg"><label class="fl">アクセスコード</label><input type="password" class="fi" id="vault-pw-level1" placeholder="変更時のみ" autocomplete="off"></div>
-          <div id="vault-hash-level1" style="font-size:10px;color:var(--fg3)">ハッシュ: 読み込み中...</div>
-        </div>
-        <div style="background:var(--bg2);border:1px solid var(--border2);padding:16px">
-          <div style="font-size:10px;letter-spacing:2px;color:var(--fg2);margin-bottom:8px">LEVEL 2</div>
-          <div class="fg"><label class="fl">アクセスコード</label><input type="password" class="fi" id="vault-pw-level2" placeholder="変更時のみ" autocomplete="off"></div>
-          <div id="vault-hash-level2" style="font-size:10px;color:var(--fg3)">ハッシュ: 読み込み中...</div>
-        </div>
-        <div style="background:var(--bg2);border:1px solid var(--amber-dim,#3d3520);padding:16px">
-          <div style="font-size:10px;letter-spacing:2px;color:var(--accent,#c9a84c);margin-bottom:8px">LEVEL 3</div>
-          <div class="fg"><label class="fl">アクセスコード</label><input type="password" class="fi" id="vault-pw-level3" placeholder="変更時のみ" autocomplete="off"></div>
-          <div id="vault-hash-level3" style="font-size:10px;color:var(--fg3)">ハッシュ: 読み込み中...</div>
-        </div>
-        <div style="background:var(--bg2);border:1px solid var(--red,#b83030);padding:16px">
-          <div style="font-size:10px;letter-spacing:2px;color:var(--red,#b83030);margin-bottom:8px">LEVEL 4 / 最高機密</div>
-          <div class="fg"><label class="fl">アクセスコード</label><input type="password" class="fi" id="vault-pw-level4" placeholder="変更時のみ" autocomplete="off"></div>
-          <div id="vault-hash-level4" style="font-size:10px;color:var(--fg3)">ハッシュ: 読み込み中...</div>
-        </div>
+      <div class="sec-hdr">
+        <div class="sec-ttl">VAULT — アクセス制御</div>
+        <button class="btn btn-p" onclick="addScenario()">+ シナリオ追加</button>
       </div>
-      <button class="btn btn-p" onclick="saveVault()">&#9670; Vaultを保存 (GitHub Push)</button>
+      <div style="font-size:11px;color:var(--fg2);margin-bottom:16px;line-height:1.8">
+        シナリオごとにID・レベル別パスワードを管理します。変更後「Vaultを保存」でGitHubに反映。<br>
+        <span style="color:var(--red)">※ SHA-256ハッシュ化済み。元の文字列はサーバーに送信されません。</span>
+      </div>
+      <div id="vault-scenarios-wrap"></div>
+      <div style="margin-top:16px;display:flex;gap:10px;align-items:center">
+        <button class="btn btn-p" onclick="saveVault()">&#9670; Vaultを保存 (GitHub Push)</button>
+        <button class="btn" onclick="loadVault()">&#8635; リロード</button>
+      </div>
       <div id="vault-status" style="margin-top:12px;font-size:11px;color:var(--fg3)"></div>
     </div></div>
     <div id="modal-root"></div>
@@ -576,46 +562,124 @@ async function pushToGitHub() {
 /* ========== VAULT ========== */
 var GH_VAULT_PATH = 'data/vault.json';
 var _vaultData = null;
-async function vaultSha256(msg){var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('ins27:'+msg));return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0')}).join('')}
-function showHash(elId,hash){var el=document.getElementById(elId);if(el)el.textContent='ハッシュ: '+(hash?hash.substring(0,16)+'...':'未設定')}
+
+async function vaultSha256(msg){
+  var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('ins27:'+msg));
+  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');
+}
+
+function renderVaultScenarios(){
+  var wrap=document.getElementById('vault-scenarios-wrap');
+  if(!wrap||!_vaultData)return;
+  var scenarios=_vaultData.scenarios||{};
+  var keys=Object.keys(scenarios);
+  var html='';
+  keys.forEach(function(sk){
+    var sc=scenarios[sk];
+    var isPub=sk==='public';
+    html+='<div style="background:var(--bg2);border:1px solid var(--border2);padding:16px;margin-bottom:12px;border-radius:2px">';
+    html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">';
+    html+='<div style="font-size:10px;letter-spacing:2px;color:var(--accent)">'+esc(sc.label||sk)+'</div>';
+    html+='<div style="font-size:10px;color:var(--fg3)">key: '+esc(sk)+'</div>';
+    if(!isPub)html+='<button class="btn btn-s btn-d" onclick="removeScenario(''+sk+'')">削除</button>';
+    html+='</div>';
+    if(!isPub){
+      html+='<div class="fr2" style="margin-bottom:10px">';
+      html+='<div class="fg"><label class="fl">ラベル（表示名）</label><input class="fi" id="v-label-'+sk+'" value="'+esc(sc.label||sk)+'"></div>';
+      html+='<div class="fg"><label class="fl">管理者ID（変更時のみ）</label><input type="text" class="fi" id="v-id-'+sk+'" placeholder="例: 178takumi@'+sk+'" autocomplete="off"></div>';
+      html+='</div>';
+      html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">';
+      [1,2,3,4].forEach(function(lv){
+        var hasHash=sc.levels&&sc.levels[lv]&&sc.levels[lv].hash;
+        html+='<div style="background:var(--bg3);border:1px solid var(--border);padding:10px;border-radius:2px">';
+        html+='<div style="font-size:9px;letter-spacing:1px;color:'+(lv>=3?'var(--red)':'var(--fg2)')+';margin-bottom:6px">LV'+lv+(lv===4?' / 最高機密':'')+'</div>';
+        html+='<input type="password" class="fi" style="font-size:11px" id="v-lv'+lv+'-'+sk+'" placeholder="'+(hasHash?'設定済み':'未設定')+'" autocomplete="off">';
+        html+='</div>';
+      });
+      html+='</div>';
+    }else{
+      html+='<div style="font-size:11px;color:var(--fg3)">IDなし・全員閲覧可能な記事に使用するシナリオキーです。削除・変更不可。</div>';
+    }
+    html+='</div>';
+  });
+  wrap.innerHTML=html||'<div style="color:var(--fg3)">シナリオなし</div>';
+}
+
 async function loadVault(){
-  var pat=getPAT(),url='https://api.github.com/repos/'+GH_REPO+'/contents/'+GH_VAULT_PATH;
+  var pat=getPAT();
+  var url='https://api.github.com/repos/'+GH_REPO+'/contents/'+GH_VAULT_PATH;
   var headers={Authorization:'Bearer '+pat,Accept:'application/vnd.github.v3+json'};
+  var st=document.getElementById('vault-status');
+  st.textContent='読み込み中...';st.style.color='var(--fg3)';
   try{
     var r=await fetch(url,{headers:headers}),d=await r.json();
-    _vaultData=JSON.parse(atob(d.content.replace(/
-/g,'')));
-    showHash('vault-hash-id',_vaultData.admin_id_hash);
-    var tiers=_vaultData.tiers||{};
-    ['level1','level2','level3','level4'].forEach(function(k){showHash('vault-hash-'+k,tiers[k]?tiers[k].hash:'')});
-    document.getElementById('vault-status').textContent='読み込み完了';document.getElementById('vault-status').style.color='var(--green)';
-  }catch(e){document.getElementById('vault-status').textContent='読み込み失敗: '+e.message;}
+    _vaultData=JSON.parse(atob(d.content.replace(/\n/g,'')));
+    // v2→v3マイグレーション
+    if(!_vaultData.scenarios){
+      _vaultData={version:3,scenarios:{public:{label:'公開',id_hash:null,levels:{}}}};
+    }
+    renderVaultScenarios();
+    st.textContent='読み込み完了 (v'+(_vaultData.version||'?')+' / '+Object.keys(_vaultData.scenarios||{}).length+'シナリオ)';
+    st.style.color='var(--green)';
+  }catch(e){st.textContent='読み込み失敗: '+e.message;st.style.color='var(--red)';}
 }
+
+function addScenario(){
+  modal('<div class="mo" onclick="if(event.target===this)closeModal()"><div class="mc" style="max-width:400px"><div class="mt">シナリオ追加</div><div class="fg"><label class="fl">シナリオキー（英数字・ハイフンのみ）</label><input class="fi" id="new-sc-key" placeholder="例: tatsumi"></div><div class="fg"><label class="fl">ラベル（表示名）</label><input class="fi" id="new-sc-label" placeholder="例: 辿望一条"></div><div class="ma"><button class="btn" onclick="closeModal()">キャンセル</button><button class="btn btn-p" onclick="confirmAddScenario()">追加</button></div></div></div>');
+}
+
+function confirmAddScenario(){
+  var key=document.getElementById('new-sc-key').value.trim().replace(/[^a-z0-9-]/gi,'');
+  var label=document.getElementById('new-sc-label').value.trim();
+  if(!key||!label){toast('\u26a0 キーとラベルは必須');return;}
+  if(!_vaultData){toast('\u26a0 Vaultを先にロード');return;}
+  if(_vaultData.scenarios[key]){toast('\u26a0 そのキーは既に存在します');return;}
+  _vaultData.scenarios[key]={label:label,id_hash:'',levels:{'1':{hash:''},'2':{hash:''},'3':{hash:''},'4':{hash:''}}};
+  closeModal();renderVaultScenarios();addLog('シナリオ追加: '+key);toast('\u2713 '+label+' を追加（保存してください）');
+}
+
+function removeScenario(sk){
+  if(!confirm('シナリオ「'+sk+'」を削除しますか？この操作は保存後に反映されます。'))return;
+  delete _vaultData.scenarios[sk];
+  renderVaultScenarios();addLog('シナリオ削除: '+sk);toast('削除済み（保存してください）');
+}
+
 async function saveVault(){
   var pat=getPAT();if(!pat){showPATModal();return;}
   if(!_vaultData){document.getElementById('vault-status').textContent='エラー: Vaultデータ未ロード';return;}
   var st=document.getElementById('vault-status');st.textContent='処理中...';st.style.color='var(--fg3)';
-  var newId=document.getElementById('vault-id').value.trim();
-  if(newId)_vaultData.admin_id_hash=await vaultSha256(newId);
-  var levels=['level1','level2','level3','level4'];
-  for(var i=0;i<levels.length;i++){
-    var k=levels[i],pw=document.getElementById('vault-pw-'+k).value.trim();
-    if(pw){if(!_vaultData.tiers)_vaultData.tiers={};if(!_vaultData.tiers[k])_vaultData.tiers[k]={label:'Level '+(i+1),min_level:i+1,max_level:i+1};_vaultData.tiers[k].hash=await vaultSha256(pw);}
+  // 各シナリオの入力を反映
+  var scenarios=_vaultData.scenarios||{};
+  for(var sk in scenarios){
+    if(sk==='public')continue;
+    var labelEl=document.getElementById('v-label-'+sk);
+    if(labelEl&&labelEl.value.trim())scenarios[sk].label=labelEl.value.trim();
+    var idEl=document.getElementById('v-id-'+sk);
+    if(idEl&&idEl.value.trim())scenarios[sk].id_hash=await vaultSha256(idEl.value.trim());
+    if(!scenarios[sk].levels)scenarios[sk].levels={};
+    for(var lv=1;lv<=4;lv++){
+      var pwEl=document.getElementById('v-lv'+lv+'-'+sk);
+      if(pwEl&&pwEl.value.trim()){
+        scenarios[sk].levels[lv]={hash:await vaultSha256(pwEl.value.trim())};
+      }
+    }
   }
   var url='https://api.github.com/repos/'+GH_REPO+'/contents/'+GH_VAULT_PATH;
   var headers={Authorization:'Bearer '+pat,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'};
   var gr=await fetch(url,{headers:headers}),gd=await gr.json();
   var content=utf8b64(JSON.stringify(_vaultData,null,2)+'\n');
-  var pr=await fetch(url,{method:'PUT',headers:headers,body:JSON.stringify({message:'Update vault.json',content:content,sha:gd.sha})});
+  var pr=await fetch(url,{method:'PUT',headers:headers,body:JSON.stringify({message:'Update vault.json via manager',content:content,sha:gd.sha})});
   var pd=await pr.json();
   if(pd.commit){
-    st.textContent='✓ 保存完了: '+pd.commit.sha.substring(0,8);st.style.color='var(--green)';
-    ['vault-id','vault-pw-level1','vault-pw-level2','vault-pw-level3','vault-pw-level4'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
-    loadVault();addLog('Vault更新: '+pd.commit.sha.substring(0,8));
+    st.textContent='\u2713 保存完了: '+pd.commit.sha.substring(0,8);st.style.color='var(--green)';
+    loadVault();addLog('Vault保存: '+pd.commit.sha.substring(0,8));
   }else{st.textContent='エラー: '+pd.message;st.style.color='var(--red)';}
 }
-document.addEventListener('click',function(e){var btn=e.target.closest('[data-p="vault"]');if(btn)loadVault();}););
 
+document.addEventListener('click',function(e){
+  var btn=e.target.closest('[data-p="vault"]');
+  if(btn)loadVault();
+});
 </script>
 </body>
 </html>
