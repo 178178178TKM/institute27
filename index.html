@@ -220,6 +220,7 @@ body{padding-right:246px}
 </head>
 <body>
 
+<button class="sb-toggle" id="sb-toggle-btn" onclick="sbToggle()">☰ MENU</button>
 <div id="boot-screen"></div>
 <div id="crt-trans"><canvas id="crt-noise"></canvas><div id="crt-line"></div></div>
 
@@ -248,7 +249,7 @@ body{padding-right:246px}
 <div class="header-main">
 <div class="logo"><span class="logo-ja">第弐拾七研究所</span><span class="logo-en">THE 27th INSTITUTE — INTEGRATED ARCHIVE SYSTEM</span></div>
 <nav><a href="#featured">最新記録</a><a href="#archive">記録一覧</a><a href="#glossary">用語集</a><a href="#references">参考文献</a><a href="#organization">組織</a></nav>
-<div class="clearance-badge" id="badge">CLEARANCE : LEVEL-0</div>
+
 </div>
 </header>
 
@@ -748,7 +749,7 @@ function getAuth(){try{var r=localStorage.getItem(SK);if(!r)return{lv:0,scenario
 function setAuth(l,sc){localStorage.setItem(SK,JSON.stringify({lv:l,scenario:sc,ts:Date.now()}))}
 var _auth=getAuth();var currentLevel=_auth.lv;var currentScenario=_auth.scenario;
 
-function updateBadge(){var b=document.getElementById('badge');var scLabel=currentScenario&&DATA.vault&&DATA.vault.scenarios&&DATA.vault.scenarios[currentScenario]?DATA.vault.scenarios[currentScenario].label:null;b.textContent=scLabel?scLabel+' / LV-'+currentLevel:'CLEARANCE : LEVEL-'+currentLevel;b.style.borderColor=currentLevel>=2?'var(--green-bright)':currentLevel>=1?'var(--green)':'var(--green-dim)';b.style.color=currentLevel>=2?'var(--green-bright)':currentLevel>=1?'var(--green)':'var(--green-dim)'}
+function updateBadge(){sbUpdateUI();var b=document.getElementById('badge');if(!b)return;var scLabel=currentScenario&&DATA.vault&&DATA.vault.scenarios&&DATA.vault.scenarios[currentScenario]?DATA.vault.scenarios[currentScenario].label:null;b.textContent=scLabel?scLabel+' / LV-'+currentLevel:'CLEARANCE : LEVEL-'+currentLevel;b.style.borderColor=currentLevel>=2?'var(--green-bright)':currentLevel>=1?'var(--green)':'var(--green-dim)';b.style.color=currentLevel>=2?'var(--green-bright)':currentLevel>=1?'var(--green)':'var(--green-dim)'}
 
 function applyLevelStyling(){
 updateBadge();
@@ -839,6 +840,14 @@ function sbRenderRecent(){
     if(locked)return '<li class="sb-recent-item"><span style="color:var(--text-dim);font-size:11px">▮ '+a.title+'</span><div class="sb-recent-meta" style="color:var(--red)">LV.'+(a.level||0)+' REQUIRED</div></li>';
     return '<li class="sb-recent-item"><a href="articles/'+a.id+'.html">'+a.title+'</a><div class="sb-recent-meta"><span style="color:var(--'+c+')">'+a.type+'</span> · '+(a.first_report||'')+'</div></li>';
   }).join('');
+}
+
+function sbToggle(){
+  var sb=document.getElementById('sidebar-right');
+  var btn=document.getElementById('sb-toggle-btn');
+  if(!sb)return;
+  sb.classList.toggle('open');
+  btn.textContent = sb.classList.contains('open') ? '✕ CLOSE' : '☰ MENU';
 }
 </script>
 </body>
