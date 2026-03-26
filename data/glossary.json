@@ -1,11 +1,3 @@
 {
-  "terms": [
-    {
-      "term": "テスト用語",
-      "reading": "てすとようご",
-      "english": "Test Term",
-      "definition": "Push機能動作確認用のダミーデータ",
-      "related": []
-    }
-  ]
+  "terms": []
 }
