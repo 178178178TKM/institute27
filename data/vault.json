@@ -2,18 +2,18 @@
   "version": 1,
   "tiers": {
     "internal": {
-      "label": "調査員クリアランス",
-      "description": "Level 1-2 記録へのアクセス",
+      "label": "èª¿æ»å¡ã¯ãªã¢ã©ã³ã¹",
+      "description": "Level 1-2 è¨é²ã¸ã®ã¢ã¯ã»ã¹",
       "min_level": 1,
       "max_level": 2,
-      "hash": ""
+      "hash": "9e3b074b00420995134b8409249a41fba0614707edb35f7c0e25538fb83bd453"
     },
     "classified": {
-      "label": "機密クリアランス",
-      "description": "Level 3-4 記録へのアクセス",
+      "label": "æ©å¯ã¯ãªã¢ã©ã³ã¹",
+      "description": "Level 3-4 è¨é²ã¸ã®ã¢ã¯ã»ã¹",
       "min_level": 3,
       "max_level": 4,
-      "hash": ""
+      "hash": "0441efbe5b873effd4b1c5f649f4fb1519e5d2bbea07f941ae5ee71a14ec4b3b"
     }
   }
 }
