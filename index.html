@@ -388,7 +388,7 @@ function renderFeatured(articles) {
     var caseLabel = (idx === 0 ? 'LATEST ／ ' : '') + a.id + ' ／ ' + esc(a.type_label);
     var bodyHtml = '<p>' + escR(a.summary) + '</p>';
 
-    html += '<a href="articles/' + a.id + '.html" class="featured-article" style="display:block;color:inherit;text-decoration:none"' + (idx === 0 ? ' id="featured-anchor"' : '') + '>';
+    var featLocked=(a.level||0)>currentLevel&&(a.level||0)>0; html += '<a href="'+(featLocked?'#':'articles/'+a.id+'.html')+'" class="featured-article" style="display:block;color:inherit;text-decoration:none"'+(featLocked?' onclick="event.preventDefault();showAuthForCard('+a.level+')"':'') + (idx === 0 ? ' id="featured-anchor"' : '') + '>';
     html += '<div class="feat-hero"><div class="feat-hero-main">';
     html += '<div class="feat-case-num mono">' + esc(caseLabel) + '</div>';
     html += '<div class="feat-title">' + escR(a.title) + '</div>';
@@ -424,7 +424,7 @@ function renderArchive(articles) {
     var isRedacted = a.status === 'REDACTED' || a.redacted;
     var caseNum = a.id.match(/\d+/) ? 'Case#' + a.id.replace(/[^\d]/g,'') : a.id;
 
-    html += '<a href="articles/' + a.id + '.html" class="case-card card-' + tc + '" style="color:inherit;text-decoration:none">';
+    var needsAuth=(a.level||0)>currentLevel&&(a.level||0)>0; html += '<a href="'+(needsAuth?'#':'articles/'+a.id+'.html')+'" class="case-card card-'+tc+(needsAuth?' locked':'')+'" data-level="'+(a.level||0)+'" style="color:inherit;text-decoration:none"'+(needsAuth?' onclick="event.preventDefault();showAuthForCard('+a.level+')"':'')+'>'; 
     
     if (isRedacted) {
       html += '<div class="card-num"><span class="cls-tag" style="color:var(--red-bright);border-color:var(--red)">' + esc(a.type) + '</span> ' + esc(caseNum) + '</div>';
@@ -677,6 +677,7 @@ document.getElementById('auth-result').textContent='';document.getElementById('i
 document.getElementById('auth-overlay').classList.add('active');
 }
 function closeAuth(){document.getElementById('auth-overlay').classList.remove('active');pendingArticle=null}
+function showAuthForCard(level){document.getElementById('auth-level-info').textContent='Level '+level+' クリアランスが必要です';document.getElementById('auth-result').textContent='';document.getElementById('id-input').value='';document.getElementById('pw-input').value='';document.getElementById('auth-overlay').classList.add('active');}
 async function sha256(msg){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('ins27:'+msg));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('')}
 async function attemptAuth(){var id=document.getElementById('id-input').value.trim(),pw=document.getElementById('pw-input').value.trim(),r=document.getElementById('auth-result');r.style.color='var(--text-dim)';if(!id||!pw){r.textContent='⚠ IDカードとコードを入力してください';r.style.color='var(--amber)';return}var idHash=await sha256(id),pwHash=await sha256(pw),vault=DATA.vault;if(!vault||idHash!==vault.admin_id_hash){r.textContent='⚠ 認証失敗 — IDが無効です';r.style.color='var(--red-bright)';return}var granted=0,tiers=vault.tiers||{};if(tiers.level4&&pwHash===tiers.level4.hash)granted=4;else if(tiers.level3&&pwHash===tiers.level3.hash)granted=3;else if(tiers.level2&&pwHash===tiers.level2.hash)granted=2;else if(tiers.level1&&pwHash===tiers.level1.hash)granted=1;if(granted>0){currentLevel=granted;setAuth(currentLevel);applyLevelStyling();r.style.color='var(--green)';r.innerHTML='認証成功 — <span style="color:var(--green-bright)">LEVEL '+granted+' GRANTED</span>';setTimeout(closeAuth,1200);}else{r.textContent='⚠ 認証失敗 — アクセスコードが無効です';r.style.color='var(--red-bright)';}}
 document.getElementById('auth-overlay').addEventListener('click',function(e){if(e.target===this)closeAuth()});
