@@ -514,10 +514,10 @@ async function pushToGitHub() {
   toast('GitHubにプッシュ中...','info');
   try {
     var files = [
-      { path: 'data/articles.json', data: { featured: D.articles.featured, archive: D.articles.archive } },
-      { path: 'data/glossary.json', data: D.glossary },
-      { path: 'data/references.json', data: D.references },
-      { path: 'data/organization.json', data: D.organization }
+      { path: 'data/articles.json', data: { featured: S.articles.featured, archive: S.articles.archive } },
+      { path: 'data/glossary.json', data: S.glossary },
+      { path: 'data/references.json', data: S.references },
+      { path: 'data/organization.json', data: S.organization }
     ];
     var ok = 0;
     for (var i = 0; i < files.length; i++) {
