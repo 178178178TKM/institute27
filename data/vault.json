@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "tiers": {
+    "internal": {
+      "label": "調査員クリアランス",
+      "description": "Level 1-2 記録へのアクセス",
+      "min_level": 1,
+      "max_level": 2,
+      "hash": ""
+    },
+    "classified": {
+      "label": "機密クリアランス",
+      "description": "Level 3-4 記録へのアクセス",
+      "min_level": 3,
+      "max_level": 4,
+      "hash": ""
+    }
+  }
+}
