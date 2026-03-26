@@ -225,6 +225,12 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:40px 40
 <p>本端末は、第弐拾七研究所の統合記録管理システムへの外部アクセス用インターフェースです。新入所の研究員は本端末を通じて既存の調査記録・分析データ・用語集を確認し、自主学習に役立ててください。現場での調査中にも、過去の類似案件や観測データを参照できます。</p>
 </div>
 
+<div class="site-search">
+  <div class="site-search-row">
+    <input type="text" class="site-search-input mono" id="site-search-input" placeholder="記録を検索... (ID・タイトル・概要・担当者)" autocomplete="off" onkeydown="if(event.key==='Enter')goSearch()">
+    <button class="site-search-btn" onclick="goSearch()">&#x25B6; 検索</button>
+  </div>
+</div>
 <!-- FEATURED: rendered dynamically -->
 <div id="featured"></div>
 
