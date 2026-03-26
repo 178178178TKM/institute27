@@ -388,7 +388,7 @@ function renderFeatured(articles) {
     var caseLabel = (idx === 0 ? 'LATEST ／ ' : '') + a.id + ' ／ ' + esc(a.type_label);
     var bodyHtml = '<p>' + escR(a.summary) + '</p>';
 
-    var featLocked=(a.level||0)>currentLevel&&(a.level||0)>0; html += '<a href="'+(featLocked?'#':'articles/'+a.id+'.html')+'" class="featured-article" style="display:block;color:inherit;text-decoration:none"'+(featLocked?' onclick="event.preventDefault();showAuthForCard('+a.level+')"':'') + (idx === 0 ? ' id="featured-anchor"' : '') + '>';
+    var featLocked=isLocked(a); html += '<a href="'+(featLocked?'#':'articles/'+a.id+'.html')+'" class="featured-article" style="display:block;color:inherit;text-decoration:none"'+(featLocked?' onclick="event.preventDefault();showAuthForCard('+a.level+')"':'') + (idx === 0 ? ' id="featured-anchor"' : '') + '>';
     html += '<div class="feat-hero"><div class="feat-hero-main">';
     html += '<div class="feat-case-num mono">' + esc(caseLabel) + '</div>';
     html += '<div class="feat-title">' + escR(a.title) + '</div>';
@@ -424,7 +424,7 @@ function renderArchive(articles) {
     var isRedacted = a.status === 'REDACTED' || a.redacted;
     var caseNum = a.id.match(/\d+/) ? 'Case#' + a.id.replace(/[^\d]/g,'') : a.id;
 
-    var needsAuth=(a.level||0)>currentLevel&&(a.level||0)>0; html += '<a href="'+(needsAuth?'#':'articles/'+a.id+'.html')+'" class="case-card card-'+tc+(needsAuth?' locked':'')+'" data-level="'+(a.level||0)+'" style="color:inherit;text-decoration:none"'+(needsAuth?' onclick="event.preventDefault();showAuthForCard('+a.level+')"':'')+'>'; 
+    var needsAuth=isLocked(a); html += '<a href="'+(needsAuth?'#':'articles/'+a.id+'.html')+'" class="case-card card-'+tc+(needsAuth?' locked':'')+'" data-level="'+(a.level||0)+'" data-scenario="'+(a.scenario||'')+'" style="color:inherit;text-decoration:none"'+(needsAuth?' onclick="event.preventDefault();showAuthForCard('+a.level+')"':'')+'>'; 
     
     if (isRedacted) {
       html += '<div class="card-num"><span class="cls-tag" style="color:var(--red-bright);border-color:var(--red)">' + esc(a.type) + '</span> ' + esc(caseNum) + '</div>';
@@ -654,11 +654,11 @@ setTimeout(function(){t.style.textShadow=''},150);
    AUTH SYSTEM (preserved from original)
    ============================================================ */
 var SK='ins27_auth',SH=12,currentLevel=0;
-function getAuth(){try{var r=localStorage.getItem(SK);if(!r)return 0;var s=JSON.parse(r);if(Date.now()-s.ts>SH*36e5){localStorage.removeItem(SK);return 0}return s.lv||0}catch(e){return 0}}
-function setAuth(l){localStorage.setItem(SK,JSON.stringify({lv:l,ts:Date.now()}))}
-currentLevel=getAuth();
+function getAuth(){try{var r=localStorage.getItem(SK);if(!r)return{lv:0,scenario:null};var s=JSON.parse(r);if(Date.now()-s.ts>SH*36e5){localStorage.removeItem(SK);return{lv:0,scenario:null}}return{lv:s.lv||0,scenario:s.scenario||null}}catch(e){return{lv:0,scenario:null}}}
+function setAuth(l,sc){localStorage.setItem(SK,JSON.stringify({lv:l,scenario:sc,ts:Date.now()}))}
+var _auth=getAuth();var currentLevel=_auth.lv;var currentScenario=_auth.scenario;
 
-function updateBadge(){var b=document.getElementById('badge');b.textContent='CLEARANCE : LEVEL-'+currentLevel;b.style.borderColor=currentLevel>=2?'var(--green-bright)':currentLevel>=1?'var(--green)':'var(--green-dim)';b.style.color=currentLevel>=2?'var(--green-bright)':currentLevel>=1?'var(--green)':'var(--green-dim)'}
+function updateBadge(){var b=document.getElementById('badge');var scLabel=currentScenario&&DATA.vault&&DATA.vault.scenarios&&DATA.vault.scenarios[currentScenario]?DATA.vault.scenarios[currentScenario].label:null;b.textContent=scLabel?scLabel+' / LV-'+currentLevel:'CLEARANCE : LEVEL-'+currentLevel;b.style.borderColor=currentLevel>=2?'var(--green-bright)':currentLevel>=1?'var(--green)':'var(--green-dim)';b.style.color=currentLevel>=2?'var(--green-bright)':currentLevel>=1?'var(--green)':'var(--green-dim)'}
 
 function applyLevelStyling(){
 updateBadge();
@@ -677,9 +677,16 @@ document.getElementById('auth-result').textContent='';document.getElementById('i
 document.getElementById('auth-overlay').classList.add('active');
 }
 function closeAuth(){document.getElementById('auth-overlay').classList.remove('active');pendingArticle=null}
+function isLocked(a){
+  var lv=a.level||0,sc=a.scenario||null;
+  if(lv===0&&!sc)return false; // 完全公開
+  if(!currentScenario)return lv>0; // 未認証: level>0なら全てlocked
+  if(sc&&sc!==currentScenario)return lv>0; // 別シナリオ: level>0なら locked
+  return lv>currentLevel; // 同シナリオ: レベル不足ならlocked
+}
 function showAuthForCard(level){document.getElementById('auth-level-info').textContent='Level '+level+' クリアランスが必要です';document.getElementById('auth-result').textContent='';document.getElementById('id-input').value='';document.getElementById('pw-input').value='';document.getElementById('auth-overlay').classList.add('active');}
 async function sha256(msg){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('ins27:'+msg));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('')}
-async function attemptAuth(){var id=document.getElementById('id-input').value.trim(),pw=document.getElementById('pw-input').value.trim(),r=document.getElementById('auth-result');r.style.color='var(--text-dim)';if(!id||!pw){r.textContent='⚠ IDカードとコードを入力してください';r.style.color='var(--amber)';return}var idHash=await sha256(id),pwHash=await sha256(pw),vault=DATA.vault;if(!vault||idHash!==vault.admin_id_hash){r.textContent='⚠ 認証失敗 — IDが無効です';r.style.color='var(--red-bright)';return}var granted=0,tiers=vault.tiers||{};if(tiers.level4&&pwHash===tiers.level4.hash)granted=4;else if(tiers.level3&&pwHash===tiers.level3.hash)granted=3;else if(tiers.level2&&pwHash===tiers.level2.hash)granted=2;else if(tiers.level1&&pwHash===tiers.level1.hash)granted=1;if(granted>0){currentLevel=granted;setAuth(currentLevel);applyLevelStyling();r.style.color='var(--green)';r.innerHTML='認証成功 — <span style="color:var(--green-bright)">LEVEL '+granted+' GRANTED</span>';setTimeout(closeAuth,1200);}else{r.textContent='⚠ 認証失敗 — アクセスコードが無効です';r.style.color='var(--red-bright)';}}
+async function attemptAuth(){var id=document.getElementById('id-input').value.trim(),pw=document.getElementById('pw-input').value.trim(),r=document.getElementById('auth-result');r.style.color='var(--text-dim)';if(!id||!pw){r.textContent='⚠ IDとコードを入力してください';r.style.color='var(--amber)';return;}var idHash=await sha256(id),pwHash=await sha256(pw);var vault=DATA.vault;if(!vault||!vault.scenarios){r.textContent='⚠ Vault未ロード';r.style.color='var(--red-bright)';return;}var matchedScenario=null;for(var sk in vault.scenarios){var scn=vault.scenarios[sk];if(scn.id_hash&&idHash===scn.id_hash){matchedScenario=sk;break;}}if(!matchedScenario){r.textContent='⚠ 認証失敗 — IDが無効です';r.style.color='var(--red-bright)';return;}var scn=vault.scenarios[matchedScenario],granted=0;for(var lv=4;lv>=1;lv--){if(scn.levels&&scn.levels[lv]&&pwHash===scn.levels[lv].hash){granted=lv;break;}}if(granted>0){currentLevel=granted;currentScenario=matchedScenario;setAuth(currentLevel,currentScenario);applyLevelStyling();r.style.color='var(--green)';r.innerHTML='認証成功 — <span style="color:var(--green-bright)">'+(scn.label||matchedScenario)+' / LEVEL '+granted+' GRANTED</span>';setTimeout(closeAuth,1400);}else{r.textContent='⚠ 認証失敗 — アクセスコードが無効です';r.style.color='var(--red-bright)';}}
 document.getElementById('auth-overlay').addEventListener('click',function(e){if(e.target===this)closeAuth()});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAuth()});
 </script>
