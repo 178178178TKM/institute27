@@ -186,9 +186,8 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:40px 40
 <div class="gate-icon">⟐</div>
 <div class="gate-title">ACCESS RESTRICTED</div>
 <div id="auth-level-info"></div>
-<div class="gate-desc">IDカード番号を入力してください。<br>Level 2以上の記録にはパスワードも必要です。</div>
-<div class="level-input-group"><input type="text" class="level-input" placeholder="IDカード番号" id="id-input"></div>
-<div class="level-input-group"><input type="password" class="level-input" placeholder="パスワード（Level 2以上）" id="pw-input"></div>
+<div class="gate-desc">アクセスコードを入力してください。</div>
+<div class="level-input-group"><input type="password" class="level-input" placeholder="ACCESS CODE" id="pw-input" autocomplete="off"></div>
 <button class="level-submit" onclick="attemptAuth()">▶ 認証 / AUTHENTICATE</button>
 <p id="auth-result"></p>
 </div>
@@ -265,7 +264,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:40px 40
 /* ============================================================
    DATA FETCHER — loads all JSON during boot, renders on show
    ============================================================ */
-var DATA = { articles: null, glossary: null, references: null, organization: null };
+var DATA = { articles: null, glossary: null, references: null, organization: null, vault: null };
 var DATA_BASE = 'data/';
 
 function fetchAllData() {
@@ -273,7 +272,8 @@ function fetchAllData() {
     ['articles',     DATA_BASE + 'articles-index.json'],
     ['glossary',     DATA_BASE + 'glossary.json'],
     ['references',   DATA_BASE + 'references.json'],
-    ['organization', DATA_BASE + 'organization.json']
+    ['organization', DATA_BASE + 'organization.json'],
+        ['vault', DATA_BASE + 'vault.json']
   ];
   return Promise.all(files.map(function(f) {
     return fetch(f[1] + '?v=' + Date.now()).then(function(r) {
@@ -676,15 +676,8 @@ document.getElementById('auth-result').textContent='';document.getElementById('i
 document.getElementById('auth-overlay').classList.add('active');
 }
 function closeAuth(){document.getElementById('auth-overlay').classList.remove('active');pendingArticle=null}
-function attemptAuth(){
-var id=document.getElementById('id-input').value.trim(),pw=document.getElementById('pw-input').value.trim(),r=document.getElementById('auth-result');
-if(!id){r.textContent='⚠ IDカード番号を入力してください';r.style.color='var(--amber)';return}
-if(id.includes('27')){
-if(pw){currentLevel=2;r.innerHTML='認証成功 — <span style="color:var(--green-bright)">LEVEL 2 GRANTED</span>'}
-else{currentLevel=1;r.innerHTML='認証成功 — <span style="color:var(--green-bright)">LEVEL 1 GRANTED</span>'}
-r.style.color='var(--green)';setAuth(currentLevel);applyLevelStyling();setTimeout(closeAuth,1000);
-}else{r.textContent='⚠ 認証失敗 — IDカード番号が無効です';r.style.color='var(--red-bright)'}
-}
+async function sha256(msg){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('ins27:'+msg));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('')}
+async function attemptAuth(){var pw=document.getElementById('pw-input').value.trim(),r=document.getElementById('auth-result');r.style.color='var(--text-dim)';if(!pw){r.textContent='⚠ コードを入力してください';r.style.color='var(--amber)';return;}var hash=await sha256(pw);var vault=DATA.vault;var granted=0;if(vault&&vault.tiers){if(vault.tiers.classified&&vault.tiers.classified.hash&&hash===vault.tiers.classified.hash)granted=4;else if(vault.tiers.internal&&vault.tiers.internal.hash&&hash===vault.tiers.internal.hash)granted=2;}if(granted>0){currentLevel=granted;setAuth(currentLevel);applyLevelStyling();r.style.color='var(--green)';r.innerHTML='認証成功 — <span style="color:var(--green-bright)">LEVEL '+granted+' GRANTED</span>';setTimeout(closeAuth,1000);}else{r.textContent='⚠ 認証失敗 — アクセスコードが無効です';r.style.color='var(--red-bright)';}}
 document.getElementById('auth-overlay').addEventListener('click',function(e){if(e.target===this)closeAuth()});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAuth()});
 </script>
