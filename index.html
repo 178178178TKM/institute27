@@ -179,6 +179,43 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:40px 40
 .section{padding:40px 20px}.feat-hero-main{padding:28px 20px}.feat-report{padding:28px 20px}
 #boot-screen{padding:30px 24px;font-size:14px}
 }
+
+/* ===== RIGHT SIDEBAR ===== */
+.sidebar-right{position:fixed;right:0;top:0;height:100vh;width:238px;overflow-y:auto;background:var(--bg2);border-left:1px solid var(--border2);z-index:50;padding:14px 12px;display:flex;flex-direction:column;gap:0;box-sizing:border-box}
+.sidebar-right::-webkit-scrollbar{width:3px}.sidebar-right::-webkit-scrollbar-thumb{background:var(--border2)}
+.sb-section{border-bottom:1px solid var(--border);padding:12px 0}
+.sb-section:first-child{padding-top:0}
+.sb-section:last-child{border-bottom:none}
+.sb-label{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:.2em;color:var(--text-dim);margin-bottom:8px;text-transform:uppercase}
+.sb-clearance{font-family:'Share Tech Mono',monospace;font-size:10px;border:1px solid var(--green-dim);padding:6px 8px;color:var(--green-dim);text-align:center;letter-spacing:.06em;line-height:1.5}
+.sb-clearance.lv1{border-color:var(--green);color:var(--green)}
+.sb-clearance.lv2,.sb-clearance.lv3,.sb-clearance.lv4{border-color:var(--green-bright);color:var(--green-bright)}
+.sb-clearance.master{border-color:var(--amber);color:var(--amber)}
+.sb-input{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--green-bright);font-family:'Share Tech Mono',monospace;font-size:11px;padding:5px 7px;outline:none;margin-bottom:5px;box-sizing:border-box}
+.sb-input:focus{border-color:var(--green-dim)}
+.sb-btn{width:100%;background:transparent;border:1px solid var(--green-dim);color:var(--green);font-family:'Share Tech Mono',monospace;font-size:10px;padding:5px;cursor:pointer;letter-spacing:.06em;box-sizing:border-box}
+.sb-btn:hover{background:var(--green-dim)}
+.sb-btn.logout{border-color:var(--red);color:var(--red)}
+.sb-btn.logout:hover{background:var(--red);color:var(--bg)}
+.sb-msg{font-family:'Share Tech Mono',monospace;font-size:9px;margin-top:4px;min-height:11px;color:var(--text-dim)}
+.sb-search-wrap{display:flex;gap:4px}
+.sb-search-input{flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--green-bright);font-family:'Share Tech Mono',monospace;font-size:11px;padding:5px 7px;outline:none;min-width:0;box-sizing:border-box}
+.sb-search-input:focus{border-color:var(--green-dim)}
+.sb-search-btn{background:transparent;border:1px solid var(--green-dim);color:var(--green);font-family:'Share Tech Mono',monospace;font-size:11px;padding:5px 8px;cursor:pointer;flex-shrink:0}
+.sb-search-btn:hover{background:var(--green-dim)}
+.sb-recent-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px}
+.sb-recent-item a{color:var(--text);text-decoration:none;font-size:11px;line-height:1.4;display:block}
+.sb-recent-item a:hover{color:var(--green-bright)}
+.sb-recent-meta{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);margin-top:1px}
+.sb-genres{display:flex;flex-direction:column;gap:3px}
+.sb-genre-btn{display:block;background:none;border:1px solid var(--border2);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:10px;padding:4px 8px;text-decoration:none;width:100%;box-sizing:border-box;transition:border-color .15s,color .15s}
+.sb-genre-btn:hover{border-color:var(--green-dim);color:var(--green)}
+.sb-genre-btn.ic{border-left:3px solid var(--ic-dim)}.sb-genre-btn.en{border-left:3px solid var(--en-dim)}.sb-genre-btn.ph{border-left:3px solid var(--ph-dim)}.sb-genre-btn.an{border-left:3px solid var(--an-dim)}.sb-genre-btn.fl{border-left:3px solid var(--fl-dim)}
+/* hide old inline search */
+.site-search{display:none!important}
+/* push content left of sidebar */
+body{padding-right:246px}
+@media(max-width:860px){.sidebar-right{display:none}body{padding-right:0}}
 </style>
 </head>
 <body>
@@ -271,6 +308,46 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:40px 40
 <div class="footer-disclaimer">⚠ 本端末に表示される全ての記録・人物・組織はフィクションです。実在の人物・団体・場所とは一切関係ありません。<br>当サイトはAmazonアソシエイトプログラムに参加しています。<br><br>本サイトは、「株式会社アークライト」及び「株式会社KADOKAWA」が権利を有する『クトゥルフ神話TRPG』の二次創作物です。<br><br>© 第弐拾七研究所 / THE 27th INSTITUTE</div>
 </footer>
 
+<aside class="sidebar-right" id="sidebar-right">
+  <div class="sb-section">
+    <div class="sb-label">// CLEARANCE STATUS</div>
+    <div class="sb-clearance" id="sb-badge">LEVEL-0<br>NO ACCESS</div>
+  </div>
+  <div class="sb-section" id="sb-login-section">
+    <div class="sb-label">// AUTHENTICATION</div>
+    <input type="text" class="sb-input" id="sb-id" placeholder="RESEARCHER ID" autocomplete="off">
+    <input type="password" class="sb-input" id="sb-pw" placeholder="ACCESS CODE" autocomplete="off" onkeydown="if(event.key==='Enter')sbLogin()">
+    <button class="sb-btn" onclick="sbLogin()">&#x25B6; AUTHENTICATE</button>
+    <div class="sb-msg" id="sb-msg"></div>
+  </div>
+  <div class="sb-section" id="sb-logout-section" style="display:none">
+    <div class="sb-label">// SESSION</div>
+    <button class="sb-btn logout" onclick="sbLogout()">&#x25A0; LOGOUT</button>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">// ARCHIVE SEARCH</div>
+    <div class="sb-search-wrap">
+      <input type="text" class="sb-search-input" id="sb-search" placeholder="キーワード..." autocomplete="off" onkeydown="if(event.key==='Enter')sbSearch()">
+      <button class="sb-search-btn" onclick="sbSearch()">&#x25B6;</button>
+    </div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">// RECENT RECORDS</div>
+    <ul class="sb-recent-list" id="sb-recent">
+      <li style="font-family:monospace;font-size:9px;color:var(--text-dim)">LOADING...</li>
+    </ul>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">// BROWSE BY TYPE</div>
+    <div class="sb-genres">
+      <a href="search.html?type=IC" class="sb-genre-btn ic">IC インシデント</a>
+      <a href="search.html?type=EN" class="sb-genre-btn en">EN エンティティ</a>
+      <a href="search.html?type=PH" class="sb-genre-btn ph">PH 現象</a>
+      <a href="search.html?type=AN" class="sb-genre-btn an">AN 分析</a>
+      <a href="search.html?type=FL" class="sb-genre-btn fl">FL フィールド</a>
+    </div>
+  </div>
+</aside>
 </div>
 
 <script>
@@ -696,6 +773,73 @@ async function sha256(msg){const buf=await crypto.subtle.digest('SHA-256',new Te
 async function attemptAuth(){var id=document.getElementById('id-input').value.trim(),pw=document.getElementById('pw-input').value.trim(),r=document.getElementById('auth-result');r.style.color='var(--text-dim)';if(!id||!pw){r.textContent='⚠ IDとコードを入力してください';r.style.color='var(--amber)';return;}var idHash=await sha256(id),pwHash=await sha256(pw);var vault=DATA.vault;if(!vault||!vault.scenarios){r.textContent='⚠ Vault未ロード';r.style.color='var(--red-bright)';return;}var matchedScenario=null;for(var sk in vault.scenarios){var scn=vault.scenarios[sk];if(scn.id_hash&&idHash===scn.id_hash){matchedScenario=sk;break;}}if(!matchedScenario){r.textContent='⚠ 認証失敗 — IDが無効です';r.style.color='var(--red-bright)';return;}var scn=vault.scenarios[matchedScenario],isMaster=scn.master===true,granted=0;for(var lv=4;lv>=1;lv--){if(scn.levels&&scn.levels[lv]&&pwHash===scn.levels[lv].hash){granted=lv;break;}}if(granted>0){currentLevel=granted;currentScenario=isMaster?'__master__':matchedScenario;setAuth(currentLevel,currentScenario);applyLevelStyling();r.style.color='var(--green)';var label=isMaster?'MASTER ACCESS':((scn.label||matchedScenario)+' / LEVEL '+granted);r.innerHTML='認証成功 — <span style="color:var(--green-bright)">'+label+' GRANTED</span>';if(window._pendingUrl){var url=window._pendingUrl;window._pendingUrl=null;setTimeout(function(){window.location.href=url;},1400);}else{setTimeout(closeAuth,1400);}}else{r.textContent='⚠ 認証失敗 — アクセスコードが無効です';r.style.color='var(--red-bright)';}}
 document.getElementById('auth-overlay').addEventListener('click',function(e){if(e.target===this)closeAuth()});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAuth()});
+
+/* ===== SIDEBAR FUNCTIONS ===== */
+function sbUpdateUI(){
+  var badge=document.getElementById('sb-badge');
+  var loginSec=document.getElementById('sb-login-section');
+  var logoutSec=document.getElementById('sb-logout-section');
+  if(!badge)return;
+  if(currentLevel>0&&currentScenario){
+    var vsc=DATA.vault&&DATA.vault.scenarios&&DATA.vault.scenarios[currentScenario];
+    var scLabel=vsc?vsc.label:currentScenario;
+    var isM=currentScenario==='__master__';
+    badge.innerHTML=(isM?'MASTER ACCESS':'<span style="color:inherit">'+scLabel+'</span>')+'<br>LEVEL-'+currentLevel;
+    badge.className='sb-clearance'+(isM?' master':currentLevel>=2?' lv'+currentLevel:' lv1');
+    if(loginSec)loginSec.style.display='none';
+    if(logoutSec)logoutSec.style.display='';
+  }else{
+    badge.innerHTML='LEVEL-0<br>NO ACCESS';
+    badge.className='sb-clearance';
+    if(loginSec)loginSec.style.display='';
+    if(logoutSec)logoutSec.style.display='none';
+  }
+}
+async function sbLogin(){
+  var id=(document.getElementById('sb-id')||{}).value||'';
+  var pw=(document.getElementById('sb-pw')||{}).value||'';
+  var msg=document.getElementById('sb-msg');
+  if(!id||!pw){if(msg)msg.textContent='⚠ IDとCODEを入力';return;}
+  if(msg){msg.textContent='AUTHENTICATING...';msg.style.color='var(--text-dim)';}
+  var idHash=await sha256(id),pwHash=await sha256(pw);
+  var vault=DATA.vault;
+  if(!vault||!vault.scenarios){if(msg)msg.textContent='⚠ Vaultエラー';return;}
+  var matchedScenario=null;
+  for(var sk in vault.scenarios){if(vault.scenarios[sk].id_hash&&idHash===vault.scenarios[sk].id_hash){matchedScenario=sk;break;}}
+  if(!matchedScenario){if(msg){msg.textContent='⚠ IDが無効';msg.style.color='var(--red-bright)';}return;}
+  var scn=vault.scenarios[matchedScenario],isMaster=scn.master===true,granted=0;
+  for(var lv=4;lv>=1;lv--){if(scn.levels&&scn.levels[lv]&&pwHash===scn.levels[lv].hash){granted=lv;break;}}
+  if(granted>0){
+    currentLevel=granted;currentScenario=isMaster?'__master__':matchedScenario;
+    setAuth(currentLevel,currentScenario);applyLevelStyling();sbUpdateUI();renderFeatured();renderArchive();sbUpdateUI();sbRenderRecent();
+    if(msg){msg.textContent='✓ 認証成功';msg.style.color='var(--green)';}
+    var iEl=document.getElementById('sb-id'),pEl=document.getElementById('sb-pw');
+    if(iEl)iEl.value='';if(pEl)pEl.value='';
+  }else{
+    if(msg){msg.textContent='⚠ CODEが無効';msg.style.color='var(--red-bright)';}
+  }
+}
+function sbLogout(){
+  currentLevel=0;currentScenario=null;localStorage.removeItem(SK);
+  applyLevelStyling();sbUpdateUI();renderFeatured();renderArchive();
+}
+function sbSearch(){
+  var q=(document.getElementById('sb-search')||{}).value||'';
+  if(q.trim())location.href='search.html?q='+encodeURIComponent(q.trim());
+}
+function sbRenderRecent(){
+  var el=document.getElementById('sb-recent');
+  if(!el)return;
+  if(!DATA.articles||!DATA.articles.articles){el.innerHTML='<li style="font-size:9px;color:var(--text-dim);font-family:monospace">NO DATA</li>';return;}
+  var all=DATA.articles.articles.slice().sort(function(a,b){return (b.first_report||'').localeCompare(a.first_report||'');}).slice(0,6);
+  var tc={IC:'ic',EN:'en',PH:'ph',FL:'fl',AN:'an'};
+  el.innerHTML=all.map(function(a){
+    var locked=isLocked(a);
+    var c=tc[a.type]||'fl';
+    if(locked)return '<li class="sb-recent-item"><span style="color:var(--text-dim);font-size:11px">▮ '+a.title+'</span><div class="sb-recent-meta" style="color:var(--red)">LV.'+(a.level||0)+' REQUIRED</div></li>';
+    return '<li class="sb-recent-item"><a href="articles/'+a.id+'.html">'+a.title+'</a><div class="sb-recent-meta"><span style="color:var(--'+c+')">'+a.type+'</span> · '+(a.first_report||'')+'</div></li>';
+  }).join('');
+}
 </script>
 </body>
 </html>
