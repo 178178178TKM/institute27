@@ -2,14 +2,34 @@
   "version": 3,
   "scenarios": {
     "public": {
-      "label": "公開",
-      "description": "IDなし・全員閲覧可能",
+      "label": "å¬é",
+      "description": "IDãªãã»å¨å¡é²è¦§å¯è½",
       "id_hash": null,
       "levels": {}
     },
     "sakura": {
-      "label": "桜の牢獄",
-      "description": "テストシナリオA",
+      "label": "æ¡ã®ç¢ç",
+      "description": "ãã¹ãã·ããªãªA",
+      "id_hash": "2d64917bb1792ffdd641eb4456832d0255ca0452fb67e1bd570842c7ea687f34",
+      "levels": {
+        "1": {
+          "hash": "1e33fc86f8c22f0b3ba9fbfb4dbb2daefa38262f74a555bee117e35047bb5828"
+        },
+        "2": {
+          "hash": "9020dc25c946de782918c99a9cb677502c5ebb8db4860fa8fd31ebd60d63247a"
+        },
+        "3": {
+          "hash": "9e19a5fb8e8ba5176611a632878532fc7229e68b654cf781d818f02de72611c4"
+        },
+        "4": {
+          "hash": "4e606a68bb1d555342025ecb0d5a895f5532ea2ffacb3c6cdf9ea3fed2186bf7"
+        }
+      }
+    },
+    "__admin__": {
+      "label": "MASTER",
+      "description": "全シナリオアクセス可能なマスターアカウント",
+      "master": true,
       "id_hash": "2d64917bb1792ffdd641eb4456832d0255ca0452fb67e1bd570842c7ea687f34",
       "levels": {
         "1": {
