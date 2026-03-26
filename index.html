@@ -846,8 +846,8 @@ function sbToggle(){
   var sb=document.getElementById('sidebar-right');
   var btn=document.getElementById('sb-toggle-btn');
   if(!sb)return;
-  sb.classList.toggle('open');
-  btn.textContent = sb.classList.contains('open') ? '✕ CLOSE' : '☰ MENU';
+  sb.classList.toggle('sb-open');
+  btn.textContent = sb.classList.contains('sb-open') ? '✕ CLOSE' : '☰ MENU';
 }
 </script>
 </body>
