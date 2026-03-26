@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>記録検索 ｜ 第弐拾七研究所</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mony&family=Noto+Serif+JP:wght@300;400;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060b06;--bg2:#0a110a;--bg3:#0e180e;--green:#7aab6e;--green-dim:#3d6636;--green-bright:#a8d49a;--amber:#c8a030;--amber-dim:#7a5e12;--red:#9b2020;--red-bright:#cc3333;--text:#8aab80;--text-dim:#4a6644;--text-bright:#c2ddb8;--border:#1e2e1a;--border2:#2a3e24;--scan-line:rgba(0,20,0,0.35);--ic:#e07848;--ic-dim:#7a3820;--en:#d45888;--en-dim:#6a2844;--ph:#9878cc;--ph-dim:#4a3868;--fl:#607888;--fl-dim:#2e3e48;--an:#608878;--an-dim:#2e4838;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Noto Serif JP',serif;font-size:15px;line-height:1.8;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,var(--scan-line) 0px,var(--scan-line) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:9999;opacity:.4}
+a{color:var(--green);text-decoration:none}a:hover{color:var(--green-bright)}
+.mono{font-family:'Share Tech Mono',monospace}
+.cls-tag{display:inline-block;border:1px solid;padding:2px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.12em;vertical-align:middle}
+.cls-ic{color:var(--ic);border-color:var(--ic-dim)}.cls-en{color:var(--en);border-color:var(--en-dim)}.cls-ph{color:var(--ph);border-color:var(--ph-dim)}.cls-fl{color:var(--fl);border-color:var(--fl-dim)}.cls-an{color:var(--an);border-color:var(--an-dim)}
+#site-header{border-bottom:1px solid var(--border2);background:var(--bg2);position:sticky;top:0;z-index:100}
+.header-top{display:flex;justify-content:space-between;align-items:center;padding:6px 32px;border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim)}
+.header-main{display:flex;align-items:center;justify-content:space-between;padding:16px 32px}
+.logo{display:flex;flex-direction:column}
+.logo-ja{font-family:'Noto Serif JP',serif;font-weight:700;font-size:22px;color:var(--green-bright);letter-spacing:.15em}
+.logo-en{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.2em}
+nav{display:flex;gap:32px;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.08em}
+nav a{color:var(--text-dim)}nav a:hover{color:var(--green-bright)}
+.clearance-badge{font-family:'Share Tech Mono',monospace;font-size:10px;border:1px solid var(--green-dim);padding:4px 10px;color:var(--green-dim);letter-spacing:.1em}
+.search-wrap{padding:32px 40px;border-bottom:1px solid var(--border2);background:var(--bg2)}
+.search-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.2em;margin-bottom:10px}
+.search-row{display:flex;gap:10px;align-items:center}
+.search-input{flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--green-bright);font-family:'Share Tech Mono',monospace;font-size:14px;padding:10px 16px;outline:none;max-width:600px}
+.search-input:focus{border-color:var(--green-dim)}
+.search-btn{background:transparent;border:1px solid var(--green-dim);color:var(--green);font-family:'Share Tech Mono',monospace;font-size:12px;padding:10px 24px;cursor:pointer;letter-spacing:.1em}
+.search-btn:hover{background:var(--green-dim)}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.filter-btn{background:none;border:1px solid var(--border2);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:10px;padding:3px 10px;cursor:pointer;border-radius:2px}
+.filter-btn.active{background:var(--green-dim);border-color:var(--green);color:var(--green-bright)}
+.results-wrap{padding:32px 40px}
+.results-header{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:.1em;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:10px}
+.result-card{background:var(--bg2);border-left:3px solid var(--border);padding:20px 24px;margin-bottom:2px;display:flex;gap:20px;align-items:flex-start;transition:background .15s;text-decoration:none;color:inherit}
+.result-card:hover:not(.locked){background:var(--bg3);border-left-color:var(--green-dim)}
+.result-card.locked{opacity:.55;cursor:default}
+.result-left{flex-shrink:0;width:80px;text-align:center}
+.result-type{display:block;margin-bottom:6px}
+.result-id{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);word-break:break-all}
+.result-body{flex:1}
+.result-title{font-family:'Noto Serif JP',serif;font-size:16px;color:var(--green-bright);margin-bottom:6px;line-height:1.4}
+.result-title.locked-title{color:var(--red-bright)!important}
+.result-summary{font-size:13px;color:var(--text-dim);line-height:1.8}
+.result-meta{display:flex;gap:12px;flex-wrap:wrap;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);margin-top:8px}
+.result-locked-msg{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--red);margin-top:6px}
+.highlight{color:var(--amber)}
+.no-results{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text-dim);padding:60px 0;text-align:center;letter-spacing:.1em}
+footer{background:var(--bg2);border-top:1px solid var(--border2);padding:20px 40px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);text-align:adding:20px 40px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);text-align:center}
+@media(max-width:700px){.search-wrap,.results-wrap{padding:20px}.header-main{flex-direction:column;gap:12px}nav{flex-wrap:wrap;gap:12px}.result-card{flex-direction:column}.result-left{width:auto;display:flex;gap:10px;align-items:center}}
+</style>
+</head>
+<body>
+<header id="site-header">
+  <div class="header-top mono">
+    <span>INS27-ARCHIVE / SEARCH</span>
+    <span id="clock">--:--:--</span>
+  </div>
+  <div class="header-main">
+    <div class="logo">
+      <a href="index.html"><span class="logo-ja">第弐拾七研究所</span></a>
+      <span class="logo-en">THE 27th INSTITUTE — RECORD SEARCH</span>
+    </div>
+    <nav><a href="index.html">← アーカイブ</a></nav>
+    <div class="clearance-badge" id="badge">CLEARANCE : LEVEL-0</div>
+  </div>
+</header>
+
+<div class="search-wrap">
+  <div class="search-label">// 記録全文検索 — ARCHIVE SEARCH</div>
+  <div class="search-row">
+    <input type="text" class="search-input mono" id="search-input" placeholder="キーワードを入力 (タイトル・ID・概要・担当者)" autocomplete="off">
+    <button class="search-btn" onclick="doSearch()">&#x25B6; 検索</button>
+  </div>
+  <div class="filter-row">
+    <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);margin-right:4px">TYPE:</span>
+    <button class="filter-btn active" data-type="ALL" onclick="setFilter(this)">ALL</button>
+    <button class="filter-btn" data-type="IC" onclick="setFilter(this)">IC</button>
+    <button class="filter-btn" data-type="EN" onclick="setFilter(this)">EN</button>
+    <button class="filter-btn" data-type="PH" onclick="setFilter(this)">PH</button>
+    <button class="filter-btn" data-type="AN" onclick="setFilter(this)">AN</button>
+    <button class="filter-btn" data-type="FL" onclick="setFilter(this)">FL</button>
+  </div>
+</div>
+
+<div class="results-wrap">
+  <div class="results-header" id="results-header">キーワードを入力して検索してください</div>
+  <div id="results-list"></div>
+</div>
+
+<footer>&#169; 第弐拾七研究所 / THE 27th INSTITUTE &nbsp;|&nbsp; <a href="index.html">アーカイブトップ</a></footer>
+
+<script>
+var DATA_BASE = 'data/';
+var DATA = { articles: null, vault: null };
+var SK = 'ins27_auth', SH = 12;
+var currentLevel = 0, currentScenario = null;
+var activeFilter = 'ALL';
+
+function getAuth() {
+  try {
+    var r = localStorage.getItem(SK);
+    if (!r) return { lv: 0, scenario: null };
+    var s = JSON.parse(r);
+    if (Date.now() - s.ts > SH * 36e5) { localStorage.removeItem(SK); return { lv: 0, scenario: null }; }
+    return { lv: s.lv || 0, scenario: s.scenario || null };
+  } catch(e) { return { lv: 0, scenario: null }; }
+}
+var _a = getAuth(); currentLevel = _a.lv; currentScenario = _a.scenario;
+
+function updateBadge() {
+  var b = document.getElementById('badge');
+  var scLabel = currentScenario && DATA.vault && DATA.vault.scenarios && DATA.vault.scenarios[currentScenario] ? DATA.vault.scenarios[currentScenario].label : null;
+  b.textContent = scLabel ? scLabel + ' / LV-' + currentLevel : 'CLEARANCE : LEVEL-' + currentLevel;
+  b.style.borderColor = currentLevel >= 2 ? 'var(--green-bright)' : currentLevel >= 1 ? 'var(--green)' : 'var(--green-dim)';
+  b.style.color = currentLevel >= 2 ? 'var(--green-bright)' : currentLevel >= 1 ? 'var(--green)' : 'var(--green-dim)';
+}
+
+function isLocked(a) {
+  var lv = a.level || 0, sc = a.scenario || null;
+  if (lv === 0 && !sc) return false;
+  if (!currentScenario) return lv > 0;
+  if (sc && sc !== currentScenario) return lv > 0;
+  return lv > currentLevel;
+}
+
+function esc(s) { if (!s) return ''; var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+function highlight(text, query) {
+  if (!query || !text) return esc(text || '');
+  var escaped = esc(text);
+  var re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+  return escaped.replace(re, '<span class="highlight">$1</span>');
+}
+
+Promise.all([
+  fetch(DATA_BASE + 'articles-index.json?v=' + Date.now()).then(function(r) { return r.json(); }).then(function(d) { DATA.articles = d; }),
+  fetch(DATA_BASE + 'vault.json?v=' + Date.now()).then(function(r) { return r.json(); }).then(function(d) { DATA.vault = d; })
+]).then(function() {
+  updateBadge();
+  var params = new URLSearchParams(location.search);
+  var q = params.get('q');
+  if (q) { document.getElementById('search-input').value = q; doSearch(); }
+}).catch(function(e) { console.error(e); });
+
+function setFilter(btn) {
+  document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  activeFilter = btn.dataset.type;
+  var q = document.getElementById('search-input').value.trim();
+  if (q) doSearch();
+}
+
+function doSearch() {
+  var q = document.getElementById('search-input').value.trim();
+  var header = document.getElementById('results-header');
+  var list = document.getElementById('results-list');
+  if (!q) { header.textContent = 'キーワードを入力して検索してください'; list.innerHTML = ''; return; }
+  if (!DATA.articles) { header.textContent = 'データ読み込み中...'; return; }
+  var all = DATA.articles.articles || [];
+  if (activeFilter !== 'ALL') all = all.filter(function(a) { return a.type === activeFilter; });
+  var qLower = q.toLowerCase();
+  var results = all.filter(function(a) {
+    return (a.title || '').toLowerCase().includes(qLower) ||
+           (a.id || '').toLowerCase().includes(qLower) ||
+           (a.summary || '').toLowerCase().includes(qLower) ||
+           (a.type || '').toLowerCase().includes(qLower) ||
+           (a.assignee || '').toLowerCase().includes(qLower) ||
+           (a.department || '').toLowerCase().includes(qLower);
+  });
+  history.replaceState(null, '', '?q=' + encodeURIComponent(q));
+  renderResults(results, q);
+}
+
+function renderResults(results, q) {
+  var header = document.getElementById('results-header');
+  var list = document.getElementById('results-list');
+  var filterStr = activeFilter !== 'ALL' ? ' / TYPE: ' + activeFilter : '';
+  header.textContent = '検索結果: ' + results.length + '件 / クエリ: "' + q + '"' + filterStr;
+  if (!results.length) { list.innerHTML = '<div class="no-results">&#x25AE; 該当する記録は見つかりませんでした</div>'; return; }
+  var tc = { IC: 'ic', EN: 'en', PH: 'ph', FL: 'fl', AN: 'an' };
+  var html = '';
+  results.forEach(function(a) {
+    var locked = isLocked(a);
+    var typeC = tc[a.type] || 'fl';
+    var borderColor = 'var(--' + typeC + '-dim)';
+    html += '<a ' + (locked ? '' : 'href="articles/' + a.id + '.html"') + ' class="result-card' + (locked ? ' locked' : '') + '"' + (locked ? ' onclick="return false"' : '') + ' style="border-left-color:' + borderColor + '">';
+    html += '<div class="result-left">';
+    html += '<span class="cls-tag cls-' + typeC + ' result-type">' + esc(a.type) + '</span>';
+    html += '<span class="result-id">' + esc(a.id) + '</span>';
+    html += '</div>';
+    html += '<div class="result-body">';
+    html += '<div class="result-title' + (locked ? ' locked-title' : '') + '">';
+    html += locked ? '&#x29D0; ' + esc(a.title) : highlight(a.title, q);
+    html += '</div>';
+    if (!locked) {
+      var summary = (a.summary || '').substring(0, 140) + (a.summary && a.summary.length > 140 ? '…' : '');
+      html += '<div class="result-summary">' + highlight(summary, q) + '</div>';
+    } else {
+      html += '<div class="result-locked-msg">&#x29D0; ACCESS RESTRICTED — Level ' + (a.level || 0) + ' required</div>';
+    }
+    html += '<div class="result-meta">';
+    if (a.department) html += '<span>' + esc(a.department) + '</span>';
+    if (a.assignee) html += '<span>担当: ' + esc(a.assignee) + '</span>';
+    if (a.first_report) html += '<span>' + esc(a.first_report) + '</span>';
+    if (a.scenario && a.scenario !== 'public') html += '<span style="color:var(--amber)">' + esc(a.scenario) + '</span>';
+    html += '<span>Lv.' + (a.level || 0) + '</span>';
+    html += '</div></div></a>';
+  });
+  list.innerHTML = html;
+}
+
+document.getElementById('search-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') doSearch(); });
+
+function uc() { var n = new Date; document.getElementById('clock').textContent = String(n.getHours()).padStart(2,'0') + ' : ' + String(n.getMinutes()).padStart(2,'0') + ' : ' + String(n.getSeconds()).padStart(2,'0'); }
+setInterval(uc, 1000); uc();
+</script>
+</body>
+</html>
