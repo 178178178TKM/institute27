@@ -186,7 +186,8 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:40px 40
 <div class="gate-icon">⟐</div>
 <div class="gate-title">ACCESS RESTRICTED</div>
 <div id="auth-level-info"></div>
-<div class="gate-desc">アクセスコードを入力してください。</div>
+<div class="gate-desc">IDカードとアクセスコードを入力してください。</div>
+<div class="level-input-group"><input type="text" class="level-input" placeholder="ID CARD" id="id-input" autocomplete="off"></div>
 <div class="level-input-group"><input type="password" class="level-input" placeholder="ACCESS CODE" id="pw-input" autocomplete="off"></div>
 <button class="level-submit" onclick="attemptAuth()">▶ 認証 / AUTHENTICATE</button>
 <p id="auth-result"></p>
@@ -677,7 +678,7 @@ document.getElementById('auth-overlay').classList.add('active');
 }
 function closeAuth(){document.getElementById('auth-overlay').classList.remove('active');pendingArticle=null}
 async function sha256(msg){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('ins27:'+msg));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('')}
-async function attemptAuth(){var pw=document.getElementById('pw-input').value.trim(),r=document.getElementById('auth-result');r.style.color='var(--text-dim)';if(!pw){r.textContent='⚠ コードを入力してください';r.style.color='var(--amber)';return;}var hash=await sha256(pw);var vault=DATA.vault;var granted=0;if(vault&&vault.tiers){if(vault.tiers.classified&&vault.tiers.classified.hash&&hash===vault.tiers.classified.hash)granted=4;else if(vault.tiers.internal&&vault.tiers.internal.hash&&hash===vault.tiers.internal.hash)granted=2;}if(granted>0){currentLevel=granted;setAuth(currentLevel);applyLevelStyling();r.style.color='var(--green)';r.innerHTML='認証成功 — <span style="color:var(--green-bright)">LEVEL '+granted+' GRANTED</span>';setTimeout(closeAuth,1000);}else{r.textContent='⚠ 認証失敗 — アクセスコードが無効です';r.style.color='var(--red-bright)';}}
+async function attemptAuth(){var id=document.getElementById('id-input').value.trim(),pw=document.getElementById('pw-input').value.trim(),r=document.getElementById('auth-result');r.style.color='var(--text-dim)';if(!id||!pw){r.textContent='⚠ IDカードとコードを入力してください';r.style.color='var(--amber)';return}var idHash=await sha256(id),pwHash=await sha256(pw),vault=DATA.vault;if(!vault||idHash!==vault.admin_id_hash){r.textContent='⚠ 認証失敗 — IDが無効です';r.style.color='var(--red-bright)';return}var granted=0,tiers=vault.tiers||{};if(tiers.level4&&pwHash===tiers.level4.hash)granted=4;else if(tiers.level3&&pwHash===tiers.level3.hash)granted=3;else if(tiers.level2&&pwHash===tiers.level2.hash)granted=2;else if(tiers.level1&&pwHash===tiers.level1.hash)granted=1;if(granted>0){currentLevel=granted;setAuth(currentLevel);applyLevelStyling();r.style.color='var(--green)';r.innerHTML='認証成功 — <span style="color:var(--green-bright)">LEVEL '+granted+' GRANTED</span>';setTimeout(closeAuth,1200);}else{r.textContent='⚠ 認証失敗 — アクセスコードが無効です';r.style.color='var(--red-bright)';}}
 document.getElementById('auth-overlay').addEventListener('click',function(e){if(e.target===this)closeAuth()});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAuth()});
 </script>
