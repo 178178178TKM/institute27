@@ -1,19 +1,30 @@
 {
-  "version": 1,
+  "version": 2,
+  "admin_id_hash": "2d64917bb1792ffdd641eb4456832d0255ca0452fb67e1bd570842c7ea687f34",
   "tiers": {
-    "internal": {
-      "label": "èª¿æ»å¡ã¯ãªã¢ã©ã³ã¹",
-      "description": "Level 1-2 è¨é²ã¸ã®ã¢ã¯ã»ã¹",
+    "level1": {
+      "label": "Level 1",
       "min_level": 1,
-      "max_level": 2,
-      "hash": "9e3b074b00420995134b8409249a41fba0614707edb35f7c0e25538fb83bd453"
+      "max_level": 1,
+      "hash": "1e33fc86f8c22f0b3ba9fbfb4dbb2daefa38262f74a555bee117e35047bb5828"
     },
-    "classified": {
-      "label": "æ©å¯ã¯ãªã¢ã©ã³ã¹",
-      "description": "Level 3-4 è¨é²ã¸ã®ã¢ã¯ã»ã¹",
+    "level2": {
+      "label": "Level 2",
+      "min_level": 2,
+      "max_level": 2,
+      "hash": "9020dc25c946de782918c99a9cb677502c5ebb8db4860fa8fd31ebd60d63247a"
+    },
+    "level3": {
+      "label": "Level 3",
       "min_level": 3,
+      "max_level": 3,
+      "hash": "9e19a5fb8e8ba5176611a632878532fc7229e68b654cf781d818f02de72611c4"
+    },
+    "level4": {
+      "label": "Level 4",
+      "min_level": 4,
       "max_level": 4,
-      "hash": "0441efbe5b873effd4b1c5f649f4fb1519e5d2bbea07f941ae5ee71a14ec4b3b"
+      "hash": "4e606a68bb1d555342025ecb0d5a895f5532ea2ffacb3c6cdf9ea3fed2186bf7"
     }
   }
 }
