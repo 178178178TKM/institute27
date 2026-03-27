@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>暗号化ツール ｜ INS27</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Serif+JP:wght@300;400;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060b06;--bg2:#0a110a;--bg3:#0e180e;--green:#7aab6e;--green-dim:#3d6636;--green-bright:#a8d49a;--amber:#c8a030;--amber-dim:#7a5e12;--red:#9b2020;--red-bright:#cc3333;--text:#8aab80;--text-dim:#4a6644;--text-bright:#c2ddb8;--border:#1e2e1a;--border2:#2a3e24}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;line-height:1.8;padding:24px}
+h1{font-family:'Noto Serif JP',serif;font-size:20px;color:var(--green-bright);margin-bottom:4px}
+h2{font-size:14px;color:var(--amber);letter-spacing:.15em;margin:24px 0 12px;border-bottom:1px solid var(--border);padding-bottom:8px}
+.subtitle{font-size:11px;color:var(--text-dim);letter-spacing:.1em;margin-bottom:24px}
+.section{background:var(--bg2);border:1px solid var(--border2);padding:20px;margin-bottom:16px}
+label{display:block;font-size:11px;color:var(--text-dim);letter-spacing:.1em;margin-bottom:4px}
+input[type=text],input[type=password]{width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--border2);color:var(--green-bright);font-family:'Share Tech Mono',monospace;font-size:13px;outline:none;margin-bottom:12px}
+input:focus{border-color:var(--green)}
+button{padding:10px 20px;background:transparent;border:1px solid var(--green-dim);color:var(--green);font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.15em;cursor:pointer;transition:all .2s;margin-right:8px;margin-bottom:8px}
+button:hover{background:var(--green-dim);color:var(--green-bright)}
+button:disabled{opacity:.4;cursor:default}
+button.btn-danger{border-color:var(--red);color:var(--red-bright)}
+button.btn-danger:hover{background:var(--red);color:#fff}
+button.btn-amber{border-color:var(--amber-dim);color:var(--amber)}
+button.btn-amber:hover{background:var(--amber-dim);color:var(--amber)}
+.log{background:var(--bg);border:1px solid var(--border);padding:12px;max-height:300px;overflow-y:auto;font-size:11px;line-height:1.8;color:var(--text-dim);white-space:pre-wrap;margin-top:12px}
+.log .ok{color:var(--green)}.log .err{color:var(--red-bright)}.log .info{color:var(--amber)}
+table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px}
+th{text-align:left;padding:6px 8px;border-bottom:1px solid var(--border2);color:var(--amber);letter-spacing:.1em;font-weight:normal}
+td{padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-dim)}
+tr:hover td{background:var(--bg3)}
+.lvl-0{color:var(--green)}.lvl-1{color:var(--amber)}.lvl-2{color:#c89030}.lvl-3{color:var(--red-bright)}.lvl-4{color:#ff4444}
+.encrypted{color:var(--red-bright)}.unencrypted{color:var(--green)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<h1>◈ INS27 暗号化ツール</h1>
+<div class="subtitle">記事JSONをレベル別パスワードでAES-256-GCM暗号化</div>
+
+<div class="section">
+  <h2>1. GitHub PAT</h2>
+  <label>Personal Access Token</label>
+  <input type="password" id="pat" placeholder="ghp_... or github_pat_...">
+  <button id="btn-load">▶ 記事一覧を読込</button>
+</div>
+
+<div class="section">
+  <h2>2. レベル別パスワード設定</h2>
+  <p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">Level 0 (PUBLIC) は暗号化しません。Level 1〜4 にパスワードを設定してください。</p>
+  <div class="grid-2">
+    <div>
+      <label>Level 1 — INTERNAL</label>
+      <input type="text" id="pw-1" placeholder="Level 1 パスワード">
+    </div>
+    <div>
+      <label>Level 2 — RESTRICTED</label>
+      <input type="text" id="pw-2" placeholder="Level 2 パスワード">
+    </div>
+    <div>
+      <label>Level 3 — CLASSIFIED</label>
+      <input type="text" id="pw-3" placeholder="Level 3 パスワード">
+    </div>
+    <div>
+      <label>Level 4 — TOP SECRET</label>
+      <input type="text" id="pw-4" placeholder="Level 4 パスワード">
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>3. 記事一覧</h2>
+  <div id="article-list"><span style="color:var(--text-dim)">まだ読み込まれていません</span></div>
+</div>
+
+<div class="section">
+  <h2>4. 実行</h2>
+  <button id="btn-encrypt" class="btn-amber" disabled>◈ 未暗号化の記事を暗号化</button>
+  <button id="btn-decrypt" class="btn-danger" disabled>◇ 全記事を復号（暗号解除）</button>
+  <button id="btn-push" disabled>⬆ GitHubにPush</button>
+  <div id="log" class="log"></div>
+</div>
+
+<script>
+var REPO = '178178178TKM/institute27';
+var BRANCH = 'main';
+var articlesIndex = null;
+var articlesData = {};
+var modifiedArticles = {};
+var PAT = '';
+
+function log(msg, cls) {
+  var el = document.getElementById('log');
+  var span = document.createElement('span');
+  span.className = cls || '';
+  span.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg + '\n';
+  el.appendChild(span);
+  el.scrollTop = el.scrollHeight;
+}
+
+/* === CRYPTO === */
+function b64ToArr(b64) {
+  var bin = atob(b64);
+  var arr = new Uint8Array(bin.length);
+  for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return arr;
+}
+function arrToB64(arr) {
+  var bin = '';
+  for (var i = 0; i < arr.length; i++) bin += String.fromCharCode(arr[i]);
+  return btoa(bin);
+}
+
+async function deriveKey(password, salt) {
+  var enc = new TextEncoder();
+  var km = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt: salt, iterations: 100000, hash: 'SHA-256' },
+    km, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
+  );
+}
+
+async function encryptData(plaintext, password) {
+  var enc = new TextEncoder();
+  var salt = crypto.getRandomValues(new Uint8Array(16));
+  var iv = crypto.getRandomValues(new Uint8Array(12));
+  var key = await deriveKey(password, salt);
+  var ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, enc.encode(plaintext));
+  return { ct: arrToB64(new Uint8Array(ct)), iv: arrToB64(iv), salt: arrToB64(salt) };
+}
+
+async function decryptData(cipherObj, password) {
+  var salt = b64ToArr(cipherObj.salt);
+  var iv = b64ToArr(cipherObj.iv);
+  var ct = b64ToArr(cipherObj.ct);
+  var key = await deriveKey(password, salt);
+  var plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, ct);
+  return new TextDecoder().decode(plain);
+}
+
+/* === UTF-8 Base64 for GitHub API === */
+function utf8b64(str) {
+  var bytes = new TextEncoder().encode(str);
+  var bin = '';
+  for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin);
+}
+
+/* === GITHUB API === */
+async function ghGet(path) {
+  var r = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path + '?ref=' + BRANCH, {
+    headers: { Authorization: 'Bearer ' + PAT, Accept: 'application/vnd.github.v3+json' }
+  });
+  return r.json();
+}
+
+async function ghGetRaw(path) {
+  var r = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path + '?ref=' + BRANCH, {
+    headers: { Authorization: 'Bearer ' + PAT, Accept: 'application/vnd.github.v3.raw' }
+  });
+  return r.text();
+}
+
+async function ghPut(path, content, message) {
+  var existing = await ghGet(path);
+  var sha = existing.sha;
+  var r = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
+    method: 'PUT',
+    headers: { Authorization: 'Bearer ' + PAT, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: message, content: utf8b64(content), sha: sha, branch: BRANCH })
+  });
+  return r.json();
+}
+
+/* === LOAD ARTICLES === */
+document.getElementById('btn-load').addEventListener('click', async function() {
+  PAT = document.getElementById('pat').value.trim();
+  if (!PAT) { log('PATを入力してください', 'err'); return; }
+
+  log('記事インデックスを読込中...', 'info');
+
+  try {
+    var idxRaw = await ghGetRaw('data/articles-index.json');
+    articlesIndex = JSON.parse(idxRaw);
+    var articles = articlesIndex.articles || articlesIndex;
+    log('インデックス取得: ' + articles.length + '件', 'ok');
+
+    // Load each article
+    var loaded = 0;
+    for (var i = 0; i < articles.length; i++) {
+      var a = articles[i];
+      try {
+        var raw = await ghGetRaw('data/articles/' + a.id + '.json');
+        articlesData[a.id] = JSON.parse(raw);
+        loaded++;
+        if (loaded % 5 === 0) log('  ... ' + loaded + '/' + articles.length + ' 読込済', 'info');
+      } catch(e) {
+        log('  ✕ ' + a.id + ': 読込エラー', 'err');
+      }
+    }
+
+    log('全 ' + loaded + ' 記事の読込完了', 'ok');
+    renderArticleList(articles);
+    document.getElementById('btn-encrypt').disabled = false;
+    document.getElementById('btn-decrypt').disabled = false;
+  } catch(e) {
+    log('エラー: ' + e.message, 'err');
+  }
+});
+
+/* === RENDER ARTICLE LIST === */
+function renderArticleList(articles) {
+  var html = '<table><tr><th>ID</th><th>LEVEL</th><th>TITLE</th><th>STATUS</th></tr>';
+  articles.forEach(function(a) {
+    var data = articlesData[a.id];
+    var isEnc = data && data.encrypted;
+    var statusText = isEnc ? '◈ 暗号化済' : '◇ 平文';
+    var statusCls = isEnc ? 'encrypted' : 'unencrypted';
+    html += '<tr>' +
+      '<td>' + a.id + '</td>' +
+      '<td class="lvl-' + a.level + '">Level ' + a.level + '</td>' +
+      '<td>' + (a.title || '').substring(0, 30) + '</td>' +
+      '<td class="' + statusCls + '">' + statusText + '</td>' +
+      '</tr>';
+  });
+  html += '</table>';
+  document.getElementById('article-list').innerHTML = html;
+}
+
+/* === ENCRYPT ALL UNENCRYPTED (LEVEL 1+) === */
+document.getElementById('btn-encrypt').addEventListener('click', async function() {
+  var passwords = {};
+  for (var lv = 1; lv <= 4; lv++) {
+    var pw = document.getElementById('pw-' + lv).value.trim();
+    if (pw) passwords[lv] = pw;
+  }
+
+  var articles = (articlesIndex.articles || articlesIndex);
+  var toEncrypt = articles.filter(function(a) {
+    var data = articlesData[a.id];
+    return data && !data.encrypted && a.level >= 1 && passwords[a.level];
+  });
+
+  if (toEncrypt.length === 0) {
+    log('暗号化対象の記事がありません（パスワード未設定 or すでに暗号化済み）', 'info');
+    return;
+  }
+
+  log('暗号化開始: ' + toEncrypt.length + '件', 'info');
+  modifiedArticles = {};
+
+  for (var i = 0; i < toEncrypt.length; i++) {
+    var a = toEncrypt[i];
+    var data = articlesData[a.id];
+    var pw = passwords[a.level];
+
+    try {
+      // Separate metadata (stays unencrypted) from content (gets encrypted)
+      var metadata = {
+        id: data.id,
+        type: data.type,
+        type_label: data.type_label,
+        title: data.title,
+        level: data.level
+      };
+
+      // Everything else is content to encrypt
+      var content = {};
+      Object.keys(data).forEach(function(k) {
+        if (!metadata.hasOwnProperty(k)) content[k] = data[k];
+      });
+
+      var cipher = await encryptData(JSON.stringify(content), pw);
+
+      var encrypted = Object.assign({}, metadata, {
+        encrypted: true,
+        cipher: cipher
+      });
+
+      articlesData[a.id] = encrypted;
+      modifiedArticles[a.id] = encrypted;
+      log('  ◈ ' + a.id + ' (Level ' + a.level + ') 暗号化完了', 'ok');
+    } catch(e) {
+      log('  ✕ ' + a.id + ' 暗号化エラー: ' + e.message, 'err');
+    }
+  }
+
+  log('暗号化完了: ' + Object.keys(modifiedArticles).length + '件', 'ok');
+  renderArticleList(articles);
+  document.getElementById('btn-push').disabled = false;
+});
+
+/* === DECRYPT ALL === */
+document.getElementById('btn-decrypt').addEventListener('click', async function() {
+  var passwords = {};
+  for (var lv = 1; lv <= 4; lv++) {
+    var pw = document.getElementById('pw-' + lv).value.trim();
+    if (pw) passwords[lv] = pw;
+  }
+
+  var articles = (articlesIndex.articles || articlesIndex);
+  var toDecrypt = articles.filter(function(a) {
+    var data = articlesData[a.id];
+    return data && data.encrypted && passwords[a.level];
+  });
+
+  if (toDecrypt.length === 0) {
+    log('復号対象の記事がありません', 'info');
+    return;
+  }
+
+  log('復号開始: ' + toDecrypt.length + '件', 'info');
+  modifiedArticles = {};
+
+  for (var i = 0; i < toDecrypt.length; i++) {
+    var a = toDecrypt[i];
+    var data = articlesData[a.id];
+    var pw = passwords[a.level];
+
+    try {
+      var plaintext = await decryptData(data.cipher, pw);
+      var content = JSON.parse(plaintext);
+      var full = { id: data.id, type: data.type, type_label: data.type_label, title: data.title, level: data.level };
+      Object.assign(full, content);
+
+      articlesData[a.id] = full;
+      modifiedArticles[a.id] = full;
+      log('  ◇ ' + a.id + ' (Level ' + a.level + ') 復号完了', 'ok');
+    } catch(e) {
+      log('  ✕ ' + a.id + ' 復号エラー（パスワードが違う？）: ' + e.message, 'err');
+    }
+  }
+
+  log('復号完了: ' + Object.keys(modifiedArticles).length + '件', 'ok');
+  renderArticleList(articles);
+  document.getElementById('btn-push').disabled = false;
+});
+
+/* === PUSH TO GITHUB === */
+document.getElementById('btn-push').addEventListener('click', async function() {
+  var ids = Object.keys(modifiedArticles);
+  if (ids.length === 0) { log('Push対象がありません', 'info'); return; }
+
+  log('GitHub Push開始: ' + ids.length + '件', 'info');
+
+  for (var i = 0; i < ids.length; i++) {
+    var id = ids[i];
+    var data = modifiedArticles[id];
+    var json = JSON.stringify(data, null, 2);
+    var path = 'data/articles/' + id + '.json';
+    var action = data.encrypted ? 'encrypt' : 'decrypt';
+
+    try {
+      var result = await ghPut(path, json, action + ': ' + id + ' via encrypt-tool');
+      if (result.commit) {
+        log('  ⬆ ' + id + ' → ' + result.commit.sha.substring(0, 8), 'ok');
+      } else {
+        log('  ✕ ' + id + ' Push失敗: ' + (result.message || 'unknown'), 'err');
+      }
+    } catch(e) {
+      log('  ✕ ' + id + ' Pushエラー: ' + e.message, 'err');
+    }
+  }
+
+  modifiedArticles = {};
+  document.getElementById('btn-push').disabled = true;
+  log('Push完了', 'ok');
+});
+
+// Load PAT from localStorage if available
+(function() {
+  var saved = localStorage.getItem('ins27_pat');
+  if (saved) document.getElementById('pat').value = saved;
+})();
+</script>
+</body>
+</html>
