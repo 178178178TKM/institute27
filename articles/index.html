@@ -482,7 +482,11 @@ updateClock();
 fetch(DATA_BASE + ARTICLE_ID + '.json?v=' + Date.now())
   .then(function(r) {
     if (!r.ok) throw new Error('Article not found');
-    return r.json();
+    return r.text();
+  })
+  .then(function(text) {
+    var clean = text.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
+    return JSON.parse(clean);
   })
   .then(function(data) {
     if (data.encrypted) {
