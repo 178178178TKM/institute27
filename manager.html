@@ -581,7 +581,7 @@ function renderVaultScenarios(){
     html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">';
     html+='<div style="font-size:10px;letter-spacing:2px;color:var(--accent)">'+esc(sc.label||sk)+'</div>';
     html+='<div style="font-size:10px;color:var(--fg3)">key: '+esc(sk)+'</div>';
-    if(!isPub)html+='<button class="btn btn-s btn-d" onclick="removeScenario(''+sk+'')">削除</button>';
+    if(!isPub)html+='<button class="btn btn-s btn-d" onclick="removeScenario(\''+sk+'\')">削除</button>';
     html+='</div>';
     if(!isPub){
       html+='<div class="fr2" style="margin-bottom:10px">';
