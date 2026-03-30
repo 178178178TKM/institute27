@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<rect width="32" height="32" fill="#060b06"/>
+<rect x="1" y="1" width="30" height="30" fill="none" stroke="#3d6636" stroke-width="1.5"/>
+<text x="16" y="13" text-anchor="middle" font-family="monospace" font-size="7" fill="#7aab6e" letter-spacing="0.5">INS</text>
+<text x="16" y="24" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold" fill="#a8d49a" letter-spacing="1">27</text>
+<line x1="5" y1="15" x2="27" y2="15" stroke="#3d6636" stroke-width="0.5"/>
+</svg>
