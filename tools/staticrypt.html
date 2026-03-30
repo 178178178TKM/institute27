@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StatiCrypt ｜ INS27 ページ暗号化ツール</title>
+<style>
+:root{--bg:#060b06;--bg2:#0a110a;--bg3:#0e180e;--green:#7aab6e;--green-dim:#3d6636;--green-bright:#a8d49a;--amber:#c8a030;--amber-dim:#7a5e12;--red:#9b2020;--red-bright:#cc3333;--text:#8aab80;--text-dim:#4a6644;--text-bright:#c2ddb8;--border:#1e2e1a;--border2:#2a3e24}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;font-size:13px;line-height:1.7;padding:20px}
+h1{font-size:14px;letter-spacing:3px;color:var(--green-bright);margin-bottom:4px}
+.sub{font-size:10px;color:var(--text-dim);letter-spacing:1px;margin-bottom:24px}
+.section{background:var(--bg2);border:1px solid var(--border);padding:16px;margin-bottom:16px;border-radius:2px}
+h2{font-size:11px;letter-spacing:2px;color:var(--amber);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+label{display:block;font-size:10px;letter-spacing:1px;color:var(--text-dim);margin-bottom:4px}
+input[type="text"],input[type="password"],textarea,select{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text-bright);padding:8px 10px;font-family:inherit;font-size:12px;border-radius:2px;margin-bottom:10px}
+textarea{min-height:200px;resize:vertical}
+button{background:transparent;border:1px solid var(--green-dim);color:var(--green);padding:8px 16px;font-family:inherit;font-size:11px;letter-spacing:1px;cursor:pointer;border-radius:2px;margin-right:6px;margin-bottom:6px;transition:all .2s}
+button:hover{background:var(--green-dim);color:var(--green-bright)}
+button.btn-amber{border-color:var(--amber-dim);color:var(--amber)}
+button.btn-amber:hover{background:var(--amber-dim)}
+button.btn-red{border-color:var(--red);color:var(--red-bright)}
+button.btn-red:hover{background:var(--red)}
+.log{background:var(--bg);border:1px solid var(--border);padding:10px;max-height:200px;overflow-y:auto;font-size:10px;line-height:1.8;color:var(--text-dim);white-space:pre-wrap;margin-top:10px}
+.log .ok{color:var(--green)}.log .err{color:var(--red-bright)}.log .info{color:var(--amber)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr}}
+.tabs{display:flex;gap:0;margin-bottom:16px}
+.tab{padding:8px 16px;font-size:10px;letter-spacing:1px;cursor:pointer;border:1px solid var(--border);color:var(--text-dim);background:var(--bg)}
+.tab.on{background:var(--bg2);color:var(--green-bright);border-bottom-color:var(--bg2)}
+.tab-pnl{display:none}.tab-pnl.on{display:block}
+.preview-frame{background:#111;border:1px solid var(--border);padding:0;margin-top:10px;min-height:120px;max-height:400px;overflow:auto}
+.preview-frame iframe{width:100%;height:350px;border:none}
+.file-drop{border:2px dashed var(--border2);padding:30px;text-align:center;color:var(--text-dim);cursor:pointer;border-radius:4px;transition:border-color .2s}
+.file-drop:hover,.file-drop.drag{border-color:var(--green);color:var(--green)}
+.back-link{display:inline-block;margin-bottom:16px;color:var(--green-dim);font-size:11px;letter-spacing:1px;text-decoration:none}
+.back-link:hover{color:var(--green)}
+</style>
+</head>
+<body>
+
+<a href="../manager.html" class="back-link">&#9664; MANAGER</a>
+<h1>&#9670; STATICRYPT &#8212; PAGE ENCRYPTION TOOL</h1>
+<div class="sub">HTMLページをAES-256-GCMで暗号化し、パスワード付き自己復号ページを生成</div>
+
+<div class="section">
+<h2>1. 入力</h2>
+<div class="tabs">
+  <div class="tab on" onclick="switchTab('paste')">&#9998; ペースト</div>
+  <div class="tab" onclick="switchTab('file')">&#128193; ファイル</div>
+  <div class="tab" onclick="switchTab('github')">&#9741; GitHub取得</div>
+</div>
+<div class="tab-pnl on" id="pnl-paste">
+  <label>暗号化するHTMLソースをペースト</label>
+  <textarea id="input-html" placeholder="<!DOCTYPE html>&#10;<html>...</html>"></textarea>
+</div>
+<div class="tab-pnl" id="pnl-file">
+  <div class="file-drop" id="file-drop" onclick="document.getElementById('file-input').click()">
+    &#128194; HTMLファイルをドラッグ＆ドロップ、またはクリックして選択
+  </div>
+  <input type="file" id="file-input" accept=".html,.htm" style="display:none">
+</div>
+<div class="tab-pnl" id="pnl-github">
+  <label>GitHubリポジトリ内パス</label>
+  <div class="grid-2">
+    <input type="text" id="gh-path" placeholder="例: manager.html">
+    <button class="btn-amber" onclick="fetchFromGitHub()">&#9660; 取得</button>
+  </div>
+</div>
+<div style="font-size:10px;color:var(--text-dim);margin-top:4px" id="input-info"></div>
+</div>
+
+<div class="section">
+<h2>2. 暗号化設定</h2>
+<div class="grid-2">
+  <div>
+    <label>パスワード（16文字以上推奨）</label>
+    <input type="password" id="enc-password" placeholder="暗号化パスワード">
+  </div>
+  <div>
+    <label>パスワード確認</label>
+    <input type="password" id="enc-password2" placeholder="もう一度入力">
+  </div>
+</div>
+<div class="grid-2">
+  <div>
+    <label>ページタイトル（暗号化後に表示）</label>
+    <input type="text" id="enc-title" placeholder="Protected Page" value="RESTRICTED ACCESS &#124; INS27">
+  </div>
+  <div>
+    <label>パスワードヒント（任意）</label>
+    <input type="text" id="enc-hint" placeholder="ヒントを入力">
+  </div>
+</div>
+<label>認証画面のメッセージ</label>
+<input type="text" id="enc-msg" value="このページはアクセス制限されています。認証コードを入力してください。">
+<div style="margin-top:8px">
+  <label><input type="checkbox" id="enc-remember" checked> 「記憶する」オプションを表示（sessionStorage）</label>
+</div>
+</div>
+
+<div class="section">
+<h2>3. 実行</h2>
+<button onclick="doEncrypt()">&#9654; 暗号化</button>
+<button onclick="doDecryptTest()" class="btn-amber">&#9654; 復号テスト</button>
+<button onclick="doPreview()" class="btn-amber">&#128065; プレビュー</button>
+<div class="grid-2" style="margin-top:10px">
+  <button onclick="doDownload()">&#9660; ダウンロード</button>
+  <button onclick="doPush()">&#9650; GitHub Push</button>
+</div>
+<div class="log" id="log"></div>
+</div>
+
+<div class="section" id="output-section" style="display:none">
+<h2>4. 出力</h2>
+<label>暗号化済みHTML（<span id="output-size"></span>）</label>
+<textarea id="output-html" style="min-height:150px" readonly></textarea>
+<div class="preview-frame" id="preview-wrap" style="display:none"></div>
+</div>
+
+<script>
+var GH_REPO='178178178TKM/institute27';
+var GH_SK='ins27_pat';
+var _encryptedHTML='';
+
+function getPAT(){return localStorage.getItem(GH_SK)||''}
+function log(msg,cls){
+  var el=document.getElementById('log');
+  var d=document.createElement('div');
+  if(cls)d.className=cls;
+  d.textContent='['+new Date().toLocaleTimeString('ja-JP')+'] '+msg;
+  el.appendChild(d);el.scrollTop=el.scrollHeight;
+}
+
+/* === TABS === */
+function switchTab(id){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});
+  document.querySelectorAll('.tab-pnl').forEach(function(p){p.classList.remove('on')});
+  event.target.classList.add('on');
+  document.getElementById('pnl-'+id).classList.add('on');
+}
+
+/* === FILE INPUT === */
+document.getElementById('file-input').addEventListener('change',function(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    document.getElementById('input-html').value=ev.target.result;
+    document.getElementById('input-info').textContent='ファイル読込: '+f.name+' ('+Math.round(f.size/1024)+'KB)';
+    log('ファイル読込完了: '+f.name,'ok');
+    // switch to paste tab to show content
+    switchTabDirect('paste');
+  };
+  r.readAsText(f);
+});
+
+var drop=document.getElementById('file-drop');
+drop.addEventListener('dragover',function(e){e.preventDefault();drop.classList.add('drag')});
+drop.addEventListener('dragleave',function(){drop.classList.remove('drag')});
+drop.addEventListener('drop',function(e){
+  e.preventDefault();drop.classList.remove('drag');
+  var f=e.dataTransfer.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    document.getElementById('input-html').value=ev.target.result;
+    document.getElementById('input-info').textContent='ドロップ読込: '+f.name;
+    log('ファイル読込完了: '+f.name,'ok');
+    switchTabDirect('paste');
+  };
+  r.readAsText(f);
+});
+
+function switchTabDirect(id){
+  document.querySelectorAll('.tab').forEach(function(t,i){
+    t.classList.toggle('on',['paste','file','github'][i]===id);
+  });
+  document.querySelectorAll('.tab-pnl').forEach(function(p){p.classList.remove('on')});
+  document.getElementById('pnl-'+id).classList.add('on');
+}
+
+/* === GITHUB FETCH === */
+async function fetchFromGitHub(){
+  var path=document.getElementById('gh-path').value.trim();
+  if(!path){log('パスを入力してください','err');return}
+  var pat=getPAT();
+  if(!pat){log('PATが未設定です（manager.htmlで設定してください）','err');return}
+  log('GitHub取得中: '+path,'info');
+  try{
+    var url='https://api.github.com/repos/'+GH_REPO+'/contents/'+path;
+    var r=await fetch(url,{headers:{Authorization:'Bearer '+pat,Accept:'application/vnd.github.v3+json'}});
+    var d=await r.json();
+    if(!d.content){log('ファイルが見つかりません: '+(d.message||''),'err');return}
+    var bytes=Uint8Array.from(atob(d.content.replace(/\n/g,'')),function(c){return c.charCodeAt(0)});
+    var text=new TextDecoder().decode(bytes);
+    document.getElementById('input-html').value=text;
+    document.getElementById('input-info').textContent='GitHub取得: '+path+' ('+Math.round(text.length/1024)+'KB, SHA: '+d.sha.substring(0,8)+')';
+    log('取得完了: '+path+' ('+text.length+' bytes)','ok');
+    switchTabDirect('paste');
+  }catch(e){log('取得エラー: '+e.message,'err')}
+}
+
+/* === CRYPTO === */
+async function deriveKey(password,salt){
+  var enc=new TextEncoder();
+  var keyMaterial=await crypto.subtle.importKey('raw',enc.encode(password),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2',salt:salt,iterations:600000,hash:'SHA-256'},keyMaterial,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+}
+
+async function encryptContent(html,password){
+  var enc=new TextEncoder();
+  var salt=crypto.getRandomValues(new Uint8Array(16));
+  var iv=crypto.getRandomValues(new Uint8Array(12));
+  var key=await deriveKey(password,salt);
+  var ct=await crypto.subtle.encrypt({name:'AES-GCM',iv:iv},key,enc.encode(html));
+  return{
+    salt:btoa(String.fromCharCode.apply(null,salt)),
+    iv:btoa(String.fromCharCode.apply(null,iv)),
+    ct:btoa(String.fromCharCode.apply(null,new Uint8Array(ct)))
+  };
+}
+
+async function decryptContent(encrypted,password){
+  function b64ToArr(b){return Uint8Array.from(atob(b),function(c){return c.charCodeAt(0)})}
+  var salt=b64ToArr(encrypted.salt);
+  var iv=b64ToArr(encrypted.iv);
+  var ct=b64ToArr(encrypted.ct);
+  var key=await deriveKey(password,salt);
+  var pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:iv},key,ct);
+  return new TextDecoder().decode(pt);
+}
+
+/* === TEMPLATE === */
+function buildDecryptorPage(encrypted,title,message,hint,showRemember){
+  var tmpl='\
+<!DOCTYPE html>\n\
+<html lang="ja">\n\
+<head>\n\
+<meta charset="UTF-8">\n\
+<meta name="viewport" content="width=device-width, initial-scale=1.0">\n\
+<title>'+title.replace(/</g,'&lt;')+'</title>\n\
+<style>\n\
+*{margin:0;padding:0;box-sizing:border-box}\n\
+body{background:#060b06;color:#8aab80;font-family:"Courier New",monospace;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}\n\
+body::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,20,0,.35) 0px,transparent 1px,transparent 3px);pointer-events:none;z-index:9999}\n\
+.gate{background:#0a110a;border:1px solid #1e2e1a;padding:40px;max-width:440px;width:100%;text-align:center}\n\
+.gate h1{font-size:12px;letter-spacing:4px;color:#a8d49a;margin-bottom:6px}\n\
+.gate .ico{font-size:36px;margin-bottom:16px;color:#3d6636}\n\
+.gate .msg{font-size:11px;color:#4a6644;margin-bottom:20px;line-height:1.6}\n\
+.gate input{width:100%;background:#060b06;border:1px solid #2a3e24;color:#c2ddb8;padding:10px 12px;font-family:inherit;font-size:13px;text-align:center;letter-spacing:2px;margin-bottom:12px}\n\
+.gate input:focus{outline:none;border-color:#7aab6e}\n\
+.gate button{background:transparent;border:1px solid #3d6636;color:#7aab6e;padding:10px 24px;font-family:inherit;font-size:11px;letter-spacing:2px;cursor:pointer;width:100%;transition:all .2s}\n\
+.gate button:hover{background:#3d6636;color:#a8d49a}\n\
+.gate .hint{font-size:10px;color:#4a6644;margin-top:10px}\n\
+.gate .err{color:#cc3333;font-size:11px;margin-top:8px;display:none}\n\
+.gate .remember{font-size:10px;color:#4a6644;margin-bottom:12px;text-align:left}\n\
+.gate .remember input{width:auto;margin:0 6px 0 0;vertical-align:middle}\n\
+</style>\n\
+</head>\n\
+<body>\n\
+<div class="gate" id="gate">\n\
+<div class="ico">&#9670;</div>\n\
+<h1>ACCESS RESTRICTED</h1>\n\
+<div class="msg">'+message.replace(/</g,'&lt;')+'</div>\n\
+<input type="password" id="pwd" placeholder="ACCESS CODE" autocomplete="off" onkeydown="if(event.key===\'Enter\')decrypt()">\n\
+'+(showRemember?'<div class="remember"><label><input type="checkbox" id="rem"> このセッション中は記憶する</label></div>':'')+'\n\
+<button onclick="decrypt()">&#9654; AUTHENTICATE</button>\n\
+'+(hint?'<div class="hint">HINT: '+hint.replace(/</g,'&lt;')+'</div>':'')+'\n\
+<div class="err" id="err">&#9888; 認証コードが正しくありません</div>\n\
+</div>\n\
+<script>\n\
+var E='+JSON.stringify(encrypted)+';\n\
+function b64ToArr(b){return Uint8Array.from(atob(b),function(c){return c.charCodeAt(0)})}\n\
+async function deriveKey(p,s){\n\
+  var k=await crypto.subtle.importKey("raw",new TextEncoder().encode(p),"PBKDF2",false,["deriveKey"]);\n\
+  return crypto.subtle.deriveKey({name:"PBKDF2",salt:s,iterations:600000,hash:"SHA-256"},k,{name:"AES-GCM",length:256},false,["decrypt"]);\n\
+}\n\
+async function decrypt(){\n\
+  var pw=document.getElementById("pwd").value;\n\
+  if(!pw)return;\n\
+  try{\n\
+    var salt=b64ToArr(E.salt),iv=b64ToArr(E.iv),ct=b64ToArr(E.ct);\n\
+    var key=await deriveKey(pw,salt);\n\
+    var pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:iv},key,ct);\n\
+    var html=new TextDecoder().decode(pt);\n\
+    '+(showRemember?'if(document.getElementById("rem").checked){sessionStorage.setItem("_sc_"+location.pathname,pw)}':'')+'\n\
+    document.open();document.write(html);document.close();\n\
+  }catch(e){\n\
+    document.getElementById("err").style.display="block";\n\
+    document.getElementById("pwd").value="";\n\
+    document.getElementById("pwd").focus();\n\
+  }\n\
+}\n\
+'+(showRemember?'(function(){var sp=sessionStorage.getItem("_sc_"+location.pathname);if(sp){document.getElementById("pwd").value=sp;decrypt()}}())':'')+'\n\
+<\/script>\n\
+</body>\n\
+</html>';
+  return tmpl;
+}
+
+/* === ACTIONS === */
+async function doEncrypt(){
+  var html=document.getElementById('input-html').value;
+  if(!html){log('HTMLが入力されていません','err');return}
+  var pw=document.getElementById('enc-password').value;
+  var pw2=document.getElementById('enc-password2').value;
+  if(!pw){log('パスワードを入力してください','err');return}
+  if(pw!==pw2){log('パスワードが一致しません','err');return}
+  if(pw.length<8){log('パスワードが短すぎます（8文字以上推奨）','err');return}
+
+  var title=document.getElementById('enc-title').value||'Protected Page';
+  var msg=document.getElementById('enc-msg').value||'パスワードを入力してください。';
+  var hint=document.getElementById('enc-hint').value;
+  var remember=document.getElementById('enc-remember').checked;
+
+  log('暗号化開始... (PBKDF2 600k iterations + AES-256-GCM)','info');
+  try{
+    var encrypted=await encryptContent(html,pw);
+    _encryptedHTML=buildDecryptorPage(encrypted,title,msg,hint,remember);
+    document.getElementById('output-html').value=_encryptedHTML;
+    document.getElementById('output-size').textContent=Math.round(_encryptedHTML.length/1024)+'KB';
+    document.getElementById('output-section').style.display='block';
+    log('暗号化完了: '+html.length+' bytes → '+_encryptedHTML.length+' bytes','ok');
+  }catch(e){log('暗号化エラー: '+e.message,'err')}
+}
+
+async function doDecryptTest(){
+  if(!_encryptedHTML){log('先に暗号化を実行してください','err');return}
+  var pw=prompt('復号パスワードを入力:');
+  if(!pw)return;
+  log('復号テスト中...','info');
+  try{
+    // Extract encrypted data from output
+    var match=_encryptedHTML.match(/var E=(\{[^}]+\});/);
+    if(!match){log('暗号化データが見つかりません','err');return}
+    var enc=JSON.parse(match[1]);
+    var result=await decryptContent(enc,pw);
+    log('復号成功! ('+result.length+' bytes)','ok');
+    log('先頭100文字: '+result.substring(0,100)+'...','info');
+  }catch(e){log('復号失敗: パスワードが間違っているか、データが破損しています','err')}
+}
+
+function doPreview(){
+  if(!_encryptedHTML){log('先に暗号化を実行してください','err');return}
+  var wrap=document.getElementById('preview-wrap');
+  wrap.style.display='block';
+  wrap.innerHTML='<iframe id="preview-iframe"></iframe>';
+  var iframe=document.getElementById('preview-iframe');
+  iframe.srcdoc=_encryptedHTML;
+  log('プレビュー表示','info');
+}
+
+function doDownload(){
+  if(!_encryptedHTML){log('先に暗号化を実行してください','err');return}
+  var blob=new Blob([_encryptedHTML],{type:'text/html'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='encrypted_page.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  log('ダウンロード開始','ok');
+}
+
+function utf8b64(str){var b=new TextEncoder().encode(str);var r='';for(var i=0;i<b.length;i++)r+=String.fromCharCode(b[i]);return btoa(r)}
+
+async function doPush(){
+  if(!_encryptedHTML){log('先に暗号化を実行してください','err');return}
+  var pat=getPAT();
+  if(!pat){log('PATが未設定です','err');return}
+  var path=prompt('GitHubリポジトリ内の保存先パス:','encrypted/page.html');
+  if(!path)return;
+
+  log('GitHub Push: '+path,'info');
+  try{
+    var url='https://api.github.com/repos/'+GH_REPO+'/contents/'+path;
+    var h={Authorization:'Bearer '+pat,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'};
+    // Get existing SHA if file exists
+    var sha=null;
+    try{var gr=await fetch(url,{headers:h});var gd=await gr.json();if(gd.sha)sha=gd.sha}catch(e){}
+    var body={message:'Encrypt '+path+' via staticrypt tool',content:utf8b64(_encryptedHTML)};
+    if(sha)body.sha=sha;
+    var pr=await fetch(url,{method:'PUT',headers:h,body:JSON.stringify(body)});
+    var pd=await pr.json();
+    if(pd.commit){
+      log('Push完了: '+pd.commit.sha.substring(0,8),'ok');
+    }else{
+      log('Pushエラー: '+pd.message,'err');
+    }
+  }catch(e){log('Pushエラー: '+e.message,'err')}
+}
+</script>
+</body>
+</html>
