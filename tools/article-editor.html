@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>記事エディタ ｜ INS27</title>
+<style>
+:root{--bg:#060b06;--bg2:#0a110a;--bg3:#0e180e;--green:#7aab6e;--green-dim:#3d6636;--green-bright:#a8d49a;--amber:#c8a030;--amber-dim:#7a5e12;--red:#9b2020;--red-bright:#cc3333;--text:#8aab80;--text-dim:#4a6644;--text-bright:#c2ddb8;--border:#1e2e1a;--border2:#2a3e24;--ic:#e07848;--en:#d45888;--ph:#9878cc;--fl:#607888;--an:#608878}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;font-size:13px;line-height:1.7;padding:20px;max-width:1100px;margin:0 auto}
+h1{font-size:14px;letter-spacing:3px;color:var(--green-bright);margin-bottom:4px}
+.sub{font-size:10px;color:var(--text-dim);letter-spacing:1px;margin-bottom:20px}
+.section{background:var(--bg2);border:1px solid var(--border);padding:16px;margin-bottom:16px;border-radius:2px}
+h2{font-size:11px;letter-spacing:2px;color:var(--amber);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+label{display:block;font-size:10px;letter-spacing:1px;color:var(--text-dim);margin-bottom:4px}
+input,textarea,select{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text-bright);padding:8px 10px;font-family:inherit;font-size:12px;border-radius:2px;margin-bottom:8px}
+textarea{min-height:100px;resize:vertical}
+button{background:transparent;border:1px solid var(--green-dim);color:var(--green);padding:7px 14px;font-family:inherit;font-size:11px;letter-spacing:1px;cursor:pointer;border-radius:2px;margin-right:4px;margin-bottom:4px;transition:all .2s}
+button:hover{background:var(--green-dim);color:var(--green-bright)}
+button.primary{border-color:var(--green);background:var(--green-dim)}
+button.amber{border-color:var(--amber-dim);color:var(--amber)}
+button.amber:hover{background:var(--amber-dim)}
+button.red{border-color:var(--red);color:var(--red-bright)}
+button.red:hover{background:var(--red)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px}
+@media(max-width:700px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+.log{background:var(--bg);border:1px solid var(--border);padding:8px;max-height:180px;overflow-y:auto;font-size:10px;line-height:1.8;color:var(--text-dim);white-space:pre-wrap}
+.log .ok{color:var(--green)}.log .err{color:var(--red-bright)}.log .info{color:var(--amber)}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{text-align:left;padding:6px 8px;border-bottom:1px solid var(--border2);color:var(--amber);font-weight:normal;letter-spacing:.5px}
+td{padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-dim)}
+tr:hover td{background:var(--bg3)}
+tr{cursor:pointer}
+.tg{font-size:9px;letter-spacing:1px;padding:2px 6px;border-radius:2px;display:inline-block}
+.tg-ic{background:rgba(224,120,72,.15);color:var(--ic)}
+.tg-en{background:rgba(212,88,136,.15);color:var(--en)}
+.tg-ph{background:rgba(152,120,204,.15);color:var(--ph)}
+.tg-fl{background:rgba(96,120,136,.15);color:var(--fl)}
+.tg-an{background:rgba(96,136,120,.15);color:var(--an)}
+.back-link{display:inline-block;margin-bottom:16px;color:var(--green-dim);font-size:11px;letter-spacing:1px;text-decoration:none}
+.back-link:hover{color:var(--green)}
+.status-bar{display:flex;gap:12px;align-items:center;font-size:10px;margin-bottom:16px;padding:8px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:2px}
+.status-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.dot-ok{background:var(--green)}.dot-err{background:var(--red-bright)}.dot-wait{background:var(--amber)}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.modal-bg.on{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);padding:24px;max-width:800px;width:100%;max-height:90vh;overflow-y:auto;border-radius:2px}
+.sec-block{background:var(--bg3);border:1px solid var(--border);padding:12px;margin-bottom:10px;border-radius:2px;position:relative}
+.sec-remove{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;padding:0;margin:0}
+.sec-remove:hover{color:var(--red-bright);background:none;border:none}
+.editor-split{display:grid;grid-template-columns:280px 1fr;gap:16px}
+@media(max-width:800px){.editor-split{grid-template-columns:1fr}}
+.art-list{max-height:calc(100vh - 200px);overflow-y:auto}
+.art-item{padding:8px 10px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.art-item:hover{background:var(--bg3)}
+.art-item.sel{background:var(--bg3);border-left:2px solid var(--green)}
+.art-item .art-id{font-size:10px;color:var(--amber);letter-spacing:.5px}
+.art-item .art-title{font-size:11px;color:var(--text);margin-top:2px}
+.art-item .art-meta{font-size:9px;color:var(--text-dim);margin-top:2px}
+.encrypted-badge{font-size:9px;color:var(--red-bright);letter-spacing:1px}
+.btn-bar{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+</style>
+</head>
+<body>
+
+<a href="../manager.html" class="back-link">&#9664; MANAGER</a>
+<h1>&#9998; ARTICLE EDITOR</h1>
+<div class="sub">個別記事JSONの編集・新規作成・GitHub Push（新アーキテクチャ対応）</div>
+
+<div class="status-bar">
+  <span class="status-dot dot-wait" id="status-dot"></span>
+  <span id="status-text">未接続</span>
+  <span style="margin-left:auto">
+    <button onclick="loadIndex()" style="padding:4px 10px;font-size:10px">&#8635; 記事一覧を読込</button>
+  </span>
+</div>
+
+<div class="editor-split">
+  <!-- LEFT: Article list -->
+  <div>
+    <div class="section" style="padding:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:0 4px">
+        <h2 style="margin:0;padding:0;border:0;flex:1">記事一覧 (<span id="art-count">0</span>)</h2>
+        <button onclick="newArticle()" style="padding:4px 10px;font-size:10px">+ 新規</button>
+      </div>
+      <input type="text" id="filter-input" placeholder="&#128269; ID/タイトルで検索..." style="margin:0 0 6px 0;padding:6px 8px;font-size:11px" oninput="renderList()">
+      <div class="art-list" id="art-list">
+        <div style="padding:20px;text-align:center;color:var(--text-dim);font-size:11px">
+          「記事一覧を読込」で開始
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Editor -->
+  <div>
+    <div class="section" id="editor-empty">
+      <div style="padding:40px 20px;text-align:center;color:var(--text-dim)">
+        &#9664; 左の一覧から記事を選択、または「+ 新規」で作成
+      </div>
+    </div>
+    <div class="section" id="editor-form" style="display:none">
+      <h2>&#9998; <span id="ed-mode">NEW</span> &#8212; <span id="ed-id-display"></span></h2>
+
+      <div class="grid-3">
+        <div><label>ID *</label><input id="ed-id" placeholder="IC-0100"></div>
+        <div><label>TYPE</label><select id="ed-type" onchange="document.getElementById('ed-type-label').value=this.options[this.selectedIndex].dataset.label">
+          <option value="IC" data-label="INCIDENT CASE">IC &#8212; 事件報告</option>
+          <option value="EN" data-label="ENTITY REPORT">EN &#8212; 実体報告</option>
+          <option value="PH" data-label="PHENOMENON REPORT">PH &#8212; 現象報告</option>
+          <option value="AN" data-label="ANALYSIS REPORT">AN &#8212; 分析報告</option>
+          <option value="FL" data-label="FIELD LOG">FL &#8212; 伝承報告</option>
+        </select></div>
+        <div><label>TYPE LABEL</label><input id="ed-type-label" value="INCIDENT CASE"></div>
+      </div>
+      <div><label>タイトル *</label><input id="ed-title" placeholder="記事タイトル"></div>
+      <div class="grid-4">
+        <div><label>LEVEL (0-4)</label><input type="number" id="ed-level" min="0" max="4" value="1"></div>
+        <div><label>STATUS</label><select id="ed-status"><option>ACTIVE</option><option>ARCHIVED</option><option>PENDING</option><option>REDACTED</option></select></div>
+        <div><label>担当課</label><input id="ed-dept" placeholder="調査課"></div>
+        <div><label>担当者</label><input id="ed-assignee" placeholder="担当者名"></div>
+      </div>
+      <div class="grid-2">
+        <div><label>CASE NUMBER</label><input id="ed-case" placeholder="0100"></div>
+        <div><label>初報日</label><input id="ed-date" placeholder="2026.03.30"></div>
+      </div>
+      <div><label>概要 *</label><textarea id="ed-summary" style="min-height:80px" placeholder="記事の概要"></textarea></div>
+      <div><label>概要（追加）</label><textarea id="ed-extra" style="min-height:40px" placeholder="追加テキスト"></textarea></div>
+      <div><label>メタデータ (JSON)</label><textarea id="ed-meta" style="min-height:50px;font-size:11px" placeholder='{"location":"東京","era":"現代"}'></textarea></div>
+
+      <!-- Report sections -->
+      <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <label style="margin:0;flex:1">調査レポート</label>
+          <button onclick="addSection()" style="padding:4px 10px;font-size:10px">+ セクション</button>
+        </div>
+        <div class="grid-2" style="margin-bottom:10px">
+          <div><label>ヘッダー</label><input id="ed-rpt-header" placeholder="調査報告書"></div>
+          <div><label>サブヘッダー</label><input id="ed-rpt-sub" placeholder="第弐拾七研究所 調査課"></div>
+        </div>
+        <div id="sections-wrap"></div>
+      </div>
+
+      <!-- Related articles -->
+      <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px">
+        <label>関連記録 (ID|タイトル 改行区切り)</label>
+        <textarea id="ed-related" style="min-height:40px" placeholder="IC-0001|不明事例"></textarea>
+      </div>
+
+      <!-- Actions -->
+      <div class="btn-bar">
+        <button class="primary" onclick="saveArticle()">&#9654; 保存 &amp; Push</button>
+        <button class="amber" onclick="previewJSON()">&#128065; JSON確認</button>
+        <button onclick="downloadArticle()">&#9660; ダウンロード</button>
+        <button class="red" onclick="deleteArticle()">&#10005; 削除</button>
+      </div>
+    </div>
+    <div class="log" id="log"></div>
+  </div>
+</div>
+
+<!-- JSON Preview Modal -->
+<div class="modal-bg" id="modal" onclick="if(event.target===this)this.classList.remove('on')">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script>
+var GH_REPO='178178178TKM/institute27';
+var GH_SK='ins27_pat';
+var _index=null; // articles-index.json contents
+var _articles={}; // loaded article data keyed by ID
+var _currentId=null;
+var _isNew=false;
+
+function getPAT(){return localStorage.getItem(GH_SK)||''}
+function log(msg,cls){
+  var el=document.getElementById('log');
+  var d=document.createElement('div');if(cls)d.className=cls;
+  d.textContent='['+new Date().toLocaleTimeString('ja-JP')+'] '+msg;
+  el.appendChild(d);el.scrollTop=el.scrollHeight;
+}
+function setStatus(text,state){
+  document.getElementById('status-text').textContent=text;
+  var dot=document.getElementById('status-dot');
+  dot.className='status-dot '+(state==='ok'?'dot-ok':state==='err'?'dot-err':'dot-wait');
+}
+function esc(s){return s==null?'':String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function utf8b64(str){var b=new TextEncoder().encode(str);var r='';for(var i=0;i<b.length;i++)r+=String.fromCharCode(b[i]);return btoa(r)}
+
+/* ===== GITHUB API ===== */
+async function ghGet(path){
+  var pat=getPAT();if(!pat)throw new Error('PAT未設定');
+  var r=await fetch('https://api.github.com/repos/'+GH_REPO+'/contents/'+path,{
+    headers:{Authorization:'Bearer '+pat,Accept:'application/vnd.github.v3+json'}
+  });
+  var d=await r.json();
+  if(!r.ok)throw new Error(d.message||'API error');
+  return d;
+}
+
+async function ghPut(path,content,msg){
+  var pat=getPAT();if(!pat)throw new Error('PAT未設定');
+  var h={Authorization:'Bearer '+pat,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'};
+  var url='https://api.github.com/repos/'+GH_REPO+'/contents/'+path;
+  var sha=null;
+  try{var gr=await fetch(url,{headers:h});var gd=await gr.json();if(gd.sha)sha=gd.sha}catch(e){}
+  var body={message:msg||'Update '+path,content:utf8b64(content)};
+  if(sha)body.sha=sha;
+  var pr=await fetch(url,{method:'PUT',headers:h,body:JSON.stringify(body)});
+  var pd=await pr.json();
+  if(!pr.ok)throw new Error(pd.message||'PUT failed');
+  return pd;
+}
+
+async function ghDelete(path,msg){
+  var pat=getPAT();if(!pat)throw new Error('PAT未設定');
+  var h={Authorization:'Bearer '+pat,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'};
+  var url='https://api.github.com/repos/'+GH_REPO+'/contents/'+path;
+  var gr=await fetch(url,{headers:h});var gd=await gr.json();
+  if(!gd.sha)throw new Error('ファイルが見つかりません');
+  var pr=await fetch(url,{method:'DELETE',headers:h,body:JSON.stringify({message:msg||'Delete '+path,sha:gd.sha})});
+  if(!pr.ok){var pd=await pr.json();throw new Error(pd.message||'DELETE failed')}
+  return true;
+}
+
+function decodeGH(d){
+  var bytes=Uint8Array.from(atob(d.content.replace(/\n/g,'')),function(c){return c.charCodeAt(0)});
+  return new TextDecoder().decode(bytes);
+}
+
+/* ===== LOAD INDEX ===== */
+async function loadIndex(){
+  if(!getPAT()){log('PATが未設定です。manager.htmlで設定してください。','err');setStatus('PAT未設定','err');return}
+  setStatus('読み込み中...','wait');
+  log('articles-index.json 読み込み中...','info');
+  try{
+    var d=await ghGet('data/articles-index.json');
+    var text=decodeGH(d);
+    text=text.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g,'');
+    _index=JSON.parse(text);
+    var articles=_index.articles||_index;
+    log('読み込み完了: '+articles.length+'件','ok');
+    setStatus('接続OK ('+articles.length+'件)','ok');
+    document.getElementById('art-count').textContent=articles.length;
+    renderList();
+  }catch(e){
+    log('読み込みエラー: '+e.message,'err');
+    setStatus('エラー','err');
+  }
+}
+
+/* ===== RENDER LIST ===== */
+function renderList(){
+  if(!_index)return;
+  var articles=_index.articles||_index;
+  var filter=document.getElementById('filter-input').value.toLowerCase();
+  var wrap=document.getElementById('art-list');
+  var html='';
+  articles.forEach(function(a){
+    if(filter&&(a.id||'').toLowerCase().indexOf(filter)<0&&(a.title||'').toLowerCase().indexOf(filter)<0)return;
+    var sel=_currentId===a.id?' sel':'';
+    var tc='tg-'+(a.type||'ic').toLowerCase();
+    html+='<div class="art-item'+sel+'" onclick="loadArticle(\''+esc(a.id)+'\')">';
+    html+='<div class="art-id"><span class="tg '+tc+'">'+esc(a.type)+'</span> '+esc(a.id)+'</div>';
+    html+='<div class="art-title">'+esc(a.title)+'</div>';
+    html+='<div class="art-meta">Lv'+a.level+' | '+(a.status||'?')+'</div>';
+    html+='</div>';
+  });
+  wrap.innerHTML=html||'<div style="padding:20px;text-align:center;color:var(--text-dim)">該当なし</div>';
+}
+
+/* ===== LOAD ARTICLE ===== */
+async function loadArticle(id){
+  _currentId=id;_isNew=false;
+  renderList();
+  log(id+' 読み込み中...','info');
+  try{
+    if(_articles[id]){
+      populateForm(_articles[id]);
+      log(id+' (キャッシュから)','ok');
+      return;
+    }
+    var d=await ghGet('data/articles/'+id+'.json');
+    var text=decodeGH(d);
+    text=text.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g,'');
+    var art=JSON.parse(text);
+    _articles[id]=art;
+    populateForm(art);
+    log(id+' 読み込み完了','ok');
+  }catch(e){log(id+' 読み込みエラー: '+e.message,'err')}
+}
+
+/* ===== NEW ARTICLE ===== */
+function newArticle(){
+  _currentId=null;_isNew=true;
+  var art={id:'',type:'IC',type_label:'INCIDENT CASE',title:'',level:1,status:'ACTIVE',
+    department:'調査課',assignee:'',case_number:'',first_report:'',
+    summary:'',summary_extra:'',metadata:{},related:[],redacted:false,
+    report:{header:'',subheader:'',sections:[{title:'',content:''}]}};
+  populateForm(art);
+  document.getElementById('ed-id').focus();
+  log('新規記事作成モード','info');
+}
+
+/* ===== POPULATE FORM ===== */
+function populateForm(a){
+  document.getElementById('editor-empty').style.display='none';
+  document.getElementById('editor-form').style.display='block';
+  document.getElementById('ed-mode').textContent=_isNew?'NEW':'EDIT';
+  document.getElementById('ed-id-display').textContent=a.id||'(新規)';
+  document.getElementById('ed-id').value=a.id||'';
+  document.getElementById('ed-type').value=a.type||'IC';
+  document.getElementById('ed-type-label').value=a.type_label||'INCIDENT CASE';
+  document.getElementById('ed-title').value=a.title||'';
+  document.getElementById('ed-level').value=a.level!=null?a.level:1;
+  document.getElementById('ed-status').value=a.status||'ACTIVE';
+  document.getElementById('ed-dept').value=a.department||'';
+  document.getElementById('ed-assignee').value=a.assignee||'';
+  document.getElementById('ed-case').value=a.case_number||'';
+  document.getElementById('ed-date').value=a.first_report||'';
+  document.getElementById('ed-summary').value=a.summary||'';
+  document.getElementById('ed-extra').value=a.summary_extra||'';
+  document.getElementById('ed-meta').value=a.metadata?JSON.stringify(a.metadata,null,2):'{}';
+  var rpt=a.report||{};
+  document.getElementById('ed-rpt-header').value=rpt.header||'';
+  document.getElementById('ed-rpt-sub').value=rpt.subheader||'';
+  var relStr=(a.related||[]).map(function(r){return r.id+'|'+r.title}).join('\n');
+  document.getElementById('ed-related').value=relStr;
+  // Sections
+  var wrap=document.getElementById('sections-wrap');wrap.innerHTML='';
+  var secs=rpt.sections||[];
+  if(secs.length===0)secs=[{title:'',content:''}];
+  secs.forEach(function(s){addSectionDOM(s)});
+}
+
+function addSection(){addSectionDOM({title:'',content:'',warning:''})}
+function addSectionDOM(s){
+  var wrap=document.getElementById('sections-wrap');
+  var div=document.createElement('div');div.className='sec-block';
+  div.innerHTML='<span class="sec-remove" onclick="this.parentElement.remove()">&#10005;</span>'
+    +'<div class="grid-2"><div><label>セクション名</label><input class="sec-title" value="'+esc(s.title||'')+'"></div>'
+    +'<div><label>Warning/Note</label><input class="sec-warn" value="'+esc(s.warning||s.note||'')+'"></div></div>'
+    +'<label>本文</label><textarea class="sec-content" style="min-height:120px">'+esc(s.content||'')+'</textarea>';
+  wrap.appendChild(div);
+}
+
+/* ===== BUILD JSON ===== */
+function buildArticleJSON(){
+  var meta={};
+  try{meta=JSON.parse(document.getElementById('ed-meta').value||'{}')}catch(e){meta={}}
+  var related=[];
+  document.getElementById('ed-related').value.trim().split('\n').filter(Boolean).forEach(function(l){
+    var p=l.split('|');if(p[0])related.push({id:p[0].trim(),title:(p[1]||'').trim()});
+  });
+  var sections=[];
+  document.querySelectorAll('.sec-block').forEach(function(el){
+    var t=el.querySelector('.sec-title').value.trim();
+    var c=el.querySelector('.sec-content').value.trim();
+    var w=el.querySelector('.sec-warn').value.trim();
+    if(t||c){var s={title:t,content:c};if(w)s.warning=w;sections.push(s)}
+  });
+  var obj={
+    id:document.getElementById('ed-id').value.trim(),
+    case_number:document.getElementById('ed-case').value.trim()||null,
+    type:document.getElementById('ed-type').value,
+    type_label:document.getElementById('ed-type-label').value,
+    title:document.getElementById('ed-title').value.trim(),
+    department:document.getElementById('ed-dept').value.trim()||null,
+    assignee:document.getElementById('ed-assignee').value.trim()||null,
+    level:parseInt(document.getElementById('ed-level').value)||0,
+    status:document.getElementById('ed-status').value,
+    first_report:document.getElementById('ed-date').value.trim()||null,
+    summary:document.getElementById('ed-summary').value.trim(),
+    summary_extra:document.getElementById('ed-extra').value.trim()||null,
+    metadata:meta,
+    related:related,
+    redacted:false
+  };
+  if(sections.length>0||document.getElementById('ed-rpt-header').value.trim()){
+    obj.report={
+      header:document.getElementById('ed-rpt-header').value.trim(),
+      subheader:document.getElementById('ed-rpt-sub').value.trim(),
+      sections:sections
+    };
+  }
+  return obj;
+}
+
+/* ===== SAVE & PUSH ===== */
+async function saveArticle(){
+  var art=buildArticleJSON();
+  if(!art.id||!art.title){log('IDとタイトルは必須です','err');return}
+
+  log('保存開始: '+art.id,'info');
+  try{
+    // 1. Push individual article JSON
+    var json=JSON.stringify(art,null,2)+'\n';
+    var r=await ghPut('data/articles/'+art.id+'.json',json,'Update article '+art.id+' via editor');
+    log('記事JSON Push完了: '+r.commit.sha.substring(0,8),'ok');
+
+    // 2. Update index if needed
+    var articles=_index.articles||_index;
+    var existing=articles.findIndex(function(a){return a.id===art.id});
+    var indexEntry={id:art.id,type:art.type,type_label:art.type_label,title:art.title,level:art.level,status:art.status};
+    if(existing>=0){
+      articles[existing]=indexEntry;
+      log('インデックス更新: '+art.id,'info');
+    }else{
+      articles.push(indexEntry);
+      log('インデックスに追加: '+art.id,'info');
+    }
+    // Push index
+    var idxData=_index.articles?_index:{articles:articles};
+    var idxJson=JSON.stringify(idxData,null,2)+'\n';
+    var r2=await ghPut('data/articles-index.json',idxJson,'Update articles-index via editor');
+    log('インデックス Push完了: '+r2.commit.sha.substring(0,8),'ok');
+
+    // Update local cache
+    _articles[art.id]=art;
+    _currentId=art.id;_isNew=false;
+    document.getElementById('art-count').textContent=articles.length;
+    renderList();
+    document.getElementById('ed-mode').textContent='EDIT';
+    document.getElementById('ed-id-display').textContent=art.id;
+    log('保存完了!','ok');
+  }catch(e){log('保存エラー: '+e.message,'err')}
+}
+
+/* ===== DELETE ===== */
+async function deleteArticle(){
+  var id=document.getElementById('ed-id').value.trim();
+  if(!id){log('IDがありません','err');return}
+  if(!confirm('記事「'+id+'」を削除しますか？\nGitHubからファイルが削除されます。'))return;
+  log('削除開始: '+id,'info');
+  try{
+    await ghDelete('data/articles/'+id+'.json','Delete article '+id+' via editor');
+    log('記事JSON 削除完了','ok');
+    // Remove from index
+    var articles=_index.articles||_index;
+    var idx=articles.findIndex(function(a){return a.id===id});
+    if(idx>=0){
+      articles.splice(idx,1);
+      var idxData=_index.articles?_index:{articles:articles};
+      var idxJson=JSON.stringify(idxData,null,2)+'\n';
+      await ghPut('data/articles-index.json',idxJson,'Remove '+id+' from index');
+      log('インデックスから削除完了','ok');
+    }
+    delete _articles[id];
+    _currentId=null;
+    document.getElementById('editor-form').style.display='none';
+    document.getElementById('editor-empty').style.display='block';
+    document.getElementById('art-count').textContent=articles.length;
+    renderList();
+    log('削除完了!','ok');
+  }catch(e){log('削除エラー: '+e.message,'err')}
+}
+
+/* ===== PREVIEW / DOWNLOAD ===== */
+function previewJSON(){
+  var art=buildArticleJSON();
+  var json=JSON.stringify(art,null,2);
+  var colored=esc(json).replace(/"([^"]+)":/g,'<span style="color:var(--amber)">"$1"</span>:')
+    .replace(/: "([^"]*?)"/g,': <span style="color:var(--green)">"$1"</span>')
+    .replace(/: (\d+)/g,': <span style="color:var(--ph)">$1</span>')
+    .replace(/: (true|false|null)/g,': <span style="color:var(--ph)">$1</span>');
+  document.getElementById('modal-content').innerHTML='<h2 style="margin-bottom:12px">JSON PREVIEW &#8212; '+esc(art.id)+'</h2>'
+    +'<pre style="background:var(--bg);padding:12px;overflow:auto;max-height:60vh;font-size:11px;line-height:1.6">'+colored+'</pre>'
+    +'<div style="margin-top:12px;display:flex;gap:6px">'
+    +'<button onclick="navigator.clipboard.writeText(JSON.stringify(buildArticleJSON(),null,2))">コピー</button>'
+    +'<button onclick="document.getElementById(\'modal\').classList.remove(\'on\')">閉じる</button></div>';
+  document.getElementById('modal').classList.add('on');
+}
+
+function downloadArticle(){
+  var art=buildArticleJSON();
+  if(!art.id){log('IDを入力してください','err');return}
+  var blob=new Blob([JSON.stringify(art,null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=art.id+'.json';a.click();
+  URL.revokeObjectURL(a.href);log('ダウンロード: '+art.id+'.json','ok');
+}
+
+/* ===== INIT ===== */
+if(getPAT())loadIndex();
+</script>
+</body>
+</html>
