@@ -9,8 +9,8 @@
       "status": "ACTIVE",
       "summary": "複数の匿名通報者より、深夜2時頃に特定の自動販売機前に人が「列を作って立っている」という報告が相次いでいる。",
       "first_report": "2025.09.14",
-      "assignee": "三枝 由佳",
-      "department": "調査課",
+      "assignee": "三秩 由佳",
+      "department": "調査科",
       "redacted": false,
       "has_report": true
     },
@@ -23,8 +23,8 @@
       "status": "ACTIVE",
       "summary": "シャッター通りと化した商店街で、深夜に「営業中の店」が現れるという報告。",
       "first_report": "2026.01.08",
-      "assignee": "三枝 由佳",
-      "department": "調査課",
+      "assignee": "三秩 由佳",
+      "department": "調査科",
       "redacted": false,
       "has_report": true
     },
@@ -37,8 +37,8 @@
       "status": "ACTIVE",
       "summary": "特定の半径約12メートルの円形領域において、気圧計が標準値から約8hPa低い数値を恒常的に示す。",
       "first_report": "2025.11.03",
-      "assignee": "伊東 篤史",
-      "department": "観測課",
+      "assignee": "伊東 芳巖",
+      "department": "観測科",
       "redacted": false,
       "has_report": true
     },
@@ -51,8 +51,8 @@
       "status": "ACTIVE",
       "summary": "遮断機が上がった後も渡り終えない人物が目撃される踏切。",
       "first_report": "2025.12.02",
-      "assignee": "朝倉 文",
-      "department": "調査課",
+      "assignee": "韻倉 文",
+      "department": "調査科",
       "redacted": false,
       "has_report": true
     },
@@ -65,8 +65,8 @@
       "status": "ACTIVE",
       "summary": "特定区域で発生する音を伴わない発光現象。",
       "first_report": "2025.08.20",
-      "assignee": "伊東 篤史",
-      "department": "観測課",
+      "assignee": "伊東 芳巖",
+      "department": "観測科",
       "redacted": false,
       "has_report": true
     },
@@ -79,8 +79,8 @@
       "status": "ACTIVE",
       "summary": "廃館となった図書館の閉架書庫に出現する人型存在。",
       "first_report": "2025.06.15",
-      "assignee": "朝倉 文",
-      "department": "記録課",
+      "assignee": "韻倉 文",
+      "department": "記録科",
       "redacted": false,
       "has_report": true
     },
@@ -93,8 +93,8 @@
       "status": "ACTIVE",
       "summary": "最終列車の終点駅到着後、車両に残る乗客が確認される。数分後に車内から消失。",
       "first_report": "2025.10.28",
-      "assignee": "三枝 由佳",
-      "department": "調査課",
+      "assignee": "三秩 由佳",
+      "department": "調査科",
       "redacted": false,
       "has_report": true
     },
@@ -107,8 +107,8 @@
       "status": "ACTIVE",
       "summary": "特定の池の水面に、現在の空ではなく過去の空が映る現象。",
       "first_report": "2025.07.09",
-      "assignee": "伊東 篤史",
-      "department": "観測課",
+      "assignee": "伊東 芳巖",
+      "department": "観測科",
       "redacted": false,
       "has_report": true
     },
@@ -121,8 +121,8 @@
       "status": "ACTIVE",
       "summary": "特定のビルのエレベーターが、存在しない階に13秒間停止する。",
       "first_report": "2025.11.22",
-      "assignee": "三枝 由佳",
-      "department": "調査課",
+      "assignee": "三秩 由佳",
+      "department": "調査科",
       "redacted": false,
       "has_report": true
     },
@@ -135,8 +135,8 @@
       "status": "ACTIVE",
       "summary": "特定の場所で撮影された写真に、撮影者の背後に立つ人型の影が写り込む。",
       "first_report": "2025.05.03",
-      "assignee": "本田 沙織",
-      "department": "記録課",
+      "assignee": "本田 沙磁",
+      "department": "記録科",
       "redacted": false,
       "has_report": true
     },
@@ -149,7 +149,7 @@
       "status": "ACTIVE",
       "summary": "中古の姿見に「自分と同じ姿の何か」が映る事例。",
       "first_report": "",
-      "assignee": "本田 沙織（解析課）",
+      "assignee": "本田 沙磁（解析科）",
       "department": "",
       "redacted": false,
       "has_report": false
@@ -164,7 +164,7 @@
       "summary": "研究対象の管理困難を理由とする封鎖手続。2019年3月15日施行。",
       "first_report": "",
       "assignee": "",
-      "department": "管理部",
+      "department": "保管科",
       "redacted": false,
       "has_report": false
     },
@@ -177,7 +177,7 @@
       "status": "ARCHIVED",
       "summary": "第三区画の原子時計比較。72時間で+0.00037秒の偏差。",
       "first_report": "",
-      "assignee": "天野 浩二（解析課）",
+      "assignee": "天野 浩二（解析科）",
       "department": "",
       "redacted": false,
       "has_report": false
@@ -191,7 +191,7 @@
       "status": "ACTIVE",
       "summary": "特定番号に特定時刻に電話すると「亡くなった人物の声」が応答。",
       "first_report": "",
-      "assignee": "朝倉 文（記録課）",
+      "assignee": "韻倉 文（記録科）",
       "department": "",
       "redacted": false,
       "has_report": false
@@ -233,7 +233,7 @@
       "status": "ACTIVE",
       "summary": "登りは37段、降りは36段。差分の1段がどこに消えるのかは不明。",
       "first_report": "",
-      "assignee": "三枝 由佳（調査課）",
+      "assignee": "三秩 由佳（調査科）",
       "department": "",
       "redacted": false,
       "has_report": false
@@ -247,7 +247,7 @@
       "status": "ACTIVE",
       "summary": "半径3km圏内の住民14名が同じ桜並木の夢を報告。",
       "first_report": "",
-      "assignee": "伊東 篤史（観測課）",
+      "assignee": "伊東 芳巖（観測科）",
       "department": "",
       "redacted": false,
       "has_report": false
@@ -262,7 +262,7 @@
       "summary": "Level 2以上の存在への接触に関する許可手続。",
       "first_report": "",
       "assignee": "",
-      "department": "管理部",
+      "department": "保管科",
       "redacted": false,
       "has_report": false
     },
@@ -275,7 +275,7 @@
       "status": "ACTIVE",
       "summary": "IC-0047現場で録音された音声の周波数分析。可聴域外の低周波成分を検出。",
       "first_report": "",
-      "assignee": "天野 浩二（解析課）",
+      "assignee": "天野 浩二（解析科）",
       "department": "",
       "redacted": false,
       "has_report": false
@@ -289,7 +289,7 @@
       "status": "ACTIVE",
       "summary": "消印・差出人なしの手紙が特定の住所に届く。内容は受取人の翌日の行動を記述。",
       "first_report": "",
-      "assignee": "朝倉 文（記録課）",
+      "assignee": "韻倉 文（記録科）",
       "department": "",
       "redacted": false,
       "has_report": false
@@ -303,7 +303,7 @@
       "status": "ACTIVE",
       "summary": "定員4名の待合室に常に1名多い人数が確認される。",
       "first_report": "",
-      "assignee": "本田 沙織（解析課）",
+      "assignee": "本田 沙磁（解析科）",
       "department": "",
       "redacted": true,
       "has_report": false
@@ -318,7 +318,7 @@
       "summary": "IC-0093に関連する防犯カメラ映像の解析結果。",
       "first_report": "",
       "assignee": "",
-      "department": "解析課",
+      "department": "解析科",
       "redacted": false,
       "has_report": false
     },
@@ -331,7 +331,7 @@
       "status": "ACTIVE",
       "summary": "地表から空に向かって上昇する水滴を半径8m圏内で観測。",
       "first_report": "",
-      "assignee": "伊東 篤史（観測課）",
+      "assignee": "伊東 芳巖（観測科）",
       "department": "",
       "redacted": false,
       "has_report": false
@@ -346,7 +346,7 @@
       "summary": "2021年7月実施の第三区画再封鎖に関する報告。",
       "first_report": "",
       "assignee": "",
-      "department": "管理部",
+      "department": "保管科",
       "redacted": false,
       "has_report": false
     },
@@ -359,7 +359,7 @@
       "status": "ACTIVE",
       "summary": "特定の古書店で購入した書籍の最終章が毎回異なる内容に変化。",
       "first_report": "",
-      "assignee": "朝倉 文（記録課）",
+      "assignee": "韻倉 文（記録科）",
       "department": "",
       "redacted": false,
       "has_report": false
@@ -374,7 +374,7 @@
       "summary": "IC-0088に関連するビル設計図面の調査。",
       "first_report": "",
       "assignee": "",
-      "department": "管理部",
+      "department": "保管科",
       "redacted": false,
       "has_report": false
     },
@@ -387,7 +387,7 @@
       "status": "ACTIVE",
       "summary": "実体を持たない猫の影が路地を移動する。",
       "first_report": "",
-      "assignee": "本田 沙織（解析課）",
+      "assignee": "本田 沙磁（解析科）",
       "department": "",
       "redacted": false,
       "has_report": false
@@ -402,7 +402,7 @@
       "summary": "空室であるはずの隣室から拍手が聞こえる。",
       "first_report": "",
       "assignee": "",
-      "department": "観測課",
+      "department": "観測科",
       "redacted": false,
       "has_report": false
     },
@@ -429,7 +429,7 @@
       "status": "ACTIVE",
       "summary": "IC-0071で検出された座席残留体温の分析。",
       "first_report": "",
-      "assignee": "天野 浩二（解析課）",
+      "assignee": "天野 浩二（解析科）",
       "department": "",
       "redacted": false,
       "has_report": false
@@ -444,7 +444,7 @@
       "summary": "長期調査に従事する職員の精神衛生管理に関する内部規程。",
       "first_report": "",
       "assignee": "",
-      "department": "管理部",
+      "department": "保管科",
       "redacted": false,
       "has_report": false
     }

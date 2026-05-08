@@ -10,16 +10,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=M+PLUS+1+Code:wght@300;400;700&family=Noto+Serif+JP:wght@300;400;700&family=VT323&display=swap" rel="stylesheet">
 <style>
 :root {
---bg: #060b06; --bg2: #0a110a; --bg3: #0e180e;
+--bg: #020502; --bg2: #060c06; --bg3: #0a120a;
 --green: #7aab6e; --green-dim: #3d6636; --green-bright: #a8d49a;
 --amber: #c8a030; --amber-dim: #7a5e12;
 --red: #9b2020; --red-bright: #cc3333;
 --text: #8aab80; --text-dim: #4a6644; --text-bright: #c2ddb8;
---border: #1e2e1a; --border2: #2a3e24;
---stamp-red: #8b1515; --scan-line: rgba(0,20,0,0.35);
+--border: #162216; --border2: #1e301e;
+--stamp-red: #8b1515; --scan-line: rgba(0,10,0,0.45);
 --ic: #e07848; --ic-dim: #7a3820; --en: #d45888; --en-dim: #6a2844;
 --ph: #9878cc; --ph-dim: #4a3868; --fl: #607888; --fl-dim: #2e3e48;
 --an: #608878; --an-dim: #2e4838;
+--panel-inset: inset 0 1px 0 rgba(122,171,110,.06);
+--ic-glow: rgba(224,120,72,.15); --en-glow: rgba(212,88,136,.15);
+--ph-glow: rgba(152,120,204,.15); --an-glow: rgba(96,136,120,.15); --fl-glow: rgba(96,120,136,.15);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -68,14 +71,17 @@ a{color:var(--green);text-decoration:none}a:hover{color:var(--green-bright)}
 #auth-result{margin-top:12px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);position:relative}
 
 /* HEADER */
-#site-header{border-bottom:1px solid var(--border2);background:var(--bg2);position:sticky;top:0;z-index:100}
+#site-header{border-bottom:2px solid var(--green-dim);background:var(--bg2);position:sticky;top:0;z-index:100;box-shadow:0 2px 40px rgba(0,0,0,.9), 0 2px 0 var(--green-dim)}
 .header-top{display:flex;justify-content:space-between;align-items:center;padding:6px 32px;border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim)}
 .header-main{display:flex;align-items:center;justify-content:space-between;padding:16px 32px}
 .logo{display:flex;flex-direction:column}
-.logo-ja{font-family:'Noto Serif JP',serif;font-weight:700;font-size:22px;color:var(--green-bright);letter-spacing:.15em}
+.logo-ja{font-family:'Noto Serif JP',serif;font-weight:700;font-size:22px;color:var(--green-bright);letter-spacing:.15em;text-shadow:0 0 20px rgba(168,212,154,.25)}
 .logo-en{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.2em}
-nav{display:flex;gap:32px;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.08em}
-nav a{color:var(--text-dim)}nav a:hover{color:var(--green-bright)}
+nav{display:flex;gap:0;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.06em}
+nav a{color:var(--text-dim);padding:6px 14px;border:1px solid var(--border2);margin-left:-1px;white-space:nowrap;transition:all .15s;position:relative}
+nav a:first-child{border-radius:2px 0 0 2px}
+nav a:last-child{border-radius:0 2px 2px 0}
+nav a:hover{color:var(--green-bright);background:rgba(61,102,54,.2);border-color:var(--green-dim);z-index:1;text-shadow:0 0 10px rgba(168,212,154,.4)}
 .clearance-badge{font-family:'Share Tech Mono',monospace;font-size:10px;border:1px solid var(--green-dim);padding:4px 10px;color:var(--green-dim);letter-spacing:.1em}
 
 /* TICKER */
@@ -115,25 +121,26 @@ nav a{color:var(--text-dim)}nav a:hover{color:var(--green-bright)}
 .field-report.has-stamp::before{content:'機密解除';position:absolute;top:24px;right:24px;font-family:'Noto Serif JP',serif;font-size:28px;font-weight:700;color:var(--stamp-red);border:3px solid var(--stamp-red);padding:4px 12px;transform:rotate(12deg);opacity:.4;pointer-events:none;letter-spacing:.1em}
 
 /* SECTION */
-.section{padding:56px 40px;border-bottom:1px solid var(--border)}
-.section-header{display:flex;align-items:baseline;gap:16px;margin-bottom:32px}
-.section-title{font-family:'Noto Serif JP',serif;font-weight:700;font-size:18px;color:var(--green-bright);letter-spacing:.1em}
-.section-title-en{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:.15em}
+.section{padding:48px 40px;border-bottom:1px solid var(--border)}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:28px;background:var(--bg3);padding:10px 16px;border:1px solid var(--border2);border-left:3px solid var(--green-dim)}
+.section-title{font-family:'Noto Serif JP',serif;font-weight:700;font-size:16px;color:var(--green-bright);letter-spacing:.1em;text-shadow:0 0 16px rgba(168,212,154,.2)}
+.section-title-en{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.15em}
 .section-id{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);margin-left:auto}
 
 /* GRID */
-.case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
-.case-card{background:var(--bg2);padding:24px;transition:background .2s;cursor:pointer;position:relative;overflow:hidden}
-.case-card:hover{background:var(--bg3)}
-.case-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;transition:height .3s}
-.case-card:hover::before{height:100%}
-.case-card.card-ic::before{background:var(--ic)}.case-card.card-en::before{background:var(--en)}.case-card.card-ph::before{background:var(--ph)}.case-card.card-fl::before{background:var(--fl)}.case-card.card-an::before{background:var(--an)}
-.card-num{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.15em;margin-bottom:10px;display:flex;align-items:center;gap:10px}
-.card-title{font-size:16px;margin-bottom:10px;line-height:1.5}
+.case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.case-card{background:var(--bg2);padding:24px;transition:all .25s;cursor:pointer;position:relative;overflow:hidden;border:1px solid var(--border2);box-shadow:var(--panel-inset)}
+.case-card:hover{background:var(--bg3);border-color:var(--green-dim);box-shadow:var(--panel-inset), 0 0 20px rgba(0,0,0,.8), 0 0 1px var(--green-dim)}
+.case-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .25s;z-index:0}
+.case-card:hover::before{opacity:1}
+.case-card.card-ic::before{background:var(--ic-glow)}.case-card.card-en::before{background:var(--en-glow)}.case-card.card-ph::before{background:var(--ph-glow)}.case-card.card-fl::before{background:var(--fl-glow)}.case-card.card-an::before{background:var(--an-glow)}
+.card-num{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.15em;margin-bottom:10px;display:flex;align-items:center;gap:10px;position:relative;z-index:1}
+.card-title{font-size:16px;margin-bottom:10px;line-height:1.5;position:relative;z-index:1}
 .card-title.poetic{font-family:'Noto Serif JP',serif;color:var(--green-bright)}
+.case-card:hover .card-title.poetic{text-shadow:0 0 12px rgba(168,212,154,.3)}
 .card-title.clinical{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--text);letter-spacing:.02em}
-.card-desc{font-size:13px;color:var(--text-dim);line-height:1.9}
-.card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)}
+.card-desc{font-size:13px;color:var(--text-dim);line-height:1.9;position:relative;z-index:1}
+.card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);position:relative;z-index:1}
 .card-locked{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--red);line-height:1.8}
 .case-card.locked{background:rgba(155,32,32,.06)}
 .case-card.locked .card-title{color:var(--red-bright)!important;opacity:.5}
@@ -176,7 +183,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:40px 40
 .case-grid{grid-template-columns:1fr}.glossary-grid{grid-template-columns:1fr}
 .book-grid{grid-template-columns:1fr 1fr}.org-grid{grid-template-columns:1fr}
 .footer-grid{grid-template-columns:1fr}
-.header-main{flex-wrap:wrap;padding:12px 16px;gap:6px}.logo-ja{font-size:16px!important}.logo-en{display:none}nav{order:3;width:100%;flex-wrap:wrap;gap:8px;border-top:1px solid var(--border);padding-top:6px;margin-top:2px}.clearance-badge{margin-left:auto}
+.header-main{flex-wrap:wrap;padding:12px 16px;gap:6px}.logo-ja{font-size:16px!important}.logo-en{display:none}nav{order:3;width:100%;flex-wrap:wrap;gap:0;border-top:1px solid var(--border);padding-top:6px;margin-top:2px}nav a{flex-shrink:0}.clearance-badge{margin-left:auto}
 .section{padding:40px 20px}.feat-hero-main{padding:28px 20px}.feat-report{padding:28px 20px}
 #boot-screen{padding:30px 24px;font-size:14px}
 .cat-tiles{grid-template-columns:repeat(3,1fr)}
@@ -217,9 +224,18 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:40px 40
 .sb-genre-btn.ic{border-left:3px solid var(--ic-dim)}.sb-genre-btn.en{border-left:3px solid var(--en-dim)}.sb-genre-btn.ph{border-left:3px solid var(--ph-dim)}.sb-genre-btn.an{border-left:3px solid var(--an-dim)}.sb-genre-btn.fl{border-left:3px solid var(--fl-dim)}
 /* hide old inline search */
 .site-search{display:none!important}
-/* push content left of sidebar */
-body{padding-right:246px}
-@media(max-width:680px){.sidebar-right{display:none}body{padding-right:0}.cat-tiles{grid-template-columns:repeat(2,1fr)}.cat-tile-name{display:none}}
+/* SIDEBAR TOGGLE BUTTON */
+.sb-toggle{display:none;position:fixed;top:62px;right:0;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);background:var(--bg3);border:1px solid var(--border2);border-right:none;padding:5px 10px;cursor:pointer;z-index:120;letter-spacing:.08em;transition:all .15s;line-height:1.4}
+.sb-toggle:hover{color:var(--green);border-color:var(--green-dim)}
+/* push content left of sidebar on wide screens */
+@media(min-width:1101px){body{padding-right:246px}}
+@media(max-width:1100px){
+  .sidebar-right{transform:translateX(102%);transition:transform .2s ease;top:0}
+  .sidebar-right.sb-open{transform:translateX(0)}
+  .sb-toggle{display:block}
+  body{padding-right:0!important}
+}
+@media(max-width:680px){.cat-tiles{grid-template-columns:repeat(2,1fr)}.cat-tile-name{display:none}}
 
 /* === M PLUS 1 Code for Japanese mono elements === */
 .mono,.header-top,.logo-en,nav,.ticker-track,.cls-tag,.status-tag,.case-label,.archive-item-header,.archive-type,.archive-case,.tag,.meta-label,.sb-section-title,.sb-genre-btn,.clearance-badge,.section-header-sub{font-family:'M PLUS 1 Code','Share Tech Mono',monospace}
@@ -259,24 +275,28 @@ body{padding-right:246px}
 .decrypting-text{animation:decryptFlicker .3s ease-in-out infinite}
 
 /* STATS BAR */
-#stats-bar{background:var(--bg3);border-bottom:1px solid var(--border);padding:6px 32px;display:flex;align-items:center;flex-wrap:wrap;gap:20px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)}
-.stats-item{display:flex;align-items:center;gap:6px;white-space:nowrap}
-.stats-val{color:var(--amber);font-size:11px}
-.stats-alert{color:var(--ic)!important}
-.stats-ok{color:var(--green)!important}
+#stats-bar{background:var(--bg3);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:stretch;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)}
+.stats-item{display:flex;align-items:center;gap:6px;padding:8px 20px 8px 0;border-right:1px solid var(--border2);margin-right:20px;white-space:nowrap}
+.stats-item:last-child{border-right:none;margin-left:auto;padding-right:0}
+.stats-val{font-family:'VT323',monospace;font-size:17px;line-height:1;text-shadow:0 0 8px currentColor;color:var(--amber)}
+.stats-alert{color:var(--ic)!important;text-shadow:0 0 12px rgba(224,120,72,.6)!important}
+.stats-ok{color:var(--green)!important;text-shadow:0 0 12px rgba(122,171,110,.6)!important}
 
 /* SYSTEM NOTICE */
 .sys-notice{padding:10px 40px;border-bottom:1px solid var(--border);background:var(--bg2);font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);line-height:1.6;font-style:italic;letter-spacing:.02em}
 
 /* CATEGORY TILES */
-.cat-tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-bottom:1px solid var(--border2)}
-.cat-tile{background:var(--bg2);padding:16px 18px;text-decoration:none;display:block;transition:background .15s;border-top:2px solid;color:inherit}
-.cat-tile:hover{background:var(--bg3)}
+.cat-tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-bottom:2px solid var(--border2)}
+.cat-tile{background:var(--bg2);padding:16px 18px;text-decoration:none;display:block;transition:all .25s;color:inherit;border:1px solid var(--border2);border-top:2px solid transparent;position:relative;overflow:hidden;box-shadow:var(--panel-inset)}
+.cat-tile::after{content:'';position:absolute;inset:0;opacity:0;transition:opacity .25s}
 .cat-tile.ct-ic{border-top-color:var(--ic)}.cat-tile.ct-en{border-top-color:var(--en)}.cat-tile.ct-ph{border-top-color:var(--ph)}.cat-tile.ct-an{border-top-color:var(--an)}.cat-tile.ct-fl{border-top-color:var(--fl)}
-.cat-tile-type{font-family:'Share Tech Mono',monospace;font-size:22px;font-weight:700;margin-bottom:2px;letter-spacing:.03em}
+.cat-tile.ct-ic::after{background:var(--ic-glow)}.cat-tile.ct-en::after{background:var(--en-glow)}.cat-tile.ct-ph::after{background:var(--ph-glow)}.cat-tile.ct-an::after{background:var(--an-glow)}.cat-tile.ct-fl::after{background:var(--fl-glow)}
+.cat-tile:hover{border-color:var(--green-dim)}.cat-tile:hover::after{opacity:1}
+.cat-tile-type{font-family:'VT323',monospace;font-size:30px;line-height:1;margin-bottom:2px;letter-spacing:.03em;position:relative;z-index:1;transition:text-shadow .25s}
+.cat-tile:hover .cat-tile-type{text-shadow:0 0 12px currentColor}
 .cat-tile.ct-ic .cat-tile-type{color:var(--ic)}.cat-tile.ct-en .cat-tile-type{color:var(--en)}.cat-tile.ct-ph .cat-tile-type{color:var(--ph)}.cat-tile.ct-an .cat-tile-type{color:var(--an)}.cat-tile.ct-fl .cat-tile-type{color:var(--fl)}
-.cat-tile-name{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:.1em;margin-bottom:8px;text-transform:uppercase}
-.cat-tile-count{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text-dim)}.cat-tile-count .cnt{color:var(--amber);font-size:14px}
+.cat-tile-name{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:.1em;margin-bottom:8px;text-transform:uppercase;position:relative;z-index:1}
+.cat-tile-count{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text-dim);position:relative;z-index:1}.cat-tile-count .cnt{color:var(--amber);font-size:14px}
 </style>
 </head>
 <body>
@@ -351,7 +371,7 @@ body{padding-right:246px}
 <!-- REFERENCES -->
 <section class="section" id="references">
 <div class="section-header"><span class="section-title">参考文献</span><span class="section-title-en">REFERENCE ARCHIVE</span><span class="section-id mono">SEC.03</span></div>
-<p style="font-size:13px;color:var(--text-dim);margin-bottom:28px;font-family:'Share Tech Mono',monospace">記録課・解析課が参照した文献。新入所員の自主学習にも推奨。</p>
+<p style="font-size:13px;color:var(--text-dim);margin-bottom:28px;font-family:'Share Tech Mono',monospace">記録科・解析科が参照した文献。新入所員の自主学習にも推奨。</p>
 <div class="book-grid" id="book-grid"></div>
 </section>
 
