@@ -438,7 +438,7 @@ function renderArticle(a) {
 
     html += '<div class="article-sidebar">';
     html += '<div class="sidebar-section-title">案件データ</div>';
-    html += '分類: <span style="color:var(--' + tc + ')">' + esc(a.type_label) + '</span><br>';
+    html += 'TYPE: <span style="color:var(--' + tc + ')">' + esc(a.type_label) + '</span><br>';
     if (a.department) html += '担当課: ' + esc(a.department) + '<br>';
     if (a.assignee) html += '担当者: ' + esc(a.assignee) + '<br>';
     html += '閲覧Level: Level ' + a.level + '<br>';

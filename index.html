@@ -404,11 +404,11 @@ body{padding-right:246px}
   <div class="sb-section">
     <div class="sb-label">// BROWSE BY TYPE</div>
     <div class="sb-genres">
-      <a href="search.html?type=IC" class="sb-genre-btn ic">IC インシデント</a>
-      <a href="search.html?type=EN" class="sb-genre-btn en">EN エンティティ</a>
-      <a href="search.html?type=PH" class="sb-genre-btn ph">PH 現象</a>
-      <a href="search.html?type=AN" class="sb-genre-btn an">AN 分析</a>
-      <a href="search.html?type=FL" class="sb-genre-btn fl">FL フィールド</a>
+      <a href="search.html?type=IC" class="sb-genre-btn ic">IC INCIDENT</a>
+      <a href="search.html?type=EN" class="sb-genre-btn en">EN ENTITY</a>
+      <a href="search.html?type=PH" class="sb-genre-btn ph">PH PHENOMENON</a>
+      <a href="search.html?type=AN" class="sb-genre-btn an">AN ANALYSIS</a>
+      <a href="search.html?type=FL" class="sb-genre-btn fl">FL FIELD LOG</a>
     </div>
   </div>
 </aside>
@@ -555,7 +555,7 @@ function renderFeatured(articles) {
     html += '</div>';
     html += '<div class="feat-hero-sidebar">';
     html += '<div style="font-size:10px;letter-spacing:.2em;color:var(--text-dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px">案件データ</div>';
-    html += '分類: <span style="color:var(--' + tc + ')">' + esc(a.type_label) + '</span><br>';
+    html += 'TYPE: <span style="color:var(--' + tc + ')">' + esc(a.type_label) + '</span><br>';
     if (a.department) html += '担当課: ' + esc(a.department) + '<br>';
     if (a.assignee) html += '担当者: ' + esc(a.assignee) + '<br>';
     html += '閲覧Level: Level ' + a.level + '<br>';
@@ -698,7 +698,7 @@ function renderCategoryTiles(articles) {
   if (!tilesEl) return;
   var all = articles.articles || [];
   var counts = { IC: 0, EN: 0, PH: 0, AN: 0, FL: 0 };
-  var labels = { IC: 'インシデント', EN: 'エンティティ', PH: '現象', AN: '分析', FL: 'フィールド' };
+  var labels = { IC: 'INCIDENT', EN: 'ENTITY', PH: 'PHENOMENON', AN: 'ANALYSIS', FL: 'FIELD LOG' };
   all.forEach(function(a) { if (counts[a.type] !== undefined) counts[a.type]++; });
   var html = '';
   ['IC', 'EN', 'PH', 'AN', 'FL'].forEach(function(t) {
