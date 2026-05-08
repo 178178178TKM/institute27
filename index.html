@@ -717,9 +717,9 @@ li++;setTimeout(nextLine,30);
 }
 typeChar();
 }
-setTimeout(nextLine,400);
-
+var BOOT_KEY='ins27_boot_ts', BOOT_TTL=3600000;
 function skipBoot(){
+  localStorage.setItem(BOOT_KEY, Date.now());
   document.getElementById('boot-skip').style.display='none';
   bs.style.display='none';
   var ct=document.getElementById('crt-trans');
@@ -728,6 +728,12 @@ function skipBoot(){
   renderAll();
 }
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&bs.style.display!=='none')skipBoot();});
+var lastBoot=localStorage.getItem(BOOT_KEY);
+if(lastBoot && Date.now()-parseInt(lastBoot)<BOOT_TTL){
+  skipBoot();
+}else{
+  setTimeout(nextLine,400);
+}
 
 function transition(){
 var ct=document.getElementById('crt-trans'),cl=document.getElementById('crt-line');
