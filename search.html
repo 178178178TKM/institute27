@@ -5,7 +5,7 @@
 <link rel="icon" href="/institute27/favicon.svg" type="image/svg+xml">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>記録検索 ｜ 第弐拾七研究所</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mony&family=Noto+Serif+JP:wght@300;400;700&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Serif+JP:wght@300;400;700&family=VT323&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#060b06;--bg2:#0a110a;--bg3:#0e180e;--green:#7aab6e;--green-dim:#3d6636;--green-bright:#a8d49a;--amber:#c8a030;--amber-dim:#7a5e12;--red:#9b2020;--red-bright:#cc3333;--text:#8aab80;--text-dim:#4a6644;--text-bright:#c2ddb8;--border:#1e2e1a;--border2:#2a3e24;--scan-line:rgba(0,20,0,0.35);--ic:#e07848;--ic-dim:#7a3820;--en:#d45888;--en-dim:#6a2844;--ph:#9878cc;--ph-dim:#4a3868;--fl:#607888;--fl-dim:#2e3e48;--an:#608878;--an-dim:#2e4838;}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -188,7 +188,7 @@ function renderResults(results, q) {
     var locked = isLocked(a);
     var typeC = tc[a.type] || 'fl';
     var borderColor = 'var(--' + typeC + '-dim)';
-    html += '<a ' + (locked ? '' : 'href="articles/' + a.id + '.html"') + ' class="result-card' + (locked ? ' locked' : '') + '"' + (locked ? ' onclick="return false"' : '') + ' style="border-left-color:' + borderColor + '">';
+    html += '<a ' + (locked ? '' : 'href="articles/index.html?id=' + a.id + '"') + ' class="result-card' + (locked ? ' locked' : '') + '"' + (locked ? ' onclick="return false"' : '') + ' style="border-left-color:' + borderColor + '">';
     html += '<div class="result-left">';
     html += '<span class="cls-tag cls-' + typeC + ' result-type">' + esc(a.type) + '</span>';
     html += '<span class="result-id">' + esc(a.id) + '</span>';

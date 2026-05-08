@@ -1,4 +1,51 @@
 {
-  "leadership": [],
-  "departments": []
+  "leadership": [
+    {
+      "jurisdiction": "所長室",
+      "name": "██████ ██",
+      "departments": ["調査部", "分析部", "封じ込め部", "情報管理部"]
+    },
+    {
+      "jurisdiction": "副所長（技術統括）",
+      "name": "遠藤 篤志",
+      "departments": ["技術開発部", "通信部"]
+    }
+  ],
+  "departments": [
+    {
+      "name": "調査部",
+      "english": "Investigation Division",
+      "chief": "松浦 慶子",
+      "staff_count": 14,
+      "description": "現地調査・事象記録の一次収集を担当。有事の際は封じ込め部と連携し、現場対応の指揮を執る。"
+    },
+    {
+      "name": "分析部",
+      "english": "Analysis Division",
+      "chief": "三田村 隆",
+      "staff_count": 9,
+      "description": "収集した記録・データの統計分析および分類評価を実施。月次レポートの作成義務あり。"
+    },
+    {
+      "name": "封じ込め部",
+      "english": "Containment Division",
+      "chief": "██████",
+      "staff_count": 7,
+      "description": "Level-2以上の異常体・現象の物理的隔離・無力化を担当。詳細は機密につき非公開。"
+    },
+    {
+      "name": "情報管理部",
+      "english": "Information Management Division",
+      "chief": "川端 夕子",
+      "staff_count": 5,
+      "description": "記録の機密分類・アーカイブ管理・外部端末アクセス制御を担当。このシステムの運営主体。"
+    },
+    {
+      "name": "技術開発部",
+      "english": "Technical Development Division",
+      "chief": "吉原 誠一",
+      "staff_count": 6,
+      "description": "観測機器・封じ込め装置の開発および保守を担当。一部プロジェクトは所長室直轄。"
+    }
+  ]
 }

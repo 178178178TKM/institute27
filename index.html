@@ -7,7 +7,7 @@
 <title>第弐拾七研究所 ｜ 統合記録管理システム [外部端末]</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Serif+JP:wght@300;400;700&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=M+PLUS+1+Code:wght@300;400;700&family=Noto+Serif+JP:wght@300;400;700&family=VT323&display=swap" rel="stylesheet">
 <style>
 :root {
 --bg: #060b06; --bg2: #0a110a; --bg3: #0e180e;
@@ -217,12 +217,50 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:40px 40
 /* push content left of sidebar */
 body{padding-right:246px}
 @media(max-width:680px){.sidebar-right{display:none}body{padding-right:0}}
+
+/* === M PLUS 1 Code for Japanese mono elements === */
+.mono,.header-top,.logo-en,nav,.ticker-track,.cls-tag,.status-tag,.case-label,.archive-item-header,.archive-type,.archive-case,.tag,.meta-label,.sb-section-title,.sb-genre-btn,.clearance-badge,.section-header-sub{font-family:'M PLUS 1 Code','Share Tech Mono',monospace}
+
+/* === Enhanced card hover: glitch effect === */
+@keyframes glitch-h{0%,100%{clip-path:inset(0 0 98% 0);transform:translate(-2px,0)}20%{clip-path:inset(30% 0 50% 0);transform:translate(2px,0)}40%{clip-path:inset(60% 0 20% 0);transform:translate(-1px,0)}60%{clip-path:inset(10% 0 80% 0);transform:translate(1px,0)}80%{clip-path:inset(80% 0 5% 0);transform:translate(-2px,0)}}
+@keyframes scanSweep{0%{top:-100%}100%{top:200%}}
+@keyframes accessDenied{0%,100%{opacity:1}10%,30%,50%{opacity:.3}20%,40%{opacity:.8}}
+@keyframes borderPulse{0%,100%{box-shadow:inset 0 0 0 1px var(--red)}50%{box-shadow:inset 0 0 0 1px var(--red-bright),0 0 8px var(--red)}}
+
+/* Card glitch on hover */
+.case-card{position:relative;overflow:hidden}
+.case-card::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(138,171,128,.03) 50%,transparent 100%);transform:translateX(-100%);transition:transform .4s}
+.case-card:hover::after{transform:translateX(100%)}
+.case-card:hover .case-title,.case-card:hover .archive-title{text-shadow:1px 0 var(--green-dim),-1px 0 rgba(200,160,48,.2)}
+
+/* Locked/REDACTED card */
+.case-card.locked{animation:borderPulse 2.5s ease-in-out infinite}
+.case-card.locked:hover{cursor:not-allowed}
+.case-card.locked .archive-title{animation:accessDenied 3s ease-in-out infinite}
+
+/* Scan line sweep on card hover */
+.case-card .scan-line-hover{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(138,171,128,.15),transparent);top:-100%;pointer-events:none;transition:none}
+.case-card:hover .scan-line-hover{animation:scanSweep .6s linear forwards}
+
+/* Featured article hover */
+.featured-article{transition:filter .2s}
+.featured-article:hover{filter:brightness(1.05)}
+.featured-article:hover .feat-case-num{letter-spacing:.25em;transition:letter-spacing .3s}
+
+/* Skip boot sequence */
+#boot-skip{position:fixed;bottom:24px;right:32px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);background:none;border:1px solid var(--border2);padding:4px 12px;cursor:pointer;z-index:20001;letter-spacing:.1em;opacity:.5}
+#boot-skip:hover{opacity:1;border-color:var(--green-dim);color:var(--green)}
+
+/* Article detail DECRYPTING animation */
+@keyframes decryptFlicker{0%,100%{opacity:1}25%{opacity:.4}50%{opacity:.9}75%{opacity:.3}}
+.decrypting-text{animation:decryptFlicker .3s ease-in-out infinite}
 </style>
 </head>
 <body>
 
 <button class="sb-toggle" id="sb-toggle-btn" onclick="sbToggle()">☰ MENU</button>
 <div id="boot-screen"></div>
+<button id="boot-skip" onclick="skipBoot()">ESC — SKIP</button>
 <div id="crt-trans"><canvas id="crt-noise"></canvas><div id="crt-line"></div></div>
 
 <div id="auth-overlay">
@@ -479,7 +517,7 @@ function renderFeatured(articles) {
     var caseLabel = (idx === 0 ? 'LATEST ／ ' : '') + a.id + ' ／ ' + esc(a.type_label);
     var bodyHtml = '<p>' + escR(a.summary) + '</p>';
 
-    var featLocked=isLocked(a); html += '<a href="'+(featLocked?'#':'articles/'+a.id+'.html')+'" class="featured-article" style="display:block;color:inherit;text-decoration:none"'+(featLocked?' onclick="event.preventDefault();showAuthForCard('+a.level+')"':'') + (idx === 0 ? ' id="featured-anchor"' : '') + '>';
+    var featLocked=isLocked(a); html += '<a href="'+(featLocked?'#':'articles/index.html?id='+a.id)+'" class="featured-article" style="display:block;color:inherit;text-decoration:none"'+(featLocked?' onclick="event.preventDefault();showAuthForCard('+a.level+')"':'') + (idx === 0 ? ' id="featured-anchor"' : '') + '>';
     html += '<div class="feat-hero"><div class="feat-hero-main">';
     html += '<div class="feat-case-num mono">' + esc(caseLabel) + '</div>';
     html += '<div class="feat-title">' + escR(a.title) + '</div>';
@@ -515,7 +553,7 @@ function renderArchive(articles) {
     var isRedacted = a.status === 'REDACTED' || a.redacted;
     var caseNum = a.id.match(/\d+/) ? 'Case#' + a.id.replace(/[^\d]/g,'') : a.id;
 
-    var needsAuth=isLocked(a); html += '<a href="'+(needsAuth?'#':'articles/'+a.id+'.html')+'" class="case-card card-'+tc+(needsAuth?' locked':'')+'" data-level="'+(a.level||0)+'" data-scenario="'+(a.scenario||'')+'" style="color:inherit;text-decoration:none"'+(needsAuth?' onclick="event.preventDefault();showAuthForCard('+a.level+',\"articles/'+a.id+'.html\")"':'')+'>'; 
+    var needsAuth=isLocked(a); html += '<a href="'+(needsAuth?'#':'articles/index.html?id='+a.id)+'" class="case-card card-'+tc+(needsAuth?' locked':'')+'" data-level="'+(a.level||0)+'" data-scenario="'+(a.scenario||'')+'" style="color:inherit;text-decoration:none"'+(needsAuth?' onclick="event.preventDefault();showAuthForCard('+a.level+',\"articles/index.html?id='+a.id+'\")"':'')+'>'; 
     
     if (isRedacted) {
       html += '<div class="card-num"><span class="cls-tag" style="color:var(--red-bright);border-color:var(--red)">' + esc(a.type) + '</span> ' + esc(caseNum) + '</div>';
@@ -681,6 +719,16 @@ typeChar();
 }
 setTimeout(nextLine,400);
 
+function skipBoot(){
+  document.getElementById('boot-skip').style.display='none';
+  bs.style.display='none';
+  var ct=document.getElementById('crt-trans');
+  ct.style.display='none';
+  document.getElementById('main-site').style.display='block';
+  renderAll();
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&bs.style.display!=='none')skipBoot();});
+
 function transition(){
 var ct=document.getElementById('crt-trans'),cl=document.getElementById('crt-line');
 var canvas=document.getElementById('crt-noise'),ctx=canvas.getContext('2d');
@@ -772,7 +820,7 @@ function closeAuth(){document.getElementById('auth-overlay').classList.remove('a
 function isLocked(a){var lv=a.level||0,sc=a.scenario||null;if(lv===0&&!sc)return false;if(!currentScenario)return lv>0;if(currentScenario==='__master__')return lv>currentLevel;if(sc&&sc!==currentScenario)return lv>0;return lv>currentLevel;}
 function showAuthForCard(level,url){window._pendingUrl=url||null;document.getElementById('auth-level-info').textContent='Level '+level+' クリアランスが必要です';document.getElementById('auth-result').textContent='';document.getElementById('id-input').value='';document.getElementById('pw-input').value='';document.getElementById('auth-overlay').classList.add('active');}
 async function sha256(msg){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('ins27:'+msg));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('')}
-async function attemptAuth(){var id=document.getElementById('id-input').value.trim(),pw=document.getElementById('pw-input').value.trim(),r=document.getElementById('auth-result');r.style.color='var(--text-dim)';if(!id||!pw){r.textContent='⚠ IDとコードを入力してください';r.style.color='var(--amber)';return;}var idHash=await sha256(id),pwHash=await sha256(pw);var vault=DATA.vault;if(!vault||!vault.scenarios){r.textContent='⚠ Vault未ロード';r.style.color='var(--red-bright)';return;}var matchedScenario=null;for(var sk in vault.scenarios){var scn=vault.scenarios[sk];if(scn.id_hash&&idHash===scn.id_hash){matchedScenario=sk;break;}}if(!matchedScenario){r.textContent='⚠ 認証失敗 — IDが無効です';r.style.color='var(--red-bright)';return;}var scn=vault.scenarios[matchedScenario],isMaster=scn.master===true,granted=0;for(var lv=4;lv>=1;lv--){if(scn.levels&&scn.levels[lv]&&pwHash===scn.levels[lv].hash){granted=lv;break;}}if(granted>0){currentLevel=granted;currentScenario=isMaster?'__master__':matchedScenario;setAuth(currentLevel,currentScenario);applyLevelStyling();r.style.color='var(--green)';var label=isMaster?'MASTER ACCESS':((scn.label||matchedScenario)+' / LEVEL '+granted);r.innerHTML='認証成功 — <span style="color:var(--green-bright)">'+label+' GRANTED</span>';if(window._pendingUrl){var url=window._pendingUrl;window._pendingUrl=null;setTimeout(function(){window.location.href=url;},1400);}else{setTimeout(closeAuth,1400);}}else{r.textContent='⚠ 認証失敗 — アクセスコードが無効です';r.style.color='var(--red-bright)';}}
+async function attemptAuth(){var id=document.getElementById('id-input').value.trim(),pw=document.getElementById('pw-input').value.trim(),r=document.getElementById('auth-result');r.style.color='var(--text-dim)';if(!id||!pw){r.textContent='⚠ IDとコードを入力してください';r.style.color='var(--amber)';return;}var idHash=await sha256(id),pwHash=await sha256(pw);var vault=DATA.vault;if(!vault||!vault.scenarios){r.textContent='⚠ Vault未ロード';r.style.color='var(--red-bright)';return;}var matchedScenario=null;for(var sk in vault.scenarios){var scn=vault.scenarios[sk];if(scn.id_hash&&idHash===scn.id_hash){matchedScenario=sk;break;}}if(!matchedScenario){r.textContent='⚠ 認証失敗 — IDが無効です';r.style.color='var(--red-bright)';return;}var scn=vault.scenarios[matchedScenario],isMaster=scn.master===true,granted=0;for(var lv=4;lv>=1;lv--){if(scn.levels&&scn.levels[lv]&&pwHash===scn.levels[lv].hash){granted=lv;break;}}if(granted>0){currentLevel=granted;currentScenario=isMaster?'__master__':matchedScenario;setAuth(currentLevel,currentScenario);applyLevelStyling();r.style.color='var(--green)';var label=isMaster?'MASTER ACCESS':((scn.label||matchedScenario)+' / LEVEL '+granted);r.innerHTML='認証成功 — <span style="color:var(--green-bright)">'+label+' GRANTED</span>';if(isMaster){setTimeout(function(){r.innerHTML='<span style="color:var(--amber)">▌ ADMIN TERMINAL ACCESS — REDIRECTING...</span>';setTimeout(function(){window.location.href='manager.html';},1200);},800);}else if(window._pendingUrl){var url=window._pendingUrl;window._pendingUrl=null;setTimeout(function(){window.location.href=url;},1400);}else{setTimeout(closeAuth,1400);}}else{r.textContent='⚠ 認証失敗 — アクセスコードが無効です';r.style.color='var(--red-bright)';}}
 document.getElementById('auth-overlay').addEventListener('click',function(e){if(e.target===this)closeAuth()});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAuth()});
 
@@ -814,9 +862,14 @@ async function sbLogin(){
   if(granted>0){
     currentLevel=granted;currentScenario=isMaster?'__master__':matchedScenario;
     setAuth(currentLevel,currentScenario);applyLevelStyling();sbUpdateUI();renderFeatured();renderArchive();sbUpdateUI();sbRenderRecent();
-    if(msg){msg.textContent='✓ 認証成功';msg.style.color='var(--green)';}
-    var iEl=document.getElementById('sb-id'),pEl=document.getElementById('sb-pw');
-    if(iEl)iEl.value='';if(pEl)pEl.value='';
+    if(isMaster){
+      if(msg){msg.textContent='▌ ADMIN TERMINAL — REDIRECTING...';msg.style.color='var(--amber)';}
+      setTimeout(function(){window.location.href='manager.html';},1500);
+    }else{
+      if(msg){msg.textContent='✓ 認証成功';msg.style.color='var(--green)';}
+      var iEl=document.getElementById('sb-id'),pEl=document.getElementById('sb-pw');
+      if(iEl)iEl.value='';if(pEl)pEl.value='';
+    }
   }else{
     if(msg){msg.textContent='⚠ CODEが無効';msg.style.color='var(--red-bright)';}
   }
@@ -839,7 +892,7 @@ function sbRenderRecent(){
     var locked=isLocked(a);
     var c=tc[a.type]||'fl';
     if(locked)return '<li class="sb-recent-item"><span style="color:var(--text-dim);font-size:11px">▮ '+a.title+'</span><div class="sb-recent-meta" style="color:var(--red)">LV.'+(a.level||0)+' REQUIRED</div></li>';
-    return '<li class="sb-recent-item"><a href="articles/'+a.id+'.html">'+a.title+'</a><div class="sb-recent-meta"><span style="color:var(--'+c+')">'+a.type+'</span> · '+(a.first_report||'')+'</div></li>';
+    return '<li class="sb-recent-item"><a href="articles/index.html?id='+a.id+'">'+a.title+'</a><div class="sb-recent-meta"><span style="color:var(--'+c+')">'+a.type+'</span> · '+(a.first_report||'')+'</div></li>';
   }).join('');
 }
 

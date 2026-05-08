@@ -368,7 +368,7 @@ function tryAutoDecrypt(articleData) {
   }
 
   var container = document.getElementById('article-container');
-  container.innerHTML = '<div class="loading"><div class="auth-decrypting">▌ CLEARANCE VERIFIED — DECRYPTING...</div></div>';
+  container.innerHTML = '<div class="loading"><div class="auth-decrypting decrypting-text">▌ CLEARANCE VERIFIED — DECRYPTING...</div></div>';
 
   INS27Crypto.decrypt(articleData.cipher, cl.pw)
     .then(function(plaintext) {

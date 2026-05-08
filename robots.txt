@@ -1,0 +1,14 @@
+User-agent: *
+Disallow: /data/vault.json
+Disallow: /manager.html
+Disallow: /tools/
+
+# ——————————————————————————————
+# INS27-NET / EXTERNAL ACCESS LOG
+# Last authorized crawl: 2019-03-14
+# Status: ANOMALY DETECTED IN SECTOR-7
+# If you are reading this, you have accessed
+# an external terminal of THE 27th INSTITUTE.
+# Clearance verification required for full access.
+# Contact: [REDACTED]@ins27.internal
+# ——————————————————————————————
