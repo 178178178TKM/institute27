@@ -179,6 +179,9 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:40px 40
 .header-main{flex-wrap:wrap;padding:12px 16px;gap:6px}.logo-ja{font-size:16px!important}.logo-en{display:none}nav{order:3;width:100%;flex-wrap:wrap;gap:8px;border-top:1px solid var(--border);padding-top:6px;margin-top:2px}.clearance-badge{margin-left:auto}
 .section{padding:40px 20px}.feat-hero-main{padding:28px 20px}.feat-report{padding:28px 20px}
 #boot-screen{padding:30px 24px;font-size:14px}
+.cat-tiles{grid-template-columns:repeat(3,1fr)}
+#stats-bar{padding:6px 16px;gap:12px}
+.sys-notice{padding:8px 20px}
 }
 
 /* ===== RIGHT SIDEBAR ===== */
@@ -216,7 +219,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:40px 40
 .site-search{display:none!important}
 /* push content left of sidebar */
 body{padding-right:246px}
-@media(max-width:680px){.sidebar-right{display:none}body{padding-right:0}}
+@media(max-width:680px){.sidebar-right{display:none}body{padding-right:0}.cat-tiles{grid-template-columns:repeat(2,1fr)}.cat-tile-name{display:none}}
 
 /* === M PLUS 1 Code for Japanese mono elements === */
 .mono,.header-top,.logo-en,nav,.ticker-track,.cls-tag,.status-tag,.case-label,.archive-item-header,.archive-type,.archive-case,.tag,.meta-label,.sb-section-title,.sb-genre-btn,.clearance-badge,.section-header-sub{font-family:'M PLUS 1 Code','Share Tech Mono',monospace}
@@ -254,6 +257,26 @@ body{padding-right:246px}
 /* Article detail DECRYPTING animation */
 @keyframes decryptFlicker{0%,100%{opacity:1}25%{opacity:.4}50%{opacity:.9}75%{opacity:.3}}
 .decrypting-text{animation:decryptFlicker .3s ease-in-out infinite}
+
+/* STATS BAR */
+#stats-bar{background:var(--bg3);border-bottom:1px solid var(--border);padding:6px 32px;display:flex;align-items:center;flex-wrap:wrap;gap:20px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)}
+.stats-item{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.stats-val{color:var(--amber);font-size:11px}
+.stats-alert{color:var(--ic)!important}
+.stats-ok{color:var(--green)!important}
+
+/* SYSTEM NOTICE */
+.sys-notice{padding:10px 40px;border-bottom:1px solid var(--border);background:var(--bg2);font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);line-height:1.6;font-style:italic;letter-spacing:.02em}
+
+/* CATEGORY TILES */
+.cat-tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-bottom:1px solid var(--border2)}
+.cat-tile{background:var(--bg2);padding:16px 18px;text-decoration:none;display:block;transition:background .15s;border-top:2px solid;color:inherit}
+.cat-tile:hover{background:var(--bg3)}
+.cat-tile.ct-ic{border-top-color:var(--ic)}.cat-tile.ct-en{border-top-color:var(--en)}.cat-tile.ct-ph{border-top-color:var(--ph)}.cat-tile.ct-an{border-top-color:var(--an)}.cat-tile.ct-fl{border-top-color:var(--fl)}
+.cat-tile-type{font-family:'Share Tech Mono',monospace;font-size:22px;font-weight:700;margin-bottom:2px;letter-spacing:.03em}
+.cat-tile.ct-ic .cat-tile-type{color:var(--ic)}.cat-tile.ct-en .cat-tile-type{color:var(--en)}.cat-tile.ct-ph .cat-tile-type{color:var(--ph)}.cat-tile.ct-an .cat-tile-type{color:var(--an)}.cat-tile.ct-fl .cat-tile-type{color:var(--fl)}
+.cat-tile-name{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:.1em;margin-bottom:8px;text-transform:uppercase}
+.cat-tile-count{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text-dim)}.cat-tile-count .cnt{color:var(--amber);font-size:14px}
 </style>
 </head>
 <body>
@@ -287,20 +310,21 @@ body{padding-right:246px}
 </div>
 <div class="header-main">
 <div class="logo"><span class="logo-ja">第弐拾七研究所</span><span class="logo-en">THE 27th INSTITUTE — INTEGRATED ARCHIVE SYSTEM</span></div>
-<nav><a href="#featured">最新記録</a><a href="#archive">記録一覧</a><a href="#glossary">用語集</a><a href="#references">参考文献</a><a href="#organization">組織</a></nav>
+<nav><a href="#featured">最新記録</a><a href="#archive">記録一覧</a><a href="#glossary">用語集</a><a href="search.html">全記録検索</a></nav>
 
 </div>
 </header>
 
-<div class="ticker-wrap">
-<span class="ticker-label">更新通知</span>
-<span class="ticker-track" id="ticker-track"></span>
+<div id="stats-bar">
+  <span class="stats-item">総記録数: <span id="stats-total" class="stats-val">——</span></span>
+  <span class="stats-item">最終更新: <span id="stats-updated" class="stats-val">——</span></span>
+  <span class="stats-item">アラートレベル: <span class="stats-val stats-alert">橙 / ELEVATED</span></span>
+  <span class="stats-item">接続状態: <span class="stats-val stats-ok">ACTIVE</span></span>
 </div>
 
-<div class="welcome-banner">
-<div class="welcome-title">// 新入所員向けガイダンス</div>
-<p>本端末は、第弐拾七研究所の統合記録管理システムへの外部アクセス用インターフェースです。新入所の研究員は本端末を通じて既存の調査記録・分析データ・用語集を確認し、自主学習に役立ててください。現場での調査中にも、過去の類似案件や観測データを参照できます。</p>
-</div>
+<div class="cat-tiles" id="cat-tiles"></div>
+
+<div class="sys-notice">// SYSTEM ACCESS NOTICE ── 本端末は第弐拾七研究所統合記録管理システム（INS27-ARCHIVE v2.4）への外部接続です。本セッションのアクセスログおよびクリアランス情報は記録されています。</div>
 
 <div class="site-search">
   <div class="site-search-row">
@@ -656,9 +680,40 @@ function renderOrganization(org) {
   grid.innerHTML = html;
 }
 
+// --- STATS BAR ---
+function renderStatsBar(articles) {
+  var all = articles.articles || [];
+  var totalEl = document.getElementById('stats-total');
+  var updatedEl = document.getElementById('stats-updated');
+  if (totalEl) totalEl.textContent = all.length;
+  if (updatedEl) {
+    var dates = all.map(function(a) { return a.first_report || ''; }).filter(Boolean).sort();
+    updatedEl.textContent = dates.length ? dates[dates.length - 1] : '——';
+  }
+}
+
+// --- CATEGORY TILES ---
+function renderCategoryTiles(articles) {
+  var tilesEl = document.getElementById('cat-tiles');
+  if (!tilesEl) return;
+  var all = articles.articles || [];
+  var counts = { IC: 0, EN: 0, PH: 0, AN: 0, FL: 0 };
+  var labels = { IC: 'インシデント', EN: 'エンティティ', PH: '現象', AN: '分析', FL: 'フィールド' };
+  all.forEach(function(a) { if (counts[a.type] !== undefined) counts[a.type]++; });
+  var html = '';
+  ['IC', 'EN', 'PH', 'AN', 'FL'].forEach(function(t) {
+    html += '<a href="search.html?type=' + t + '" class="cat-tile ct-' + t.toLowerCase() + '">';
+    html += '<div class="cat-tile-type">' + t + '</div>';
+    html += '<div class="cat-tile-name">' + labels[t] + '</div>';
+    html += '<div class="cat-tile-count"><span class="cnt">' + counts[t] + '</span> 件</div>';
+    html += '</a>';
+  });
+  tilesEl.innerHTML = html;
+}
+
 // --- RENDER ALL ---
 function renderAll() {
-  if (DATA.articles)     { renderTicker(DATA.articles); renderFeatured(DATA.articles); renderArchive(DATA.articles); }
+  if (DATA.articles)     { renderStatsBar(DATA.articles); renderCategoryTiles(DATA.articles); renderFeatured(DATA.articles); renderArchive(DATA.articles); }
   if (DATA.glossary)     { renderGlossary(DATA.glossary); }
   if (DATA.references)   { renderReferences(DATA.references); }
   if (DATA.organization) { renderOrganization(DATA.organization); }
