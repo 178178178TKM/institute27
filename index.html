@@ -782,6 +782,7 @@ function skipBoot(){
   document.getElementById('main-site').style.display='block';
   renderAll();
 }
+window.skipBoot=skipBoot;
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&bs.style.display!=='none')skipBoot();});
 var lastBoot=localStorage.getItem(BOOT_KEY);
 if(lastBoot && Date.now()-parseInt(lastBoot)<BOOT_TTL){
@@ -817,6 +818,8 @@ setTimeout(function(){clearInterval(noiseId);canvas.style.opacity='0'},250);
 setTimeout(function(){cl.style.transition='opacity .1s, box-shadow .1s';cl.style.boxShadow='0 0 60px var(--green-bright),0 0 150px var(--green)'},1000);
 setTimeout(function(){cl.style.transition='opacity .4s';cl.style.opacity='0'},1200);
 setTimeout(function(){
+localStorage.setItem(BOOT_KEY, Date.now());
+document.getElementById('boot-skip').style.display='none';
 ct.style.display='none';
 document.getElementById('main-site').style.display='block';
 renderAll();
