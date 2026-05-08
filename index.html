@@ -102,7 +102,7 @@ nav a:hover{color:var(--green-bright);background:rgba(61,102,54,.2);border-color
 .welcome-title{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:.2em;margin-bottom:10px}
 
 /* FEATURED */
-.featured-article{border:1px solid var(--border2);background:var(--bg2);margin:24px 40px 0;box-shadow:var(--panel-inset);border-left:3px solid var(--green-dim)}
+.featured-article{border:1px solid var(--border2);background:var(--bg2);margin:20px 32px 0;box-shadow:var(--panel-inset);border-left:3px solid var(--green-dim)}
 .feat-hero{display:grid;grid-template-columns:1fr 300px;gap:0}
 .feat-hero-main{padding:40px;border-right:1px solid var(--border2)}
 .feat-hero-sidebar{padding:28px 20px;background:var(--bg2);font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text-dim);line-height:2}
@@ -121,7 +121,7 @@ nav a:hover{color:var(--green-bright);background:rgba(61,102,54,.2);border-color
 .field-report.has-stamp::before{content:'機密解除';position:absolute;top:24px;right:24px;font-family:'Noto Serif JP',serif;font-size:28px;font-weight:700;color:var(--stamp-red);border:3px solid var(--stamp-red);padding:4px 12px;transform:rotate(12deg);opacity:.4;pointer-events:none;letter-spacing:.1em}
 
 /* SECTION */
-.section{padding:48px 40px;border-bottom:1px solid var(--border)}
+.section{padding:32px;margin:0 32px 20px;border:1px solid var(--border2);background:var(--bg2);box-shadow:var(--panel-inset)}
 .section-header{display:flex;align-items:center;gap:12px;margin-bottom:28px;background:var(--bg3);padding:10px 16px;border:1px solid var(--border2);border-left:3px solid var(--green-dim)}
 .section-title{font-family:'Noto Serif JP',serif;font-weight:700;font-size:16px;color:var(--green-bright);letter-spacing:.1em;text-shadow:0 0 16px rgba(168,212,154,.2)}
 .section-title-en{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.15em}
@@ -275,7 +275,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:40px 40
 .decrypting-text{animation:decryptFlicker .3s ease-in-out infinite}
 
 /* STATS BAR */
-#stats-bar{background:var(--bg3);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:stretch;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)}
+#stats-bar{background:var(--bg3);border:1px solid var(--border2);border-top:none;margin:0 32px;padding:0 20px;display:flex;align-items:stretch;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)}
 .stats-item{display:flex;align-items:center;gap:6px;padding:8px 20px 8px 0;border-right:1px solid var(--border2);margin-right:20px;white-space:nowrap}
 .stats-item:last-child{border-right:none;margin-left:auto;padding-right:0}
 .stats-val{font-family:'VT323',monospace;font-size:17px;line-height:1;text-shadow:0 0 8px currentColor;color:var(--amber)}
@@ -283,10 +283,10 @@ footer{background:var(--bg2);border-top:1px solid var(--border2);padding:40px 40
 .stats-ok{color:var(--green)!important;text-shadow:0 0 12px rgba(122,171,110,.6)!important}
 
 /* SYSTEM NOTICE */
-.sys-notice{padding:10px 40px;border-bottom:1px solid var(--border);background:var(--bg2);font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);line-height:1.6;font-style:italic;letter-spacing:.02em}
+.sys-notice{padding:10px 20px;margin:0 32px 20px;border:1px solid var(--border2);border-top:none;background:var(--bg2);font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);line-height:1.6;font-style:italic;letter-spacing:.02em}
 
 /* CATEGORY TILES */
-.cat-tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-bottom:2px solid var(--border2)}
+.cat-tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid var(--border2);border-top:none;margin:0 32px}
 .cat-tile{background:var(--bg2);padding:16px 18px;text-decoration:none;display:block;transition:all .25s;color:inherit;border:1px solid var(--border2);border-top:2px solid transparent;position:relative;overflow:hidden;box-shadow:var(--panel-inset)}
 .cat-tile::after{content:'';position:absolute;inset:0;opacity:0;transition:opacity .25s}
 .cat-tile.ct-ic{border-top-color:var(--ic)}.cat-tile.ct-en{border-top-color:var(--en)}.cat-tile.ct-ph{border-top-color:var(--ph)}.cat-tile.ct-an{border-top-color:var(--an)}.cat-tile.ct-fl{border-top-color:var(--fl)}
