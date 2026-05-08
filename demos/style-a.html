@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STYLE-A: 枠線パネル型 ｜ DEMO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=M+PLUS+1+Code:wght@300;400;700&family=Noto+Serif+JP:wght@300;400;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+--bg: #060b06; --bg2: #0a110a; --bg3: #0e180e;
+--green: #7aab6e; --green-dim: #3d6636; --green-bright: #a8d49a;
+--amber: #c8a030; --amber-dim: #7a5e12;
+--red: #9b2020; --red-bright: #cc3333;
+--text: #8aab80; --text-dim: #4a6644; --text-bright: #c2ddb8;
+--border: #1e2e1a; --border2: #2a3e24;
+--ic: #e07848; --en: #d45888; --ph: #9878cc; --fl: #607888; --an: #608878;
+--ic-dim: #7a3820; --en-dim: #6a2844; --ph-dim: #4a3868; --fl-dim: #2e3e48; --an-dim: #2e4838;
+--panel-shadow: 0 0 0 1px var(--border2), 0 4px 20px rgba(0,0,0,.6);
+--panel-inset: inset 0 1px 0 rgba(122,171,110,.06);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Noto Serif JP',serif;font-size:15px;line-height:1.8;padding:0 260px 40px 0}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,20,0,.35) 0,rgba(0,20,0,.35) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:9999;opacity:.4}
+
+/* ===== HEADER ===== */
+#site-header{border-bottom:2px solid var(--green-dim);background:var(--bg2);position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.8)}
+.header-top{display:flex;justify-content:space-between;align-items:center;padding:5px 28px;background:var(--bg3);border-bottom:1px solid var(--border2);font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)}
+.header-main{display:flex;align-items:center;justify-content:space-between;padding:14px 28px}
+.logo-ja{font-family:'Noto Serif JP',serif;font-weight:700;font-size:22px;color:var(--green-bright);letter-spacing:.15em}
+.logo-en{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.2em}
+nav{display:flex;gap:0;font-family:'Share Tech Mono',monospace;font-size:11px}
+nav a{color:var(--text-dim);padding:6px 16px;border:1px solid var(--border2);margin-left:-1px;transition:all .15s}
+nav a:hover{color:var(--green-bright);background:var(--bg3);border-color:var(--green-dim);z-index:1;position:relative}
+nav a:first-child{border-radius:2px 0 0 2px}
+nav a:last-child{border-radius:0 2px 2px 0}
+a{color:var(--green);text-decoration:none}
+
+/* ===== STATS BAR ===== */
+#stats-bar{background:var(--bg3);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:stretch;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)}
+.stats-item{display:flex;align-items:center;gap:6px;padding:8px 20px 8px 0;border-right:1px solid var(--border2);margin-right:20px;white-space:nowrap}
+.stats-item:last-child{border-right:none;margin-left:auto;padding-right:0}
+.stats-val{color:var(--amber);font-size:12px;font-weight:700}
+.stats-alert{color:var(--ic)!important}
+.stats-ok{color:var(--green)!important}
+
+/* ===== CATEGORY TILES ===== */
+.cat-tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:0;background:var(--bg3);border-bottom:2px solid var(--border2);padding:16px 28px;gap:12px}
+.cat-tile{background:var(--bg2);padding:16px;text-decoration:none;display:block;border:1px solid var(--border2);transition:all .2s;color:inherit;box-shadow:var(--panel-inset)}
+.cat-tile:hover{border-color:var(--green-dim);box-shadow:var(--panel-inset), 0 0 12px rgba(122,171,110,.1)}
+.cat-tile-type{font-family:'Share Tech Mono',monospace;font-size:20px;font-weight:700;margin-bottom:2px}
+.ct-ic .cat-tile-type{color:var(--ic)}.ct-en .cat-tile-type{color:var(--en)}.ct-ph .cat-tile-type{color:var(--ph)}.ct-an .cat-tile-type{color:var(--an)}.ct-fl .cat-tile-type{color:var(--fl)}
+.ct-ic{border-top:2px solid var(--ic)!important}.ct-en{border-top:2px solid var(--en)!important}.ct-ph{border-top:2px solid var(--ph)!important}.ct-an{border-top:2px solid var(--an)!important}.ct-fl{border-top:2px solid var(--fl)!important}
+.cat-tile-name{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:.1em;margin-bottom:8px;text-transform:uppercase}
+.cat-tile-count{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim)}.cat-tile-count .cnt{color:var(--amber);font-size:15px;font-weight:700}
+
+/* ===== SYS NOTICE ===== */
+.sys-notice{padding:8px 28px;border-bottom:1px solid var(--border);background:var(--bg2);font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);font-style:italic}
+
+/* ===== SECTION ===== */
+.section{padding:40px 28px;border-bottom:1px solid var(--border)}
+.section-header{display:flex;align-items:center;gap:0;margin-bottom:28px;background:var(--bg3);padding:10px 16px;border-left:3px solid var(--green-dim);border:1px solid var(--border2);border-left:3px solid var(--green-dim)}
+.section-title{font-family:'Noto Serif JP',serif;font-weight:700;font-size:16px;color:var(--green-bright);letter-spacing:.1em}
+.section-title-en{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.15em;margin-left:16px}
+.section-id{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);margin-left:auto}
+
+/* ===== CARDS ===== */
+.case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.case-card{background:var(--bg2);padding:24px;cursor:pointer;border:1px solid var(--border2);box-shadow:var(--panel-inset);transition:all .2s;text-decoration:none;display:block;color:inherit}
+.case-card:hover{background:var(--bg3);border-color:var(--green-dim);box-shadow:var(--panel-inset), 0 0 16px rgba(122,171,110,.08)}
+.card-num{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.15em;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.cls-tag{display:inline-block;border:1px solid;padding:2px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.12em}
+.cls-ic{color:var(--ic);border-color:var(--ic-dim)}.cls-en{color:var(--en);border-color:var(--en-dim)}.cls-ph{color:var(--ph);border-color:var(--ph-dim)}.cls-fl{color:var(--fl);border-color:var(--fl-dim)}.cls-an{color:var(--an);border-color:var(--an-dim)}
+.card-title{font-family:'Noto Serif JP',serif;font-size:16px;color:var(--green-bright);margin-bottom:10px;line-height:1.5}
+.card-desc{font-size:13px;color:var(--text-dim);line-height:1.9}
+.card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);border-top:1px solid var(--border);padding-top:12px}
+.status-tag{display:inline-block;border:1px solid currentColor;padding:2px 8px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.1em}
+.status-active{color:var(--amber);border-color:var(--amber-dim)}
+
+/* ===== DEMO BADGE ===== */
+.demo-badge{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--amber-dim);padding:8px 24px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--amber);z-index:1000;display:flex;gap:24px;align-items:center}
+.demo-badge a{color:var(--text-dim)}.demo-badge a:hover{color:var(--green)}.demo-badge .current{color:var(--green-bright);border-bottom:1px solid var(--green)}
+
+/* ===== RIGHT SIDEBAR ===== */
+.sidebar-right{position:fixed;right:0;top:0;height:100vh;width:238px;background:var(--bg2);border-left:1px solid var(--border2);z-index:110;padding:14px 12px;display:flex;flex-direction:column;gap:0}
+.sb-section{border-bottom:1px solid var(--border);padding:12px 0}
+.sb-label{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:.2em;color:var(--text-dim);margin-bottom:8px;text-transform:uppercase}
+.sb-clearance{font-family:'Share Tech Mono',monospace;font-size:10px;border:1px solid var(--green-dim);padding:6px 8px;color:var(--green-dim);text-align:center;letter-spacing:.06em;line-height:1.5}
+.sb-info-block{background:var(--bg3);border:1px solid var(--border2);padding:10px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);line-height:2}
+.sb-info-block .lbl{color:var(--text-dim)}.sb-info-block .val{color:var(--amber)}
+</style>
+</head>
+<body>
+
+<header id="site-header">
+  <div class="header-top">
+    <span>INS27-ARCHIVE / EXTERNAL-TERMINAL-V2.4</span>
+    <span>14 : 32 : 07</span>
+    <span>最終同期: 2024.11.14</span>
+  </div>
+  <div class="header-main">
+    <div class="logo">
+      <span class="logo-ja">第弐拾七研究所</span>
+      <span class="logo-en">THE 27th INSTITUTE — INTEGRATED ARCHIVE SYSTEM</span>
+    </div>
+    <nav>
+      <a href="#">最新記録</a><a href="#">記録一覧</a><a href="#">用語集</a><a href="#">全記録検索</a>
+    </nav>
+  </div>
+</header>
+
+<div id="stats-bar">
+  <span class="stats-item">総記録数: <span class="stats-val">47</span></span>
+  <span class="stats-item">最終更新: <span class="stats-val">2024-03-14</span></span>
+  <span class="stats-item">アラートレベル: <span class="stats-val stats-alert">橙 / ELEVATED</span></span>
+  <span class="stats-item">接続状態: <span class="stats-val stats-ok">ACTIVE</span></span>
+</div>
+
+<div class="cat-tiles">
+  <a href="#" class="cat-tile ct-ic">
+    <div class="cat-tile-type">IC</div>
+    <div class="cat-tile-name">インシデント</div>
+    <div class="cat-tile-count"><span class="cnt">14</span> 件</div>
+  </a>
+  <a href="#" class="cat-tile ct-en">
+    <div class="cat-tile-type">EN</div>
+    <div class="cat-tile-name">エンティティ</div>
+    <div class="cat-tile-count"><span class="cnt">8</span> 件</div>
+  </a>
+  <a href="#" class="cat-tile ct-ph">
+    <div class="cat-tile-type">PH</div>
+    <div class="cat-tile-name">現象</div>
+    <div class="cat-tile-count"><span class="cnt">9</span> 件</div>
+  </a>
+  <a href="#" class="cat-tile ct-an">
+    <div class="cat-tile-type">AN</div>
+    <div class="cat-tile-name">分析</div>
+    <div class="cat-tile-count"><span class="cnt">11</span> 件</div>
+  </a>
+  <a href="#" class="cat-tile ct-fl">
+    <div class="cat-tile-type">FL</div>
+    <div class="cat-tile-name">フィールド</div>
+    <div class="cat-tile-count"><span class="cnt">5</span> 件</div>
+  </a>
+</div>
+
+<div class="sys-notice">// SYSTEM ACCESS NOTICE ── 本端末は第弐拾七研究所統合記録管理システム（INS27-ARCHIVE v2.4）への外部接続です。本セッションのアクセスログは記録されています。</div>
+
+<section class="section">
+  <div class="section-header">
+    <span class="section-title">記録一覧</span>
+    <span class="section-title-en">ARCHIVE INDEX</span>
+    <span class="section-id">SEC.01</span>
+  </div>
+  <div class="case-grid">
+    <a href="#" class="case-card">
+      <div class="card-num"><span class="cls-tag cls-ic">IC</span> Case#0047</div>
+      <div class="card-title">鏡の少年</div>
+      <div class="card-desc">深夜2時から4時にかけ、居住区全域で目撃された少年型異常体の調査記録。反射面への依存行動が確認されている。</div>
+      <div class="card-footer"><span class="status-tag status-active">調査継続中</span><span>担当: 松浦</span></div>
+    </a>
+    <a href="#" class="case-card">
+      <div class="card-num"><span class="cls-tag cls-en">EN</span> Case#0012</div>
+      <div class="card-title">消えた訪問者</div>
+      <div class="card-desc">複数の住民が同一の人物像を目撃したが、当該人物の存在が記録上確認できないEN事案。記憶干渉の可能性あり。</div>
+      <div class="card-footer"><span class="status-tag status-active">ACTIVE</span><span>担当: 三田村</span></div>
+    </a>
+    <a href="#" class="case-card">
+      <div class="card-num"><span class="cls-tag cls-ph">PH</span> Case#0008</div>
+      <div class="card-title">境界の反響</div>
+      <div class="card-desc">特定の建造物内部でのみ発生する音響現象。発生源の特定に至らず、物理的原因の説明が困難な状況。</div>
+      <div class="card-footer"><span class="status-tag status-active">観測継続中</span><span>担当: 吉原</span></div>
+    </a>
+  </div>
+</section>
+
+<aside class="sidebar-right">
+  <div class="sb-section">
+    <div class="sb-label">// CLEARANCE STATUS</div>
+    <div class="sb-clearance">LEVEL-0<br>NO ACCESS</div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">// 接続端末情報</div>
+    <div class="sb-info-block">
+      <span class="lbl">端末ID: </span><span class="val">EXT-████</span><br>
+      <span class="lbl">接続元: </span><span class="val">外部回線</span><br>
+      <span class="lbl">プロトコル: </span><span class="val">INS27-v2.4</span><br>
+      <span class="lbl">セッション: </span><span class="val">有効 (12h)</span>
+    </div>
+  </div>
+</aside>
+
+<div class="demo-badge">
+  <span>DEMO — スタイル比較</span>
+  <a class="current" href="style-a.html">A: 枠線パネル型</a>
+  <a href="style-b.html">B: グリッド型</a>
+  <a href="style-c.html">C: グロー型</a>
+  <a href="../index.html">← 現在のサイト</a>
+</div>
+
+</body>
+</html>

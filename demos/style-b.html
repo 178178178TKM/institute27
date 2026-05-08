@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STYLE-B: グリッド型 ｜ DEMO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=M+PLUS+1+Code:wght@300;400;700&family=Noto+Serif+JP:wght@300;400;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+--bg: #040804; --bg2: #070d07; --bg3: #0b120b;
+--green: #7aab6e; --green-dim: #3d6636; --green-bright: #a8d49a;
+--amber: #c8a030; --amber-dim: #7a5e12;
+--red: #9b2020; --red-bright: #cc3333;
+--text: #8aab80; --text-dim: #4a6644; --text-bright: #c2ddb8;
+--border: #1a271a; --border2: #243622;
+--line: #2a3e28;
+--ic: #e07848; --en: #d45888; --ph: #9878cc; --fl: #607888; --an: #608878;
+--ic-dim: #7a3820; --en-dim: #6a2844; --ph-dim: #4a3868; --fl-dim: #2e3e48; --an-dim: #2e4838;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Noto Serif JP',serif;font-size:15px;line-height:1.8;padding:0 260px 80px 0}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,15,0,.4) 0,rgba(0,15,0,.4) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:9999;opacity:.5}
+a{color:var(--green);text-decoration:none}
+
+/* ===== HEADER — thick top line ===== */
+#site-header{background:var(--bg2);position:sticky;top:0;z-index:100;border-bottom:3px solid var(--green-dim)}
+#site-header::before{content:'';display:block;height:3px;background:linear-gradient(90deg,transparent,var(--green),var(--green-dim),transparent)}
+.header-top{display:flex;justify-content:space-between;align-items:center;padding:4px 28px;background:var(--bg3);font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--line)}
+.header-main{display:flex;align-items:center;justify-content:space-between;padding:14px 28px}
+.logo-ja{font-family:'Noto Serif JP',serif;font-weight:700;font-size:22px;color:var(--green-bright);letter-spacing:.15em}
+.logo-en{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.2em}
+nav{display:flex;gap:0;font-family:'Share Tech Mono',monospace;font-size:11px;border:1px solid var(--line);overflow:hidden}
+nav a{color:var(--text-dim);padding:7px 18px;border-right:1px solid var(--line);transition:all .15s;display:block}
+nav a:last-child{border-right:none}
+nav a:hover{color:var(--green-bright);background:var(--bg3)}
+
+/* ===== STATS BAR — table row style ===== */
+#stats-bar{display:grid;grid-template-columns:repeat(4,1fr);background:var(--bg3);border-bottom:2px solid var(--line);font-family:'Share Tech Mono',monospace;font-size:10px}
+.stats-item{padding:10px 16px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
+.stats-item:last-child{border-right:none}
+.stats-label{color:var(--text-dim);font-size:9px;letter-spacing:.15em;text-transform:uppercase}
+.stats-val{color:var(--amber);font-size:14px;font-family:'VT323',monospace}
+.stats-alert{color:var(--ic)!important}
+.stats-ok{color:var(--green)!important}
+
+/* ===== CATEGORY TILES — full-width row ===== */
+.cat-row{display:flex;border-bottom:2px solid var(--line);background:var(--bg2)}
+.cat-tile{flex:1;padding:14px 16px;text-decoration:none;display:block;border-right:1px solid var(--line);transition:background .15s;color:inherit;position:relative}
+.cat-tile:last-child{border-right:none}
+.cat-tile:hover{background:var(--bg3)}
+.cat-tile::before{content:'';position:absolute;bottom:0;left:0;right:0;height:3px}
+.ct-ic::before{background:var(--ic)}.ct-en::before{background:var(--en)}.ct-ph::before{background:var(--ph)}.ct-an::before{background:var(--an)}.ct-fl::before{background:var(--fl)}
+.cat-tile-type{font-family:'VT323',monospace;font-size:28px;line-height:1;margin-bottom:2px}
+.ct-ic .cat-tile-type{color:var(--ic)}.ct-en .cat-tile-type{color:var(--en)}.ct-ph .cat-tile-type{color:var(--ph)}.ct-an .cat-tile-type{color:var(--an)}.ct-fl .cat-tile-type{color:var(--fl)}
+.cat-tile-name{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:.1em;text-transform:uppercase}
+.cat-tile-count{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);margin-top:4px}.cat-tile-count .cnt{color:var(--amber)}
+
+/* ===== SYS NOTICE ===== */
+.sys-notice{padding:8px 28px;background:var(--bg2);font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+.sys-notice::before{content:'//';color:var(--line);font-size:14px}
+
+/* ===== SECTION ===== */
+.section{padding:0;border-bottom:2px solid var(--line)}
+.section-header{display:grid;grid-template-columns:auto 1fr auto;align-items:center;padding:0;background:var(--bg3);border-bottom:1px solid var(--line)}
+.section-num{font-family:'VT323',monospace;font-size:36px;color:var(--green-dim);padding:8px 20px;border-right:2px solid var(--line);line-height:1}
+.section-titles{padding:8px 20px}
+.section-title{font-family:'Noto Serif JP',serif;font-weight:700;font-size:16px;color:var(--green-bright);letter-spacing:.1em;display:block}
+.section-title-en{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.15em}
+.section-count{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);padding:8px 20px;border-left:1px solid var(--line)}
+.section-body{padding:20px}
+
+/* ===== CARDS — table-like ===== */
+.case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;background:var(--line)}
+.case-card{background:var(--bg2);padding:20px;cursor:pointer;transition:background .15s;text-decoration:none;display:block;color:inherit;border:none}
+.case-card:hover{background:var(--bg3)}
+.card-top{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.cls-tag{display:inline-block;border:1px solid;padding:2px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.12em}
+.cls-ic{color:var(--ic);border-color:var(--ic-dim)}.cls-en{color:var(--en);border-color:var(--en-dim)}.cls-ph{color:var(--ph);border-color:var(--ph-dim)}.cls-fl{color:var(--fl);border-color:var(--fl-dim)}.cls-an{color:var(--an);border-color:var(--an-dim)}
+.card-case{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);margin-left:auto}
+.card-title{font-family:'Noto Serif JP',serif;font-size:16px;color:var(--green-bright);margin-bottom:8px;line-height:1.5}
+.card-desc{font-size:12px;color:var(--text-dim);line-height:1.9}
+.card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)}
+.status-tag{display:inline-block;border:1px solid currentColor;padding:2px 8px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.1em}
+.status-active{color:var(--amber);border-color:var(--amber-dim)}
+
+/* Left type accent bar */
+.case-card.card-ic{border-left:3px solid var(--ic)}.case-card.card-en{border-left:3px solid var(--en)}.case-card.card-ph{border-left:3px solid var(--ph)}.case-card.card-an{border-left:3px solid var(--an)}.case-card.card-fl{border-left:3px solid var(--fl)}
+
+/* ===== SIDEBAR ===== */
+.sidebar-right{position:fixed;right:0;top:0;height:100vh;width:238px;background:var(--bg2);border-left:2px solid var(--line);z-index:110;padding:0;display:flex;flex-direction:column}
+.sb-section{border-bottom:1px solid var(--line);padding:12px}
+.sb-label{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:.2em;color:var(--text-dim);margin-bottom:8px;padding-bottom:6px;border-bottom:1px dashed var(--line)}
+.sb-clearance{font-family:'Share Tech Mono',monospace;font-size:10px;border:1px solid var(--green-dim);padding:6px 8px;color:var(--green-dim);text-align:center;line-height:1.5}
+.sb-info-row{display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:9px;padding:3px 0;border-bottom:1px solid var(--line)}
+.sb-info-row .k{color:var(--text-dim)}.sb-info-row .v{color:var(--amber)}
+
+/* ===== DEMO BADGE ===== */
+.demo-badge{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--line);padding:8px 24px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--amber);z-index:1000;display:flex;gap:24px;align-items:center}
+.demo-badge a{color:var(--text-dim)}.demo-badge a:hover{color:var(--green)}.demo-badge .current{color:var(--green-bright);border-bottom:1px solid var(--green)}
+</style>
+</head>
+<body>
+
+<header id="site-header">
+  <div class="header-top">
+    <span>INS27-ARCHIVE / EXTERNAL-TERMINAL-V2.4</span>
+    <span>14 : 32 : 07</span>
+    <span>最終同期: 2024.11.14</span>
+  </div>
+  <div class="header-main">
+    <div>
+      <div class="logo-ja">第弐拾七研究所</div>
+      <div class="logo-en">THE 27th INSTITUTE — INTEGRATED ARCHIVE SYSTEM</div>
+    </div>
+    <nav>
+      <a href="#">最新記録</a><a href="#">記録一覧</a><a href="#">用語集</a><a href="#">全記録検索</a>
+    </nav>
+  </div>
+</header>
+
+<div id="stats-bar">
+  <div class="stats-item">
+    <span class="stats-label">総記録数</span>
+    <span class="stats-val">47</span>
+  </div>
+  <div class="stats-item">
+    <span class="stats-label">最終更新</span>
+    <span class="stats-val">2024-03-14</span>
+  </div>
+  <div class="stats-item">
+    <span class="stats-label">アラートレベル</span>
+    <span class="stats-val stats-alert">橙 ELEVATED</span>
+  </div>
+  <div class="stats-item">
+    <span class="stats-label">接続状態</span>
+    <span class="stats-val stats-ok">ACTIVE</span>
+  </div>
+</div>
+
+<div class="cat-row">
+  <a href="#" class="cat-tile ct-ic">
+    <div class="cat-tile-type">IC</div>
+    <div class="cat-tile-name">インシデント</div>
+    <div class="cat-tile-count"><span class="cnt">14</span> 件</div>
+  </a>
+  <a href="#" class="cat-tile ct-en">
+    <div class="cat-tile-type">EN</div>
+    <div class="cat-tile-name">エンティティ</div>
+    <div class="cat-tile-count"><span class="cnt">8</span> 件</div>
+  </a>
+  <a href="#" class="cat-tile ct-ph">
+    <div class="cat-tile-type">PH</div>
+    <div class="cat-tile-name">現象</div>
+    <div class="cat-tile-count"><span class="cnt">9</span> 件</div>
+  </a>
+  <a href="#" class="cat-tile ct-an">
+    <div class="cat-tile-type">AN</div>
+    <div class="cat-tile-name">分析</div>
+    <div class="cat-tile-count"><span class="cnt">11</span> 件</div>
+  </a>
+  <a href="#" class="cat-tile ct-fl">
+    <div class="cat-tile-type">FL</div>
+    <div class="cat-tile-name">フィールド</div>
+    <div class="cat-tile-count"><span class="cnt">5</span> 件</div>
+  </a>
+</div>
+
+<div class="sys-notice">本端末は第弐拾七研究所統合記録管理システム（INS27-ARCHIVE v2.4）への外部接続です。本セッションのアクセスログは記録されています。</div>
+
+<section class="section">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div class="section-titles">
+      <span class="section-title">記録一覧</span>
+      <span class="section-title-en">ARCHIVE INDEX</span>
+    </div>
+    <div class="section-count">3 / 47 件表示</div>
+  </div>
+  <div class="section-body">
+    <div class="case-grid">
+      <a href="#" class="case-card card-ic">
+        <div class="card-top"><span class="cls-tag cls-ic">IC</span><span class="card-case">Case#0047</span></div>
+        <div class="card-title">鏡の少年</div>
+        <div class="card-desc">深夜2時から4時にかけ、居住区全域で目撃された少年型異常体の調査記録。反射面への依存行動が確認されている。</div>
+        <div class="card-footer"><span class="status-tag status-active">調査継続中</span><span>担当: 松浦</span></div>
+      </a>
+      <a href="#" class="case-card card-en">
+        <div class="card-top"><span class="cls-tag cls-en">EN</span><span class="card-case">Case#0012</span></div>
+        <div class="card-title">消えた訪問者</div>
+        <div class="card-desc">複数の住民が同一の人物像を目撃したが、当該人物の存在が記録上確認できないEN事案。記憶干渉の可能性あり。</div>
+        <div class="card-footer"><span class="status-tag status-active">ACTIVE</span><span>担当: 三田村</span></div>
+      </a>
+      <a href="#" class="case-card card-ph">
+        <div class="card-top"><span class="cls-tag cls-ph">PH</span><span class="card-case">Case#0008</span></div>
+        <div class="card-title">境界の反響</div>
+        <div class="card-desc">特定の建造物内部でのみ発生する音響現象。発生源の特定に至らず、物理的原因の説明が困難な状況。</div>
+        <div class="card-footer"><span class="status-tag status-active">観測継続中</span><span>担当: 吉原</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<aside class="sidebar-right">
+  <div class="sb-section">
+    <div class="sb-label">CLEARANCE STATUS</div>
+    <div class="sb-clearance">LEVEL-0<br>NO ACCESS</div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">接続端末情報</div>
+    <div class="sb-info-row"><span class="k">端末ID</span><span class="v">EXT-████</span></div>
+    <div class="sb-info-row"><span class="k">接続元</span><span class="v">外部回線</span></div>
+    <div class="sb-info-row"><span class="k">プロトコル</span><span class="v">INS27-v2.4</span></div>
+    <div class="sb-info-row"><span class="k">セッション</span><span class="v">有効 12h</span></div>
+  </div>
+</aside>
+
+<div class="demo-badge">
+  <span>DEMO — スタイル比較</span>
+  <a href="style-a.html">A: 枠線パネル型</a>
+  <a class="current" href="style-b.html">B: グリッド型</a>
+  <a href="style-c.html">C: グロー型</a>
+  <a href="../index.html">← 現在のサイト</a>
+</div>
+
+</body>
+</html>
